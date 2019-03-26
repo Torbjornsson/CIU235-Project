@@ -11,9 +11,9 @@ public class CharacterControllerScript : MonoBehaviour
     private float move_delay;
 
     private bool moving;
-    public Vector3 direction;
     private Vector3 next_pos;
 
+    public Vector3 direction;
     public float speed;
     public float grid_size;
 
@@ -38,27 +38,19 @@ public class CharacterControllerScript : MonoBehaviour
 
         if (!moving)
         {
-            //while (rb.position != next_pos)
-            //{
-            //    rb.MovePosition(next_pos);
-            //}
-            if (Input.GetAxis("Horizontal") > 0) move(cur_pos, 1, 0, 0);
-            if (Input.GetAxis("Horizontal") < 0) move(cur_pos, -1, 0, 0);
-            if (Input.GetAxis("Vertical") > 0) move(cur_pos, 0, 0, 1);
-            if (Input.GetAxis("Vertical") < 0) move(cur_pos, 0, 0, -1);
+            if (Input.GetAxis("Horizontal") > 0) Move(cur_pos, 1, 0, 0);
+            if (Input.GetAxis("Horizontal") < 0) Move(cur_pos, -1, 0, 0);
+            if (Input.GetAxis("Vertical") > 0) Move(cur_pos, 0, 0, 1);
+            if (Input.GetAxis("Vertical") < 0) Move(cur_pos, 0, 0, -1);
         }
 
         if (moving)
         {
-            //rb.MovePosition(cur_pos + direction * speed * Time.deltaTime);
             Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
             if ((direction.x > 0 && new_pos.x > next_pos.x) || (direction.x < 0 && new_pos.x < next_pos.x)
                 || (direction.z > 0 && new_pos.z > next_pos.z) || (direction.z < 0 && new_pos.z < next_pos.z))
             {
-                //while(rb.position != next_pos)
-                //{
-                    rb.MovePosition(next_pos);
-                //}
+                rb.MovePosition(next_pos);
                 moving = false;
             }
             else
@@ -68,13 +60,13 @@ public class CharacterControllerScript : MonoBehaviour
         }
     }
 
-    Vector3 getGridPos(float x, float y, float z)
-    {
-        Vector3 grid_pos = new Vector3((Mathf.Round( x / grid_size )) * grid_size, y, (Mathf.Round(z / grid_size)) * grid_size);
-        return grid_pos;
-    }
+    //Vector3 GetGridPos(float x, float y, float z)
+    //{
+    //    Vector3 grid_pos = new Vector3((Mathf.Round( x / grid_size )) * grid_size, y, (Mathf.Round(z / grid_size)) * grid_size);
+    //    return grid_pos;
+    //}
 
-    void move(Vector3 cur_pos, float x, float y, float z)
+    void Move(Vector3 cur_pos, float x, float y, float z)
     {
         next_pos = new Vector3(cur_pos.x + grid_size * x, cur_pos.y + grid_size * y, cur_pos.z + grid_size * z);
         direction.x = x;
