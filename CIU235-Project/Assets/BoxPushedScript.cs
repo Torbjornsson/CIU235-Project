@@ -43,14 +43,29 @@ public class BoxPushedScript : MonoBehaviour
     {
         if (!moving && other.gameObject.name == "Character")
         {
+            // Getting things to use
             GameObject c = other.gameObject;
-            CharacterControllerScript script = c.GetComponent<CharacterControllerScript>();
+            CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
             Vector3 cur_pos = rb.position;
 
-            direction = script.direction;
-            speed = script.speed;
-            next_pos = cur_pos + direction * script.grid_size;
+            // Checking character diff from original position
+            Vector3 c_pos = c.GetComponent<Rigidbody>().position;
+            Vector3 diff = c_pos - GetGridPos(c_pos.x, c_pos.y, c_pos.z, c_script.grid_size);
+
+            // Starting to move in the right direction
+            direction = c_script.direction;
+            speed = c_script.speed;
+            next_pos = cur_pos + direction * c_script.grid_size;
             moving = true;
+
+            // Updating position to be off exactly as much as character, from grid
+            cur_pos += diff;
+            rb.MovePosition(cur_pos);
         }
+    }
+
+    Vector3 GetGridPos(float x, float y, float z, float grid_size)
+    {
+        return new Vector3(Mathf.Round( x / grid_size ) * grid_size, y, Mathf.Round(z / grid_size) * grid_size);
     }
 }
