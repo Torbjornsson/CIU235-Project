@@ -16,7 +16,7 @@ public abstract class Pusher : MonoBehaviour
         bool collision = false;
 
         RaycastHit hit = new RaycastHit();
-        rb.SweepTest(direction, out hit);
+        Physics.Raycast(rb.position, direction,out hit, Utility.GRID_SIZE);
         if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
         {
             collision |= (hit.collider.gameObject.tag == "Wall");
