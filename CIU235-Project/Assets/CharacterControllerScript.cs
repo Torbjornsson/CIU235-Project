@@ -47,24 +47,38 @@ public class CharacterControllerScript : MonoBehaviour
         if (moving)
         {
             Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
-            if ((direction.x > 0 && new_pos.x > next_pos.x) || (direction.x < 0 && new_pos.x < next_pos.x)
-                || (direction.z > 0 && new_pos.z > next_pos.z) || (direction.z < 0 && new_pos.z < next_pos.z))
+            if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
+                || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
             {
                 Stop(next_pos);
+                Debug.Log("Stopped at next_pos: " + next_pos);
             }
             else
             {
                 rb.MovePosition(new_pos);
+                Debug.Log("Moved to new_pos: " + new_pos);
             }
         }
     }
 
-    void Move(Vector3 cur_pos, float x, float y, float z)
+    private void OnTriggerStay(Collider other)
+    //private void OnCollisionEnter(Collision collision)
     {
-        next_pos = new Vector3(cur_pos.x + grid_size * x, cur_pos.y + grid_size * y, cur_pos.z + grid_size * z);
-        direction.x = x;
-        direction.y = y;
-        direction.z = z;
+        if (moving && other.gameObject.name == "Wall")
+        {
+            Vector3 grid_pos = Utility.GetGridPos(rb.position, grid_size);
+            grid_pos.y = rb.position.y;
+            Stop(grid_pos);
+            Debug.Log("Collision with wall, new pos: " + grid_pos);
+        }
+    }
+
+    void Move(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
+    {
+        next_pos = new Vector3(cur_pos.x + grid_size * dir_x, cur_pos.y + grid_size * dir_y, cur_pos.z + grid_size * dir_z);
+        direction.x = dir_x;
+        direction.y = dir_y;
+        direction.z = dir_z;
         moving = true;
     }
 
@@ -72,5 +86,6 @@ public class CharacterControllerScript : MonoBehaviour
     {
         moving = false;
         rb.MovePosition(position);
+        //next_pos = position;
     }
 }
