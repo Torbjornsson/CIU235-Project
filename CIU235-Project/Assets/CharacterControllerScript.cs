@@ -56,17 +56,6 @@ public class CharacterControllerScript : Pusher
         }
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (moving && other.gameObject.name == "Wall")
-        {
-            Vector3 grid_pos = Utility.GetGridPos(rb.position, Utility.GRID_SIZE);
-            grid_pos.y = rb.position.y;
-            Stop(grid_pos);
-            Debug.Log("CHARACTER - Collision with wall, new pos: " + grid_pos);
-        }
-    }
-
     public void Move(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
     {
         next_pos = new Vector3(cur_pos.x + Utility.GRID_SIZE * dir_x, cur_pos.y + Utility.GRID_SIZE * dir_y, cur_pos.z + Utility.GRID_SIZE * dir_z);

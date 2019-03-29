@@ -37,7 +37,7 @@ public class BoxPushedScript : Pusher
         }
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (!moving && other.gameObject.name == "Character")
         {
@@ -68,15 +68,6 @@ public class BoxPushedScript : Pusher
                 cur_pos += diff;
                 rb.MovePosition(cur_pos);
             }
-        }
-
-        if (moving && (other.gameObject.tag == "Wall"))
-        {
-            Vector3 grid_pos = Utility.GetGridPos(rb.position, Utility.GRID_SIZE);
-            grid_pos.y = rb.position.y;
-            Stop(grid_pos);
-
-            Debug.Log("BOX - Collision with wall, new pos: " + grid_pos);
         }
     }
 }

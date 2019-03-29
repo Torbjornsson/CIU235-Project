@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class Pusher : MonoBehaviour
 {
@@ -25,7 +23,10 @@ public abstract class Pusher : MonoBehaviour
 
             if (hit.collider.gameObject.tag == "Box")
             {
-                collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
+                if (gameObject.name == "Character")
+                    collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
+                else
+                    collision = true;
             }
         }
 
