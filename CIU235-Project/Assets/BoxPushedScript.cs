@@ -48,7 +48,9 @@ public class BoxPushedScript : MonoBehaviour
 
             // Checking character diff from original position
             Vector3 c_pos = c.GetComponent<Rigidbody>().position;
-            Vector3 diff = c_pos - Utility.GetGridPos(c_pos, c_script.grid_size);
+            Vector3 c_grid_pos = Utility.GetGridPos(c_pos, c_script.grid_size);
+            c_grid_pos.y = c_pos.y;
+            Vector3 diff = c_pos - c_grid_pos;
 
             // Starting to move in the right direction
             direction = c_script.direction;

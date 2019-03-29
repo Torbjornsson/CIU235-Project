@@ -50,8 +50,7 @@ public class CharacterControllerScript : MonoBehaviour
             if ((direction.x > 0 && new_pos.x > next_pos.x) || (direction.x < 0 && new_pos.x < next_pos.x)
                 || (direction.z > 0 && new_pos.z > next_pos.z) || (direction.z < 0 && new_pos.z < next_pos.z))
             {
-                rb.MovePosition(next_pos);
-                moving = false;
+                Stop(next_pos);
             }
             else
             {
@@ -67,5 +66,11 @@ public class CharacterControllerScript : MonoBehaviour
         direction.y = y;
         direction.z = z;
         moving = true;
+    }
+
+    void Stop(Vector3 position)
+    {
+        moving = false;
+        rb.MovePosition(position);
     }
 }
