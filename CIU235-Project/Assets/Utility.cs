@@ -2,6 +2,8 @@
 
 public static class Utility
 {
+    public const float GRID_SIZE = 1f;
+
     // Overloaded methods for getting grid positions, based on a specific grid size
     public static Vector3 GetGridPos(Vector3 pos, float grid_size)
     {
