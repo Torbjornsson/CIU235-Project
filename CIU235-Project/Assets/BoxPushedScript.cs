@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-public class BoxPushedScript : MonoBehaviour, IPusher
+public class BoxPushedScript : Pusher
 {
     public float speed;
 
-    private Rigidbody rb;
+    //private Rigidbody rb;
 
-    private bool moving;
+    //private bool moving;
     private Vector3 direction;
     private Vector3 next_pos;
 
@@ -73,7 +73,7 @@ public class BoxPushedScript : MonoBehaviour, IPusher
             }
         }
 
-        if (moving && other.gameObject.tag == "Wall")
+        if (moving && (other.gameObject.tag == "Wall"))
         {
             Vector3 grid_pos = Utility.GetGridPos(rb.position, Utility.GRID_SIZE);
             grid_pos.y = rb.position.y;
@@ -83,28 +83,28 @@ public class BoxPushedScript : MonoBehaviour, IPusher
         }
     }
 
-    public void Stop(Vector3 position)
-    {
-        moving = false;
-        rb.MovePosition(position);
-    }
+    //public override void Stop(Vector3 position)
+    //{
+    //    moving = false;
+    //    rb.MovePosition(position);
+    //}
 
-    public bool CollisionCheckInFront(Vector3 direction)
-    {
-        bool collision = false;
+    //public override bool CollisionCheckInFront(Vector3 direction)
+    //{
+    //    bool collision = false;
 
-        RaycastHit hit = new RaycastHit();
-        rb.SweepTest(direction, out hit);
-        if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
-        {
-            collision |= (hit.collider.gameObject.tag == "Wall");
+    //    RaycastHit hit = new RaycastHit();
+    //    rb.SweepTest(direction, out hit);
+    //    if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
+    //    {
+    //        collision |= (hit.collider.gameObject.tag == "Wall");
 
-            if (hit.collider.gameObject.tag == "Box")
-            {
-                collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
-            }
-        }
+    //        if (hit.collider.gameObject.tag == "Box")
+    //        {
+    //            collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
+    //        }
+    //    }
 
-        return collision;
-    }
+    //    return collision;
+    //}
 }

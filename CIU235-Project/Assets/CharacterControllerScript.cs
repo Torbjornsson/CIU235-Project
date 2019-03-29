@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterControllerScript : MonoBehaviour, IPusher
+public class CharacterControllerScript : Pusher
 {
     public const float DELAY_DEFAULT = 0.1f;
     public const float EPSILON = 0.0001f;
 
-    private Rigidbody rb;
+    //private Rigidbody rb;
     private float move_delay;
 
-    private bool moving;
+    //private bool moving;
     private Vector3 next_pos;
 
     public Vector3 direction;
@@ -82,28 +82,28 @@ public class CharacterControllerScript : MonoBehaviour, IPusher
         moving = true;
     }
 
-    public void Stop(Vector3 position)
-    {
-        moving = false;
-        rb.MovePosition(position);
-    }
+    //public void Stop(Vector3 position)
+    //{
+    //    moving = false;
+    //    rb.MovePosition(position);
+    //}
 
-    public bool CollisionCheckInFront(Vector3 direction)
-    {
-        bool collision = false;
+    //public bool CollisionCheckInFront(Vector3 direction)
+    //{
+    //    bool collision = false;
 
-        RaycastHit hit = new RaycastHit();
-        rb.SweepTest(direction, out hit);
-        if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
-        {
-            collision |= (hit.collider.gameObject.tag == "Wall");
+    //    RaycastHit hit = new RaycastHit();
+    //    rb.SweepTest(direction, out hit);
+    //    if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
+    //    {
+    //        collision |= (hit.collider.gameObject.tag == "Wall");
 
-            if (hit.collider.gameObject.tag == "Box")
-            {
-                collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
-            }
-        }
+    //        if (hit.collider.gameObject.tag == "Box")
+    //        {
+    //            collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
+    //        }
+    //    }
 
-        return collision;
-    }
+    //    return collision;
+    //}
 }
