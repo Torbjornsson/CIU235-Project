@@ -16,9 +16,6 @@ public class CharacterControllerScript : MonoBehaviour, IPusher
     public Vector3 direction;
     public float speed;
 
-    //public GameObject in_front;
-    //public IPusher in_front_script;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -27,8 +24,6 @@ public class CharacterControllerScript : MonoBehaviour, IPusher
         moving = false;
         direction = new Vector3();
         next_pos = rb.position;
-        //in_front = null;
-        //in_front_script = null;
     }
 
     // Update is called once per frame
@@ -87,46 +82,27 @@ public class CharacterControllerScript : MonoBehaviour, IPusher
         moving = true;
     }
 
-    //public void SetInFront(GameObject in_front, IPusher in_front_script)
-    //{
-    //    Debug.Log("CHARACTER - SetInFront() : in_front("+in_front+"), in_front_script("+in_front_script+")");
-    //    //this.in_front = in_front;
-    //    //this.in_front_script = in_front_script;
-    //}
-
     public void Stop(Vector3 position)
     {
         moving = false;
         rb.MovePosition(position);
-
-        //in_front = null;
-        //in_front_script = null;
     }
 
     public bool CollisionCheckInFront(Vector3 direction)
     {
         bool collision = false;
 
-        //if (in_front_script != null)
-        //{
-        //    collision = in_front_script.CollisionCheckInFront(direction);
-        //}
-        //else
-        //{
-            RaycastHit hit = new RaycastHit();
-            rb.SweepTest(direction, out hit);
-            if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
+        RaycastHit hit = new RaycastHit();
+        rb.SweepTest(direction, out hit);
+        if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
+        {
+            collision |= (hit.collider.gameObject.tag == "Wall");
+
+            if (hit.collider.gameObject.tag == "Box")
             {
-                collision |= (hit.collider.gameObject.tag == "Wall");
-
-                if (hit.collider.gameObject.tag == "Box")
-                {
-                    collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
-                }
+                collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
             }
-        //}
-
-        //Debug.Log("CHARACTER - CollisionCheckInFront() : "+collision);
+        }
 
         return collision;
     }

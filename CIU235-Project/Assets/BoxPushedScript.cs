@@ -10,11 +10,6 @@ public class BoxPushedScript : MonoBehaviour, IPusher
     private Vector3 direction;
     private Vector3 next_pos;
 
-    //public GameObject pusher;
-    //public IPusher pusher_script;
-    //public GameObject in_front;
-    //public IPusher in_front_script;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -22,10 +17,6 @@ public class BoxPushedScript : MonoBehaviour, IPusher
         direction = new Vector3();
         next_pos = rb.position;
         moving = false;
-        //pusher = null;
-        //pusher_script = null;
-        //in_front = null;
-        //in_front_script = null;
     }
 
     // Update is called once per frame
@@ -70,11 +61,6 @@ public class BoxPushedScript : MonoBehaviour, IPusher
             next_pos = cur_pos + direction * Utility.GRID_SIZE;
             moving = true;
 
-            //pusher = c;
-            //pusher_script = c_script;
-
-            //c_script.SetInFront(gameObject, this);
-
             if (CollisionCheckInFront(direction))
             {
                 Stop(cur_pos);
@@ -97,49 +83,11 @@ public class BoxPushedScript : MonoBehaviour, IPusher
         }
     }
 
-    //public void SetInFront(GameObject in_front, IPusher in_front_script)
-    //{
-    //    //this.in_front = in_front;
-    //    //this.in_front_script = in_front_script;
-    //}
-
     public void Stop(Vector3 position)
     {
         moving = false;
         rb.MovePosition(position);
-
-        //if (pusher != null && pusher_script != null)
-        //{
-        //    Vector3 p_pos = pusher.GetComponent<Rigidbody>().position;
-        //    Vector3 p_grid_pos = Utility.GetGridPos(p_pos, Utility.GRID_SIZE);
-        //    p_grid_pos.y = p_pos.y;
-        //    pusher_script.Stop(p_grid_pos);
-
-        //    pusher = null;
-        //    pusher_script = null;
-        //}
-
-        //in_front = null;
-        //in_front_script = null;
     }
-
-    //public bool CollisionCheckInFront(Vector3 direction)
-    //{
-    //    bool collision = false;
-
-    //    if (in_front_script != null)
-    //    {
-    //        collision = in_front_script.CollisionCheckInFront(direction);
-    //    }
-    //    else
-    //    {
-    //        RaycastHit hit = new RaycastHit();
-    //        rb.SweepTest(direction, out hit);
-    //        collision |= (hit.collider != null && hit.collider.gameObject.name == "Wall" && hit.distance < Utility.GRID_SIZE);
-    //    }
-
-    //    return collision;
-    //}
 
     public bool CollisionCheckInFront(Vector3 direction)
     {
