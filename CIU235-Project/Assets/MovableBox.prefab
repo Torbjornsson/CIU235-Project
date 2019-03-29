@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 358951682064700360}
   m_Layer: 0
   m_Name: MovableBox
-  m_TagString: Untagged
+  m_TagString: Box
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,3 +122,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
+  pusher: {fileID: 0}
+  in_front: {fileID: 0}

@@ -12,6 +12,8 @@ public class BoxPushedScript : MonoBehaviour, IPusher
 
     public GameObject pusher;
     public IPusher pusher_script;
+    public GameObject in_front;
+    public IPusher in_front_script;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +23,9 @@ public class BoxPushedScript : MonoBehaviour, IPusher
         next_pos = rb.position;
         moving = false;
         pusher = null;
+        pusher_script = null;
+        in_front = null;
+        in_front_script = null;
     }
 
     // Update is called once per frame
@@ -43,36 +48,6 @@ public class BoxPushedScript : MonoBehaviour, IPusher
             }
         }
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (!moving && other.gameObject.name == "Character")
-    //    {
-    //        // Getting things to use
-    //        GameObject c = other.gameObject;
-    //        CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
-    //        Vector3 cur_pos = rb.position;
-
-    //        // Checking character diff from original position
-    //        Vector3 c_pos = c.GetComponent<Rigidbody>().position;
-    //        Vector3 c_grid_pos = Utility.GetGridPos(c_pos, Utility.GRID_SIZE);
-    //        c_grid_pos.y = c_pos.y;
-    //        Vector3 diff = c_pos - c_grid_pos;
-
-    //        // Starting to move in the right direction
-    //        direction = c_script.direction;
-    //        speed = c_script.speed;
-    //        next_pos = cur_pos + direction * Utility.GRID_SIZE;
-    //        moving = true;
-
-    //        // Updating position to be off exactly as much as character, from grid
-    //        cur_pos += diff;
-    //        rb.MovePosition(cur_pos);
-
-    //        pusher = c;
-    //        pusher_script = c_script;
-    //    }
-    //}
 
     private void OnTriggerStay(Collider other)
     {
@@ -98,9 +73,15 @@ public class BoxPushedScript : MonoBehaviour, IPusher
             pusher = c;
             pusher_script = c_script;
 
-            RaycastHit hit = new RaycastHit();
-            rb.SweepTest(direction, out hit);
-            if (hit.collider != null && hit.collider.gameObject.name == "Wall" && hit.distance < Utility.GRID_SIZE)
+            c_script.SetInFront(gameObject, this);
+
+            //RaycastHit hit = new RaycastHit();
+            //rb.SweepTest(direction, out hit);
+            //if (hit.collider != null && hit.collider.gameObject.name == "Wall" && hit.distance < Utility.GRID_SIZE)
+            //{
+            //    Stop(cur_pos);
+            //}
+            if (CollisionCheckInFront(direction))
             {
                 Stop(cur_pos);
             }
@@ -122,6 +103,12 @@ public class BoxPushedScript : MonoBehaviour, IPusher
         }
     }
 
+    public void SetInFront(GameObject in_front, IPusher in_front_script)
+    {
+        this.in_front = in_front;
+        this.in_front_script = in_front_script;
+    }
+
     public void Stop(Vector3 position)
     {
         moving = false;
@@ -137,5 +124,26 @@ public class BoxPushedScript : MonoBehaviour, IPusher
             pusher = null;
             pusher_script = null;
         }
+
+        in_front = null;
+        in_front_script = null;
+    }
+
+    public bool CollisionCheckInFront(Vector3 direction)
+    {
+        bool collision = false;
+
+        if (in_front_script != null)
+        {
+            collision = in_front_script.CollisionCheckInFront(direction);
+        }
+        else
+        {
+            RaycastHit hit = new RaycastHit();
+            rb.SweepTest(direction, out hit);
+            collision |= (hit.collider != null && hit.collider.gameObject.name == "Wall" && hit.distance < Utility.GRID_SIZE);
+        }
+
+        return collision;
     }
 }

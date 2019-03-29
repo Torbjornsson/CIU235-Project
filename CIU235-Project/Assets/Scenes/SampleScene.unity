@@ -507,7 +507,7 @@ GameObject:
   - component: {fileID: 1438040576}
   m_Layer: 0
   m_Name: Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -750,7 +750,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   direction: {x: 0, y: 0, z: 0}
   speed: 5
-  grid_size: 1
+  in_front: {fileID: 0}
 --- !u!1001 &358951681572784246
 PrefabInstance:
   m_ObjectHideFlags: 0
