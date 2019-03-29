@@ -7,6 +7,8 @@ public class CharacterControllerScript : MonoBehaviour
     public const float DELAY_DEFAULT = 0.2f;
     public const float EPSILON = 0.0001f;
 
+    public const float DEAD_ZONE = 0.5f;
+
     private Rigidbody rb;
     private float move_delay;
 
@@ -38,10 +40,10 @@ public class CharacterControllerScript : MonoBehaviour
 
         if (!moving)
         {
-            if (Input.GetAxis("Horizontal") > 0) Move(cur_pos, 1, 0, 0);
-            if (Input.GetAxis("Horizontal") < 0) Move(cur_pos, -1, 0, 0);
-            if (Input.GetAxis("Vertical") > 0) Move(cur_pos, 0, 0, 1);
-            if (Input.GetAxis("Vertical") < 0) Move(cur_pos, 0, 0, -1);
+            if (Input.GetAxis("Horizontal") > DEAD_ZONE) Move(cur_pos, 1, 0, 0);
+            if (Input.GetAxis("Horizontal") < -DEAD_ZONE) Move(cur_pos, -1, 0, 0);
+            if (Input.GetAxis("Vertical") > DEAD_ZONE) Move(cur_pos, 0, 0, 1);
+            if (Input.GetAxis("Vertical") < -DEAD_ZONE) Move(cur_pos, 0, 0, -1);
         }
 
         if (moving)
