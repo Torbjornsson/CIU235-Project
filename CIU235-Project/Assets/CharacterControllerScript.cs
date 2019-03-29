@@ -16,8 +16,8 @@ public class CharacterControllerScript : MonoBehaviour, IPusher
     public Vector3 direction;
     public float speed;
 
-    public GameObject in_front;
-    public IPusher in_front_script;
+    //public GameObject in_front;
+    //public IPusher in_front_script;
 
     // Start is called before the first frame update
     void Start()
@@ -27,8 +27,8 @@ public class CharacterControllerScript : MonoBehaviour, IPusher
         moving = false;
         direction = new Vector3();
         next_pos = rb.position;
-        in_front = null;
-        in_front_script = null;
+        //in_front = null;
+        //in_front_script = null;
     }
 
     // Update is called once per frame
@@ -37,21 +37,13 @@ public class CharacterControllerScript : MonoBehaviour, IPusher
 
         Vector3 cur_pos = rb.position;
 
-        //if (move_delay > 0) move_delay -= Time.deltaTime;
-        //else if (move_delay < 0) move_delay = 0;
-
-        //if (!moving && move_delay <= 0)
         if (!moving)
         {
             if (Input.GetAxis("Horizontal") > 0) Move(cur_pos, 1, 0, 0);
             if (Input.GetAxis("Horizontal") < 0) Move(cur_pos, -1, 0, 0);
             if (Input.GetAxis("Vertical") > 0) Move(cur_pos, 0, 0, 1);
             if (Input.GetAxis("Vertical") < 0) Move(cur_pos, 0, 0, -1);
-            //move_delay = DELAY_DEFAULT;
 
-            //RaycastHit hit = new RaycastHit();
-            //rb.SweepTest(direction, out hit);
-            //if (hit.collider != null && hit.collider.gameObject.name == "Wall" && hit.distance < Utility.GRID_SIZE)
             if (moving && CollisionCheckInFront(direction))
             {
                 Stop(cur_pos);
@@ -95,32 +87,32 @@ public class CharacterControllerScript : MonoBehaviour, IPusher
         moving = true;
     }
 
-    public void SetInFront(GameObject in_front, IPusher in_front_script)
-    {
-        Debug.Log("CHARACTER - SetInFront() : in_front("+in_front+"), in_front_script("+in_front_script+")");
-        this.in_front = in_front;
-        this.in_front_script = in_front_script;
-    }
+    //public void SetInFront(GameObject in_front, IPusher in_front_script)
+    //{
+    //    Debug.Log("CHARACTER - SetInFront() : in_front("+in_front+"), in_front_script("+in_front_script+")");
+    //    //this.in_front = in_front;
+    //    //this.in_front_script = in_front_script;
+    //}
 
     public void Stop(Vector3 position)
     {
         moving = false;
         rb.MovePosition(position);
 
-        in_front = null;
-        in_front_script = null;
+        //in_front = null;
+        //in_front_script = null;
     }
 
     public bool CollisionCheckInFront(Vector3 direction)
     {
         bool collision = false;
 
-        if (in_front_script != null)
-        {
-            collision = in_front_script.CollisionCheckInFront(direction);
-        }
-        else
-        {
+        //if (in_front_script != null)
+        //{
+        //    collision = in_front_script.CollisionCheckInFront(direction);
+        //}
+        //else
+        //{
             RaycastHit hit = new RaycastHit();
             rb.SweepTest(direction, out hit);
             if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
@@ -132,9 +124,9 @@ public class CharacterControllerScript : MonoBehaviour, IPusher
                     collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
                 }
             }
-        }
+        //}
 
-        Debug.Log("CHARACTER - CollisionCheckInFront() : "+collision);
+        //Debug.Log("CHARACTER - CollisionCheckInFront() : "+collision);
 
         return collision;
     }
