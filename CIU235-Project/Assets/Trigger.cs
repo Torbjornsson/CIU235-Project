@@ -5,10 +5,14 @@ using UnityEngine;
 public class Trigger : MonoBehaviour
 {
     private Material material;
+
+    private GameObject wc;
+
     // Start is called before the first frame update
     void Start()
     {
         material = GetComponent<MeshRenderer>().materials[0];
+        wc = GameObject.Find("WinCon");
     }
 
     // Update is called once per frame
@@ -23,9 +27,13 @@ public class Trigger : MonoBehaviour
         {
             if (other.gameObject.GetComponent<MeshRenderer>().materials[0].color == material.color)
             {
-                GameObject wc = GameObject.Find("WinCon");
                 wc.GetComponent<wintrigger>().activated = true;
             }
         }
+    }
+
+    private void OnTriggerExit(Collider other) 
+    {
+        wc.GetComponent<wintrigger>().activated = false;
     }
 }
