@@ -60,12 +60,6 @@ public class CharacterControllerScript : MonoBehaviour
         }
     }
 
-    //Vector3 GetGridPos(float x, float y, float z)
-    //{
-    //    Vector3 grid_pos = new Vector3((Mathf.Round( x / grid_size )) * grid_size, y, (Mathf.Round(z / grid_size)) * grid_size);
-    //    return grid_pos;
-    //}
-
     void Move(Vector3 cur_pos, float x, float y, float z)
     {
         next_pos = new Vector3(cur_pos.x + grid_size * x, cur_pos.y + grid_size * y, cur_pos.z + grid_size * z);

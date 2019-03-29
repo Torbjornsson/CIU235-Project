@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BoxPushedScript : MonoBehaviour
 {
@@ -50,7 +48,7 @@ public class BoxPushedScript : MonoBehaviour
 
             // Checking character diff from original position
             Vector3 c_pos = c.GetComponent<Rigidbody>().position;
-            Vector3 diff = c_pos - GetGridPos(c_pos.x, c_pos.y, c_pos.z, c_script.grid_size);
+            Vector3 diff = c_pos - Utility.GetGridPos(c_pos, c_script.grid_size);
 
             // Starting to move in the right direction
             direction = c_script.direction;
@@ -62,10 +60,5 @@ public class BoxPushedScript : MonoBehaviour
             cur_pos += diff;
             rb.MovePosition(cur_pos);
         }
-    }
-
-    Vector3 GetGridPos(float x, float y, float z, float grid_size)
-    {
-        return new Vector3(Mathf.Round( x / grid_size ) * grid_size, y, Mathf.Round(z / grid_size) * grid_size);
     }
 }
