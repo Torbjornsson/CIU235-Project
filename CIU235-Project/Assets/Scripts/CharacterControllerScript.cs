@@ -7,7 +7,7 @@ public class CharacterControllerScript : Pusher
     public const float DELAY_DEFAULT = 0.1f;
     public const float EPSILON = 0.0001f;
 
-    public const float DEAD_ZONE = 0.5f;
+    public const float DEAD_ZONE = 0.3f;
 
     //private Rigidbody rb;
     private float move_delay;
