@@ -27,13 +27,13 @@ public class Trigger : MonoBehaviour
         {
             if (other.gameObject.GetComponent<MeshRenderer>().materials[0].color == material.color)
             {
-                wc.GetComponent<wintrigger>().activated = true;
+                wc.GetComponent<WinTrigger>().activated = true;
             }
         }
     }
 
     private void OnTriggerExit(Collider other) 
     {
-        wc.GetComponent<wintrigger>().activated = false;
+        wc.GetComponent<WinTrigger>().activated = false;
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class wintrigger : MonoBehaviour
+public class WinTrigger : MonoBehaviour
 {
     public bool activated;
     private GameMasterScript gameMasterScript;
