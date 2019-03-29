@@ -18,6 +18,7 @@ public class WinTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Change to som animation trigger and so on
         if (activated)
         {
             door.SetActive(false);

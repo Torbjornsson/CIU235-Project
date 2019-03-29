@@ -6,13 +6,13 @@ public class Trigger : MonoBehaviour
 {
     private Material material;
 
-    private GameObject wc;
+    private GameObject wt;
 
     // Start is called before the first frame update
     void Start()
     {
         material = GetComponent<MeshRenderer>().materials[0];
-        wc = GameObject.Find("WinCon");
+        wt = GameObject.Find("WinCon");
     }
 
     // Update is called once per frame
@@ -27,13 +27,13 @@ public class Trigger : MonoBehaviour
         {
             if (other.gameObject.GetComponent<MeshRenderer>().materials[0].color == material.color)
             {
-                wc.GetComponent<WinTrigger>().activated = true;
+                wt.GetComponent<WinTrigger>().activated = true;
             }
         }
     }
 
     private void OnTriggerExit(Collider other) 
     {
-        wc.GetComponent<WinTrigger>().activated = false;
+        wt.GetComponent<WinTrigger>().activated = false;
     }
 }
