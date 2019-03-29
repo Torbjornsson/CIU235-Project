@@ -7,12 +7,7 @@ public class CharacterControllerScript : Pusher
     public const float DELAY_DEFAULT = 0.1f;
     public const float EPSILON = 0.0001f;
 
-    //private Rigidbody rb;
-    private float move_delay;
-
-    //private bool moving;
     private Vector3 next_pos;
-
     public Vector3 direction;
     public float speed;
 
@@ -20,7 +15,6 @@ public class CharacterControllerScript : Pusher
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        move_delay = 0;
         moving = false;
         direction = new Vector3();
         next_pos = rb.position;
@@ -81,29 +75,4 @@ public class CharacterControllerScript : Pusher
         direction.z = dir_z;
         moving = true;
     }
-
-    //public void Stop(Vector3 position)
-    //{
-    //    moving = false;
-    //    rb.MovePosition(position);
-    //}
-
-    //public bool CollisionCheckInFront(Vector3 direction)
-    //{
-    //    bool collision = false;
-
-    //    RaycastHit hit = new RaycastHit();
-    //    rb.SweepTest(direction, out hit);
-    //    if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
-    //    {
-    //        collision |= (hit.collider.gameObject.tag == "Wall");
-
-    //        if (hit.collider.gameObject.tag == "Box")
-    //        {
-    //            collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
-    //        }
-    //    }
-
-    //    return collision;
-    //}
 }

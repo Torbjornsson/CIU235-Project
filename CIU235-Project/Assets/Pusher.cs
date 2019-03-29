@@ -7,14 +7,12 @@ public abstract class Pusher : MonoBehaviour
     protected Rigidbody rb;
     protected bool moving;
 
-    //abstract public void Stop(Vector3 position);
     public void Stop(Vector3 position)
     {
         moving = false;
         rb.MovePosition(position);
     }
 
-    //abstract public bool CollisionCheckInFront(Vector3 direction);
     public bool CollisionCheckInFront(Vector3 direction)
     {
         bool collision = false;

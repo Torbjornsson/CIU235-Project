@@ -4,9 +4,6 @@ public class BoxPushedScript : Pusher
 {
     public float speed;
 
-    //private Rigidbody rb;
-
-    //private bool moving;
     private Vector3 direction;
     private Vector3 next_pos;
 
@@ -82,29 +79,4 @@ public class BoxPushedScript : Pusher
             Debug.Log("BOX - Collision with wall, new pos: " + grid_pos);
         }
     }
-
-    //public override void Stop(Vector3 position)
-    //{
-    //    moving = false;
-    //    rb.MovePosition(position);
-    //}
-
-    //public override bool CollisionCheckInFront(Vector3 direction)
-    //{
-    //    bool collision = false;
-
-    //    RaycastHit hit = new RaycastHit();
-    //    rb.SweepTest(direction, out hit);
-    //    if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
-    //    {
-    //        collision |= (hit.collider.gameObject.tag == "Wall");
-
-    //        if (hit.collider.gameObject.tag == "Box")
-    //        {
-    //            collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
-    //        }
-    //    }
-
-    //    return collision;
-    //}
 }
