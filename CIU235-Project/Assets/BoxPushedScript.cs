@@ -95,12 +95,21 @@ public class BoxPushedScript : MonoBehaviour, IPusher
             next_pos = cur_pos + direction * Utility.GRID_SIZE;
             moving = true;
 
-            // Updating position to be off exactly as much as character, from grid
-            cur_pos += diff;
-            rb.MovePosition(cur_pos);
-
             pusher = c;
             pusher_script = c_script;
+
+            RaycastHit hit = new RaycastHit();
+            rb.SweepTest(direction, out hit);
+            if (hit.collider != null && hit.collider.gameObject.name == "Wall" && hit.distance < Utility.GRID_SIZE)
+            {
+                Stop(cur_pos);
+            }
+            else
+            {
+                // Updating position to be off exactly as much as character, from grid
+                cur_pos += diff;
+                rb.MovePosition(cur_pos);
+            }
         }
 
         if (moving && other.gameObject.name == "Wall")

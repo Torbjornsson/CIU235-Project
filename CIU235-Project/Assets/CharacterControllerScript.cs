@@ -44,7 +44,12 @@ public class CharacterControllerScript : MonoBehaviour, IPusher
             if (Input.GetAxis("Vertical") < 0) Move(cur_pos, 0, 0, -1);
             //move_delay = DELAY_DEFAULT;
 
-            
+            RaycastHit hit = new RaycastHit();
+            rb.SweepTest(direction, out hit);
+            if (hit.collider != null && hit.collider.gameObject.name == "Wall" && hit.distance < Utility.GRID_SIZE)
+            {
+                Stop(cur_pos);
+            }
         }
 
         if (moving)
