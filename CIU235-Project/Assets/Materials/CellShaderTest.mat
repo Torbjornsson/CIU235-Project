@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CellShaderTest
-  m_Shader: {fileID: 4800000, guid: c48ea83ff351e44e79aeb61c45f1c0d5, type: 3}
-  m_ShaderKeywords: _COLOR_ON
+  m_Shader: {fileID: 4800000, guid: ee74e04ca7815455ca9bb34b16279b0a, type: 3}
+  m_ShaderKeywords: _COLOR_ON _USECOLOR_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
@@ -68,7 +68,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Ambient: 0.344
+    - _Ambient: 0.445
     - _Brightness: 1
     - _BumpScale: 1
     - _ColorCount: 32
@@ -89,8 +89,9 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _TintColor: 1
-    - _Treshold: 6.4
+    - _Treshold: 6.6
     - _UVSec: 0
+    - _UseColor: 1
     - _VertexColor: 0
     - _WindQuality: 0
     - _ZWrite: 1
