@@ -54,7 +54,7 @@
                 float3 lightDir : TEXCOORD0;
                 float3 normal : TEXCOORD1;
                 float2 uv : TEXCOORD2;
-                float3 worldNormal : NORMAL;
+                //float3 worldNormal : NORMAL;
                 LIGHTING_COORDS(3, 4)
             };
 
@@ -68,7 +68,7 @@
                 o.lightDir = normalize(ObjSpaceLightDir(v.vertex));
                 o.normal = normalize(v.normal).xyz;
                 
-                o.worldNormal = mul(v.normal.xyz, (float3x3) unity_WorldToObject);
+                //o.worldNormal = mul(v.normal.xyz, (float3x3) unity_WorldToObject);
 
                 TRANSFER_VERTEX_TO_FRAGMENT(o);
 
@@ -85,11 +85,11 @@
                 //col.rgb *= saturate(LightToonShading(i.worldNormal, _WorldSpaceLightPos0.xyz) + _Ambient) * _LightColor0.rgb;
                 
                 // Shadow stuff   
-                float3 L = normalize(i.lightDir);
-                float3 N = normalize(i.normal);  
+                //float3 L = normalize(i.lightDir);
+                //float3 N = normalize(i.normal);  
 
                 float attenuation = LIGHT_ATTENUATION(i);
-                float4 ambient = UNITY_LIGHTMODEL_AMBIENT * 2;
+                //float4 ambient = UNITY_LIGHTMODEL_AMBIENT * 2;
 
                 //float NdotL = saturate(dot(N, L));
                 float NdotL = saturate(LightToonShading(i.lightDir, i.normal));
