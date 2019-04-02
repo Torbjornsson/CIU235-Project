@@ -53,12 +53,12 @@ public class CharacterControllerScript : Pusher
                 || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
             {
                 Stop(next_pos);
-                Debug.Log("CHARACTER - Stopped at next_pos: " + next_pos);
+                //Debug.Log("CHARACTER - Stopped at next_pos: " + next_pos);
             }
             else
             {
                 rb.MovePosition(new_pos);
-                Debug.Log("CHARACTER - Moved to new_pos: " + new_pos);
+                //Debug.Log("CHARACTER - Moved to new_pos: " + new_pos);
             }
         }
     }

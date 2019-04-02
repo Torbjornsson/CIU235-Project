@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Box
   - Wall
+  - Trigger
   layers:
   - Default
   - TransparentFX

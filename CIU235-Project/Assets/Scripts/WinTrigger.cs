@@ -7,12 +7,17 @@ public class WinTrigger : MonoBehaviour
     public bool activated;
     private GameMasterScript gameMasterScript;
 
-    private GameObject door;
+    private ArrayList triggers;
+
+    public GameObject door;
     // Start is called before the first frame update
     void Start()
     {
         gameMasterScript = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
-        door = GameObject.Find("Door");
+        //door = GameObject.Find("Door");
+        
+        triggers = new ArrayList(GameObject.FindGameObjectsWithTag("Trigger"));
+        
     }
 
     // Update is called once per frame
@@ -30,8 +35,19 @@ public class WinTrigger : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other) {
+        
         if (other.gameObject.name == "Character" && activated){
             gameMasterScript.LevelWin();
+        }
+    }
+
+    public void TriggerActivated()
+    {
+        activated = true;
+        foreach (GameObject item in triggers)
+        {
+            if (!item.gameObject.GetComponent<Trigger>().activated)
+                activated = false;
         }
     }
 }
