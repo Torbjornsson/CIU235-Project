@@ -443,6 +443,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 0}
+  speed: 0
 --- !u!1001 &888524736
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -794,7 +795,7 @@ PrefabInstance:
     - target: {fileID: 358951682064700363, guid: 31b3edd350a534e7e97cb90baa16e1e6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 358951682064700363, guid: 31b3edd350a534e7e97cb90baa16e1e6,
         type: 3}
