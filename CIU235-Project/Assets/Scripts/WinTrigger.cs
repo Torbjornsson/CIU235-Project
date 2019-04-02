@@ -17,6 +17,7 @@ public class WinTrigger : MonoBehaviour
         //door = GameObject.Find("Door");
         
         triggers = new ArrayList(GameObject.FindGameObjectsWithTag("Trigger"));
+        door.SetActive(false);
         
     }
 
@@ -37,7 +38,7 @@ public class WinTrigger : MonoBehaviour
     void OnTriggerEnter(Collider other) {
         
         if (other.gameObject.name == "Character" && activated){
-            gameMasterScript.LevelWin();
+            gameMasterScript.SendMessage("LevelWin");
         }
     }
 

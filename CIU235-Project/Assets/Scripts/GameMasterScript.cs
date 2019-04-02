@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameMasterScript : MonoBehaviour
 {
@@ -14,12 +15,12 @@ public class GameMasterScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     public void LevelWin()
     {
         levelWin = true;
         Debug.Log("Start new level");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
     }
 }
