@@ -16,6 +16,7 @@ public class CharacterControllerScript : Pusher
     private Vector3 next_pos;
 
     public Vector3 direction;
+    public float rotation;
     public float speed;
 
     // Start is called before the first frame update
@@ -25,6 +26,7 @@ public class CharacterControllerScript : Pusher
         moving = false;
         direction = new Vector3();
         next_pos = rb.position;
+        rotation = 0;
     }
 
     // Update is called once per frame
@@ -61,6 +63,31 @@ public class CharacterControllerScript : Pusher
                 Debug.Log("CHARACTER - Moved to new_pos: " + new_pos);
             }
         }
+
+        UpdateFacing();
+    }
+
+    private void UpdateFacing()
+    {
+        if (direction.x > 0)
+        {
+            rotation = 0;
+        }
+        else if (direction.z < 0)
+        {
+            rotation = 90;
+        }
+        else if (direction.x < 0)
+        {
+            rotation = 180;
+        }
+        else if (direction.z > 0)
+        {
+            rotation = 270;
+        }
+
+        Quaternion target = Quaternion.Euler(0, rotation, 0);
+        gameObject.GetComponent<Transform>().rotation = target;
     }
 
     public void Move(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
