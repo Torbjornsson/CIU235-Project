@@ -8,11 +8,15 @@ public class WinTrigger : MonoBehaviour
     private GameMasterScript gameMasterScript;
 
     private GameObject door;
+    private GameObject winLight;
+    private GameObject winPad;
     // Start is called before the first frame update
     void Start()
     {
         gameMasterScript = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         door = GameObject.Find("Door");
+        winLight = GameObject.Find("WinLight");
+        winPad = GameObject.Find("WinPad");
     }
 
     // Update is called once per frame
@@ -22,10 +26,14 @@ public class WinTrigger : MonoBehaviour
         if (activated)
         {
             door.SetActive(false);
+            winLight.SetActive(true);
+            winPad.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
         }
         else
         {
             door.SetActive(true);
+            winLight.SetActive(false);
+            winPad.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
         }
     }
 

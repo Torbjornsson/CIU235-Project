@@ -713,7 +713,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2067220118}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -979,6 +979,51 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 294846040175629770, guid: c9e399c13b98261c4a98956b2ef3cc80,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 5dfb3df70c9594cec83efc406f16db49, type: 3}
+    - target: {fileID: 8693979729607769467, guid: c9e399c13b98261c4a98956b2ef3cc80,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f4f1f12cb45a4c0a98de2a276066b81d, type: 2}
+    - target: {fileID: 1032891822259422815, guid: c9e399c13b98261c4a98956b2ef3cc80,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1032891822259422815, guid: c9e399c13b98261c4a98956b2ef3cc80,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1032891822259422815, guid: c9e399c13b98261c4a98956b2ef3cc80,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1032891822259422815, guid: c9e399c13b98261c4a98956b2ef3cc80,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1032891822259422815, guid: c9e399c13b98261c4a98956b2ef3cc80,
+        type: 3}
+      propertyPath: m_Lightmapping
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1032891822259422815, guid: c9e399c13b98261c4a98956b2ef3cc80,
+        type: 3}
+      propertyPath: m_DrawHalo
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1783731933532627383, guid: c9e399c13b98261c4a98956b2ef3cc80,
+        type: 3}
+      propertyPath: m_Name
+      value: Cylinder (2)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9e399c13b98261c4a98956b2ef3cc80, type: 3}
