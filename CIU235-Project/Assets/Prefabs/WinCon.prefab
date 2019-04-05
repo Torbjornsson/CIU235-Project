@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 2833334815540489284}
   - component: {fileID: 8295877806836463312}
   m_Layer: 0
-  m_Name: Cylinder (2)
+  m_Name: WinLight2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,7 +201,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1783731933532627383}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -370,3 +370,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activated: 0
+  winLight: {fileID: 1783731933532627383}
+  winPad: {fileID: 6353273452330967534}
