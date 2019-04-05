@@ -24,9 +24,18 @@ public abstract class Pusher : MonoBehaviour
             if (hit.collider.gameObject.tag == "Box")
             {
                 if (gameObject.name == "Character")
-                    collision |= hit.collider.gameObject.GetComponent<BoxPushedScript>().CollisionCheckInFront(direction);
+                {
+                    BoxPushedScript box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
+                    collision |= box_script.CollisionCheckInFront(direction);
+                    if (!collision)
+                    {
+                        box_script.Pushed(gameObject);
+                    }
+                }
                 else
+                {
                     collision = true;
+                }
             }
         }
 
