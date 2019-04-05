@@ -38,7 +38,7 @@ public class Trigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other) 
     {
-        wt.SendMessage("TriggerActivated");
         activated = false;
+        wt.SendMessage("TriggerActivated");
     }
 }
