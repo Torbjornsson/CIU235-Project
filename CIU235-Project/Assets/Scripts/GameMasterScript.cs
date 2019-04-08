@@ -7,6 +7,24 @@ public class GameMasterScript : MonoBehaviour
 {
     bool isAxisUsed;
     bool levelWin;
+
+    private static GameMasterScript instance = null;
+    public static GameMasterScript Instance {
+        get { return instance; }
+    }
+    private void Awake() {
+        if (instance != null && instance != this) 
+        {
+         Destroy(this.gameObject);
+         return;
+        } 
+        else 
+        {
+         instance = this;
+        }
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
