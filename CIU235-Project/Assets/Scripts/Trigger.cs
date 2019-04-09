@@ -7,14 +7,11 @@ public class Trigger : MonoBehaviour
     public bool activated;
     public Color color;
 
-    //private Material material;
-
     private GameObject wt;
 
     // Start is called before the first frame update
     void Start()
     {
-        //material = GetComponent<MeshRenderer>().materials[0];
         wt = GameObject.Find("WinCon");
         activated = false;
     }
@@ -29,17 +26,32 @@ public class Trigger : MonoBehaviour
     {
         if (other.gameObject.tag == "Box")
         {
-            if (other.gameObject.GetComponent<MeshRenderer>().materials[0].color == color)
+            //Vector3 other_p = other.gameObject.GetComponent<Transform>().position;
+            //Vector3 this_p = gameObject.GetComponent<Transform>().position;
+            //if (other_p.Equals(Utility.GetGridPos(this_p)) && 
+            if (!other.gameObject.GetComponent<BoxPushedScript>().IsMoving() && 
+                other.gameObject.GetComponent<MeshRenderer>().materials[0].color == color)
             {
-                activated = true;
-                wt.SendMessage("TriggerActivated");
+                if (!activated)
+                {
+                    activated = true;
+                    wt.SendMessage("TriggerActivated");
+                }
+            }
+            else
+            {
+                if (activated)
+                {
+                    activated = false;
+                    wt.SendMessage("TriggerActivated");
+                }
             }
         }
     }
 
-    private void OnTriggerExit(Collider other) 
-    {
-        activated = false;
-        wt.SendMessage("TriggerActivated");
-    }
+    //private void OnTriggerExit(Collider other) 
+    //{
+    //    activated = false;
+    //    wt.SendMessage("TriggerActivated");
+    //}
 }

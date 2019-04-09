@@ -41,4 +41,9 @@ public abstract class Pusher : MonoBehaviour
 
         return collision;
     }
+
+    public bool IsMoving()
+    {
+        return moving;
+    }
 }
