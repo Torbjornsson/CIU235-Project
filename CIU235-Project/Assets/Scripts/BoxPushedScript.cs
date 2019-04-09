@@ -83,7 +83,7 @@ public class BoxPushedScript : Pusher
 
         // Checking character diff from original position
         Vector3 c_pos = c.GetComponent<Rigidbody>().position;
-        Vector3 c_grid_pos = Utility.GetGridPos(c_pos, Utility.GRID_SIZE);
+        Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
         c_grid_pos.y = c_pos.y;
         Vector3 diff = c_pos - c_grid_pos;
 
