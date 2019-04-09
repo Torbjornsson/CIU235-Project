@@ -5,12 +5,14 @@ public abstract class Pusher : MonoBehaviour
     protected Rigidbody rb;
     protected bool moving;
 
+    // Stops moving at a certain position
     public void Stop(Vector3 position)
     {
         moving = false;
         rb.MovePosition(position);
     }
 
+    // Checks for collision in front of pusher, and if there's an obstacle, behaves accordingly
     public bool CollisionCheckInFront(Vector3 direction)
     {
         bool collision = false;
@@ -42,6 +44,7 @@ public abstract class Pusher : MonoBehaviour
         return collision;
     }
 
+    // Simple getter
     public bool IsMoving()
     {
         return moving;

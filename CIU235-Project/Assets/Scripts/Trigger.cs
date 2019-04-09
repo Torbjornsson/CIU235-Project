@@ -22,6 +22,7 @@ public class Trigger : MonoBehaviour
         
     }
 
+    // Called as long as there is collission going on (with focus on boxes)
     void OnTriggerStay(Collider other) 
     {
         if (other.gameObject.tag == "Box")
@@ -38,6 +39,7 @@ public class Trigger : MonoBehaviour
         }
     }
 
+    // Helper method that makes sure everything is activated or deactivated only when it needs to
     private void SetActivated(bool activated)
     {
         if (activated != this.activated)

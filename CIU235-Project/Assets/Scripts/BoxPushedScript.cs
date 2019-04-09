@@ -16,7 +16,8 @@ public class BoxPushedScript : Pusher
         moving = false;
     }
 
-    // Update is called once per frame
+    // LastUpdate is called once per frame, AFTER every normal Update()
+    // -- This needs to be late because otherwise it will conflict with pushing mechanics from Character
     void LateUpdate()
     {
         Vector3 cur_pos = rb.position;
@@ -37,43 +38,7 @@ public class BoxPushedScript : Pusher
         }
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (!moving && other.gameObject.name == "Character")
-    //    {
-    //        //// Getting things to use
-    //        //GameObject c = other.gameObject;
-    //        //CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
-    //        //Vector3 cur_pos = rb.position;
-
-    //        //// Checking character diff from original position
-    //        //Vector3 c_pos = c.GetComponent<Rigidbody>().position;
-    //        //Vector3 c_grid_pos = Utility.GetGridPos(c_pos, Utility.GRID_SIZE);
-    //        //c_grid_pos.y = c_pos.y;
-    //        //Vector3 diff = c_pos - c_grid_pos;
-
-    //        //// Starting to move in the right direction
-    //        //direction = c_script.direction;
-    //        //speed = c_script.speed;
-    //        //next_pos = cur_pos + direction * Utility.GRID_SIZE;
-    //        //moving = true;
-
-    //        //if (CollisionCheckInFront(direction))
-    //        //{
-    //        //    Stop(cur_pos);
-    //        //}
-    //        //else
-    //        //{
-    //        //    // Updating position to be off exactly as much as character, from grid
-    //        //    cur_pos += diff;
-    //        //    rb.MovePosition(cur_pos);
-    //        //}
-
-    //        Pushed(other.gameObject);
-    //    }
-    //}
-
-
+    // Called every time the box is supposed to be pushed in some direction, by a pusher (Character)
     public void Pushed(GameObject pusher)
     {
         // Getting things to use
@@ -93,15 +58,8 @@ public class BoxPushedScript : Pusher
         next_pos = cur_pos + direction * Utility.GRID_SIZE;
         moving = true;
 
-        //if (CollisionCheckInFront(direction))
-        //{
-        //    Stop(cur_pos);
-        //}
-        //else
-        //{
-            // Updating position to be off exactly as much as character, from grid
-            cur_pos += diff;
-            rb.MovePosition(cur_pos);
-        //}
+        // Updating position to be off exactly as much as character, from grid
+        cur_pos += diff;
+        rb.MovePosition(cur_pos);
     }
 }
