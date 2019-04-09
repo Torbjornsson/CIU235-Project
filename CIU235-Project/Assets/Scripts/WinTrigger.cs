@@ -5,6 +5,7 @@ using UnityEngine;
 public class WinTrigger : MonoBehaviour
 {
     public bool activated;
+
     private GameMasterScript gameMasterScript;
 
     private ArrayList triggers;
