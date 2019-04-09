@@ -26,32 +26,24 @@ public class Trigger : MonoBehaviour
     {
         if (other.gameObject.tag == "Box")
         {
-            //Vector3 other_p = other.gameObject.GetComponent<Transform>().position;
-            //Vector3 this_p = gameObject.GetComponent<Transform>().position;
-            //if (other_p.Equals(Utility.GetGridPos(this_p)) && 
             if (!other.gameObject.GetComponent<BoxPushedScript>().IsMoving() && 
                 other.gameObject.GetComponent<MeshRenderer>().materials[0].color == color)
             {
-                if (!activated)
-                {
-                    activated = true;
-                    wt.SendMessage("TriggerActivated");
-                }
+                SetActivated(true);
             }
             else
             {
-                if (activated)
-                {
-                    activated = false;
-                    wt.SendMessage("TriggerActivated");
-                }
+                SetActivated(false);
             }
         }
     }
 
-    //private void OnTriggerExit(Collider other) 
-    //{
-    //    activated = false;
-    //    wt.SendMessage("TriggerActivated");
-    //}
+    private void SetActivated(bool activated)
+    {
+        if (activated != this.activated)
+        {
+            this.activated = activated;
+            wt.SendMessage("TriggerActivated");
+        }
+    }
 }
