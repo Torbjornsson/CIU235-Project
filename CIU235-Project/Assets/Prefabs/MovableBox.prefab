@@ -123,6 +123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
+  shine: {fileID: 2868393787765284965}
 --- !u!1 &2868393787765284965
 GameObject:
   m_ObjectHideFlags: 0

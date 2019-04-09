@@ -5,6 +5,7 @@ using UnityEngine;
 public class WinTrigger : MonoBehaviour
 {
     public bool activated;
+
     private GameMasterScript gameMasterScript;
 
     private ArrayList triggers;
@@ -36,13 +37,18 @@ public class WinTrigger : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other) {
-        
-        if (other.gameObject.name == "Character" && activated){
+    // Checks for wins (that is, WinTrigger is active and player is present)
+    void OnTriggerStay(Collider other) {
+        if (other.gameObject.name == "Character" && activated &&
+            !other.gameObject.GetComponent<CharacterControllerScript>().IsMoving())
+        {
             gameMasterScript.SendMessage("LevelWin");
+            //activated = false;
         }
     }
 
+    // Called whenever a Trigger object is activated
+    // Checks if ALL Triggers are active, and in that case activates itself
     public void TriggerActivated()
     {
         activated = true;

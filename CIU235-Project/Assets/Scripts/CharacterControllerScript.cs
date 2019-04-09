@@ -6,7 +6,6 @@ public class CharacterControllerScript : Pusher
 {
     public const float DELAY_DEFAULT = 0.1f;
     public const float EPSILON = 0.0001f;
-
     public const float DEAD_ZONE = 0.3f;
 
     //private Rigidbody rb;
@@ -42,6 +41,7 @@ public class CharacterControllerScript : Pusher
             if (Input.GetAxis("Vertical") > DEAD_ZONE) Move(cur_pos, 0, 0, 1);
             if (Input.GetAxis("Vertical") < -DEAD_ZONE) Move(cur_pos, 0, 0, -1);
 
+            // After getting a direction and starts to move, checks for collision in that direction
             if (moving && CollisionCheckInFront(direction))
             {
                 Stop(cur_pos);
@@ -67,6 +67,7 @@ public class CharacterControllerScript : Pusher
         UpdateFacing();
     }
 
+    // Updates facing of player
     private void UpdateFacing()
     {
         if (direction.x > 0)
@@ -90,6 +91,7 @@ public class CharacterControllerScript : Pusher
         gameObject.GetComponent<Transform>().rotation = target;
     }
 
+    // Starts to move in a certain direction
     public void Move(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
     {
         next_pos = new Vector3(cur_pos.x + Utility.GRID_SIZE * dir_x, cur_pos.y + Utility.GRID_SIZE * dir_y, cur_pos.z + Utility.GRID_SIZE * dir_z);

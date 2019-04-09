@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class Trigger : MonoBehaviour
 {
-    private Material material;
-
     public bool activated;
+    public Color color;
 
     private GameObject wt;
 
     // Start is called before the first frame update
     void Start()
     {
-        material = GetComponent<MeshRenderer>().materials[0];
         wt = GameObject.Find("WinCon");
         activated = false;
     }
@@ -24,21 +22,39 @@ public class Trigger : MonoBehaviour
         
     }
 
+    // Called as long as there is collission going on (with focus on boxes)
     void OnTriggerStay(Collider other) 
     {
         if (other.gameObject.tag == "Box")
         {
-            if (other.gameObject.GetComponent<MeshRenderer>().materials[0].color == material.color)
+            BoxPushedScript other_script = other.gameObject.GetComponent<BoxPushedScript>();
+            if (!other_script.IsMoving())
             {
-                activated = true;
-                wt.SendMessage("TriggerActivated");
+                if (other.gameObject.GetComponent<MeshRenderer>().materials[0].color == color)
+                {
+                    SetActivated(true);
+                    other_script.SetState(BoxPushedScript.State.CORRECT);
+                }
+                else
+                {
+                    other_script.SetState(BoxPushedScript.State.WRONG);
+                }
+            }
+            else
+            {
+                SetActivated(false);
+                other_script.SetState(BoxPushedScript.State.IDLE);
             }
         }
     }
 
-    private void OnTriggerExit(Collider other) 
+    // Helper method that makes sure everything is activated or deactivated only when it needs to
+    private void SetActivated(bool activated)
     {
-        activated = false;
-        wt.SendMessage("TriggerActivated");
+        if (activated != this.activated)
+        {
+            this.activated = activated;
+            wt.SendMessage("TriggerActivated");
+        }
     }
 }
