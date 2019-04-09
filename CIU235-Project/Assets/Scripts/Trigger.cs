@@ -27,14 +27,23 @@ public class Trigger : MonoBehaviour
     {
         if (other.gameObject.tag == "Box")
         {
-            if (!other.gameObject.GetComponent<BoxPushedScript>().IsMoving() && 
-                other.gameObject.GetComponent<MeshRenderer>().materials[0].color == color)
+            BoxPushedScript other_script = other.gameObject.GetComponent<BoxPushedScript>();
+            if (!other_script.IsMoving())
             {
-                SetActivated(true);
+                if (other.gameObject.GetComponent<MeshRenderer>().materials[0].color == color)
+                {
+                    SetActivated(true);
+                    other_script.SetState(BoxPushedScript.State.CORRECT);
+                }
+                else
+                {
+                    other_script.SetState(BoxPushedScript.State.WRONG);
+                }
             }
             else
             {
                 SetActivated(false);
+                other_script.SetState(BoxPushedScript.State.IDLE);
             }
         }
     }
