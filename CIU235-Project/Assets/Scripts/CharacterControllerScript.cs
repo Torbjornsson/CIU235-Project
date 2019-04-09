@@ -100,4 +100,8 @@ public class CharacterControllerScript : Pusher
         direction.z = dir_z;
         moving = true;
     }
+
+    public bool IsMoving(){
+        return moving;
+    }
 }
