@@ -62,6 +62,12 @@ public class CharacterControllerScript : Pusher
                 rb.MovePosition(new_pos);
                 //Debug.Log("CHARACTER - Moved to new_pos: " + new_pos);
             }
+
+            float distance = Vector3.Distance(rb.position, next_pos) / 1.0f;
+            float height = 0.5f + Mathf.Abs(0.5f - distance);
+            Vector3 scale = new Vector3(1, height, 1);
+            gameObject.GetComponent<Transform>().localScale = scale;
+            //Debug.Log("Distance to next pos: " + distance+", height: "+height);
         }
 
         UpdateFacing();
