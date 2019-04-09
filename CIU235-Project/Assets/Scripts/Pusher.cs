@@ -39,6 +39,10 @@ public abstract class Pusher : MonoBehaviour
                     collision = true;
                 }
             }
+
+            collision |= (gameObject.tag == "Box" && hit.collider.gameObject.tag == "Goal");
+
+            Debug.Log("Collision registered by [" + gameObject.name + "]: " + hit.collider.gameObject.name);
         }
 
         return collision;
