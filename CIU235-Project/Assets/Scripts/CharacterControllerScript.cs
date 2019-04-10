@@ -7,6 +7,7 @@ public class CharacterControllerScript : Pusher
     public const float DELAY_DEFAULT = 0.1f;
     public const float EPSILON = 0.0001f;
     public const float DEAD_ZONE = 0.3f;
+    public const float SQUEEZE_SIZE = 0.25f;
 
     //private Rigidbody rb;
     private float move_delay;
@@ -63,8 +64,8 @@ public class CharacterControllerScript : Pusher
                 //Debug.Log("CHARACTER - Moved to new_pos: " + new_pos);
             }
 
-            float distance = Vector3.Distance(rb.position, next_pos) / 1.0f;
-            float height = 0.5f + Mathf.Abs(0.5f - distance);
+            float distance = Vector3.Distance(rb.position, next_pos);
+            float height = (1-SQUEEZE_SIZE) + Mathf.Abs(0.5f - distance) * SQUEEZE_SIZE * 2;
             Vector3 scale = new Vector3(1, height, 1);
             gameObject.GetComponent<Transform>().localScale = scale;
             //Debug.Log("Distance to next pos: " + distance+", height: "+height);
