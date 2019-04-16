@@ -18,10 +18,12 @@ public class CharacterControllerScript : Pusher
     public Vector3 direction;
     public float rotation;
     public float speed;
+    public GameMasterScript gameMasterScript;
 
     // Start is called before the first frame update
     void Start()
     {
+        gameMasterScript = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         rb = GetComponent<Rigidbody>();
         moving = false;
         direction = new Vector3();
@@ -34,13 +36,36 @@ public class CharacterControllerScript : Pusher
     {
 
         Vector3 cur_pos = rb.position;
+        
 
         if (!moving)
         {
-            if (Input.GetAxis("Horizontal") > DEAD_ZONE) Move(cur_pos, 1, 0, 0);
-            if (Input.GetAxis("Horizontal") < -DEAD_ZONE) Move(cur_pos, -1, 0, 0);
-            if (Input.GetAxis("Vertical") > DEAD_ZONE) Move(cur_pos, 0, 0, 1);
-            if (Input.GetAxis("Vertical") < -DEAD_ZONE) Move(cur_pos, 0, 0, -1);
+            if (Input.GetButtonDown("Jump")) 
+            {
+                Vector3 prev_pos = gameMasterScript.Undo();
+                Debug.Log("prev pos" + prev_pos);
+                rb.MovePosition(prev_pos);
+            }
+            if (Input.GetAxis("Horizontal") > DEAD_ZONE)
+            {
+                gameMasterScript.RecordUndo(gameObject, cur_pos);
+                Move(cur_pos, 1, 0, 0);
+            }
+            if (Input.GetAxis("Horizontal") < -DEAD_ZONE)
+            {
+                gameMasterScript.RecordUndo(gameObject, cur_pos);
+                Move(cur_pos, -1, 0, 0);
+            }
+            if (Input.GetAxis("Vertical") > DEAD_ZONE)
+            {
+                gameMasterScript.RecordUndo(gameObject, cur_pos);
+                Move(cur_pos, 0, 0, 1);
+            }
+            if (Input.GetAxis("Vertical") < -DEAD_ZONE)
+            {
+                gameMasterScript.RecordUndo(gameObject, cur_pos);
+                Move(cur_pos, 0, 0, -1);
+            }
 
             // After getting a direction and starts to move, checks for collision in that direction
             if (moving && CollisionCheckInFront(direction))

@@ -7,6 +7,8 @@ public class GameMasterScript : MonoBehaviour
 {
     bool isAxisUsed;
     bool levelWin;
+    public Stack undoStack = new Stack();
+    public Stack undoStackC = new Stack();
 
     private static GameMasterScript instance = null;
     public static GameMasterScript Instance {
@@ -69,6 +71,7 @@ public class GameMasterScript : MonoBehaviour
         }
         else
         {
+            undoStack.Clear();
             SceneManager.LoadScene(bIndex);
         }
         
@@ -77,11 +80,33 @@ public class GameMasterScript : MonoBehaviour
     public void ResetLevel()
     {
         Debug.Log("Reset level");
+        undoStack.Clear();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void Quit(){
         Debug.Log("Quit application");
         Application.Quit();
+    }
+
+    public Vector3 Undo(){
+        GameObject go = (GameObject)undoStackC.Pop();
+        Vector3 pos = (Vector3)undoStack.Pop();
+        if (go.tag == "Box")
+        {
+            Debug.Log(go.GetComponent<Rigidbody>().position);
+            go.GetComponent<Rigidbody>().MovePosition(pos);
+            go = (GameObject)undoStackC.Pop();
+            pos = (Vector3)undoStack.Pop();
+        }
+        Debug.Log("Undo " + go + " to pos " + pos);
+
+        return pos;
+    }
+
+    public void RecordUndo(GameObject go,Vector3 pos){
+        Debug.Log("Recorded " + go.name + " at pos " + pos);
+        undoStack.Push(pos);
+        undoStackC.Push(go);
     }
 }
