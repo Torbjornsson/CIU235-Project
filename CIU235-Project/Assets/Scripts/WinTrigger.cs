@@ -6,17 +6,17 @@ public class WinTrigger : MonoBehaviour
 {
     public bool activated;
 
-    private GameMasterScript gameMasterScript;
+    private GameMasterScript game_master_script;
 
     private ArrayList triggers;
 
-    public GameObject winLight;
-    public GameObject winPad;
+    public GameObject win_light;
+    public GameObject win_pad;
 
     // Start is called before the first frame update
     void Start()
     {
-        gameMasterScript = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
+        game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         triggers = new ArrayList(GameObject.FindGameObjectsWithTag("Trigger"));
         TriggerActivated();
     }
@@ -27,13 +27,13 @@ public class WinTrigger : MonoBehaviour
         //Change to som animation trigger and so on
         if (activated)
         {
-            winLight.SetActive(true);
-            winPad.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
+            win_light.SetActive(true);
+            win_pad.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
         }
         else
         {
-            winLight.SetActive(false);
-            winPad.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
+            win_light.SetActive(false);
+            win_pad.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
         }
     }
 
@@ -42,7 +42,7 @@ public class WinTrigger : MonoBehaviour
         if (other.gameObject.name == "Character" && activated &&
             !other.gameObject.GetComponent<CharacterControllerScript>().IsMoving())
         {
-            gameMasterScript.SendMessage("LevelWin");
+            game_master_script.SendMessage("LevelWin");
             //activated = false;
         }
     }

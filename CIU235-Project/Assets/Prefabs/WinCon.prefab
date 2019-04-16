@@ -370,5 +370,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activated: 0
-  winLight: {fileID: 1783731933532627383}
-  winPad: {fileID: 6353273452330967534}
+  win_light: {fileID: 1783731933532627383}
+  win_pad: {fileID: 6353273452330967534}

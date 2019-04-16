@@ -19,10 +19,13 @@ public class CharacterControllerScript : Pusher
     public float rotation;
     public float speed;
 
+    private GameMasterScript game_master_script;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         moving = false;
         direction = new Vector3();
         next_pos = rb.position;
@@ -37,10 +40,26 @@ public class CharacterControllerScript : Pusher
 
         if (!moving)
         {
-            if (Input.GetAxis("Horizontal") > DEAD_ZONE) Move(cur_pos, 1, 0, 0);
-            if (Input.GetAxis("Horizontal") < -DEAD_ZONE) Move(cur_pos, -1, 0, 0);
-            if (Input.GetAxis("Vertical") > DEAD_ZONE) Move(cur_pos, 0, 0, 1);
-            if (Input.GetAxis("Vertical") < -DEAD_ZONE) Move(cur_pos, 0, 0, -1);
+            if (Input.GetAxis("Horizontal") > DEAD_ZONE
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("HorizontalDpad") > DEAD_ZONE))
+            {
+                Move(cur_pos, 1, 0, 0);
+            }
+            if (Input.GetAxis("Horizontal") < -DEAD_ZONE
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("HorizontalDpad") < -DEAD_ZONE))
+            {
+                Move(cur_pos, -1, 0, 0);
+            }
+            if (Input.GetAxis("Vertical") > DEAD_ZONE
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("VerticalDpad") > DEAD_ZONE))
+            {
+                Move(cur_pos, 0, 0, 1);
+            }
+            if (Input.GetAxis("Vertical") < -DEAD_ZONE
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("VerticalDpad") < -DEAD_ZONE))
+            {
+                Move(cur_pos, 0, 0, -1);
+            }
 
             // After getting a direction and starts to move, checks for collision in that direction
             if (moving && CollisionCheckInFront(direction))
