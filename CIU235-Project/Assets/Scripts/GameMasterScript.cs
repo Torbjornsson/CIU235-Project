@@ -13,6 +13,8 @@ public class GameMasterScript : MonoBehaviour
 
     private string button_reset;
     private string button_menu;
+    private string button_accept;
+    private string button_cancel;
 
     bool is_axis_used;
     bool level_win;
@@ -59,6 +61,8 @@ public class GameMasterScript : MonoBehaviour
 
         button_reset = (system == System.OSX) ? "ResetOSX" : "Reset";
         button_menu = (system == System.OSX) ? "MenuOSX" : "Menu";
+        button_accept = (system == System.OSX) ? "AcceptOSX" : "Accept";
+        button_cancel = (system == System.OSX) ? "CancelOSX" : "Cancel";
     }
 
     // Update is called once per frame
@@ -89,6 +93,16 @@ public class GameMasterScript : MonoBehaviour
         else if(Mathf.Abs(Input.GetAxis(button_menu)) <= EPSILON)
         {
             is_axis_used = false;
+        }
+
+        if (Mathf.Abs(Input.GetAxis(button_accept)) > EPSILON)
+        {
+            Debug.Log("ACCEPT");
+        }
+
+        if (Mathf.Abs(Input.GetAxis(button_cancel)) > EPSILON)
+        {
+            Debug.Log("CANCEL");
         }
     }
 
