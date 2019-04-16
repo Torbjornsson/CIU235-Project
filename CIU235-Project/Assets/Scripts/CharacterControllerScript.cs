@@ -39,15 +39,32 @@ public class CharacterControllerScript : Pusher
 
         if (!moving)
         {
-            if (Input.GetButtonDown("G")) 
+            if (Input.GetButtonDown("Jump")) 
             {
                 Vector3 prev_pos = gameMasterScript.Undo();
-                Move(cur_pos, prev_pos.x, prev_pos.y, prev_pos.z);
+                Debug.Log("prev pos" + prev_pos);
+                rb.MovePosition(prev_pos);
             }
-            if (Input.GetAxis("Horizontal") > DEAD_ZONE) Move(cur_pos, 1, 0, 0);
-            if (Input.GetAxis("Horizontal") < -DEAD_ZONE) Move(cur_pos, -1, 0, 0);
-            if (Input.GetAxis("Vertical") > DEAD_ZONE) Move(cur_pos, 0, 0, 1);
-            if (Input.GetAxis("Vertical") < -DEAD_ZONE) Move(cur_pos, 0, 0, -1);
+            if (Input.GetAxis("Horizontal") > DEAD_ZONE)
+            {
+                gameMasterScript.RecordUndo(cur_pos);
+                Move(cur_pos, 1, 0, 0);
+            }
+            if (Input.GetAxis("Horizontal") < -DEAD_ZONE)
+            {
+                gameMasterScript.RecordUndo(cur_pos);
+                Move(cur_pos, -1, 0, 0);
+            }
+            if (Input.GetAxis("Vertical") > DEAD_ZONE)
+            {
+                gameMasterScript.RecordUndo(cur_pos);
+                Move(cur_pos, 0, 0, 1);
+            }
+            if (Input.GetAxis("Vertical") < -DEAD_ZONE)
+            {
+                gameMasterScript.RecordUndo(cur_pos);
+                Move(cur_pos, 0, 0, -1);
+            }
 
             // After getting a direction and starts to move, checks for collision in that direction
             if (moving && CollisionCheckInFront(direction))
@@ -63,7 +80,6 @@ public class CharacterControllerScript : Pusher
                 || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
             {
                 Stop(next_pos);
-                gameMasterScript.RecordUndo(next_pos);
                 //Debug.Log("CHARACTER - Stopped at next_pos: " + next_pos);
             }
             else

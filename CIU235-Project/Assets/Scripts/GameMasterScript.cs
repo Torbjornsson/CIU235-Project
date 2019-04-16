@@ -7,7 +7,7 @@ public class GameMasterScript : MonoBehaviour
 {
     bool isAxisUsed;
     bool levelWin;
-    public Stack undoStack;
+    public Stack undoStack = new Stack();
 
     private static GameMasterScript instance = null;
     public static GameMasterScript Instance {
@@ -87,10 +87,14 @@ public class GameMasterScript : MonoBehaviour
     }
 
     public Vector3 Undo(){
-        return (Vector3)undoStack.Pop();
+        Vector3 pos = (Vector3)undoStack.Pop();
+        Debug.Log("Undo" + pos);
+
+        return pos;
     }
 
     public void RecordUndo(Vector3 pos){
+        Debug.Log("Recorded pos" + pos);
         undoStack.Push(pos);
     }
 }
