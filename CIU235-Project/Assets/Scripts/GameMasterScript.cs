@@ -70,6 +70,7 @@ public class GameMasterScript : MonoBehaviour
         }
         else
         {
+            undoStack.Clear();
             SceneManager.LoadScene(bIndex);
         }
         
@@ -78,6 +79,7 @@ public class GameMasterScript : MonoBehaviour
     public void ResetLevel()
     {
         Debug.Log("Reset level");
+        undoStack.Clear();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
