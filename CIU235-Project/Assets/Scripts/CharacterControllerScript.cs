@@ -47,22 +47,22 @@ public class CharacterControllerScript : Pusher
             }
             if (Input.GetAxis("Horizontal") > DEAD_ZONE)
             {
-                gameMasterScript.RecordUndo(cur_pos);
+                gameMasterScript.RecordUndo(gameObject, cur_pos);
                 Move(cur_pos, 1, 0, 0);
             }
             if (Input.GetAxis("Horizontal") < -DEAD_ZONE)
             {
-                gameMasterScript.RecordUndo(cur_pos);
+                gameMasterScript.RecordUndo(gameObject, cur_pos);
                 Move(cur_pos, -1, 0, 0);
             }
             if (Input.GetAxis("Vertical") > DEAD_ZONE)
             {
-                gameMasterScript.RecordUndo(cur_pos);
+                gameMasterScript.RecordUndo(gameObject, cur_pos);
                 Move(cur_pos, 0, 0, 1);
             }
             if (Input.GetAxis("Vertical") < -DEAD_ZONE)
             {
-                gameMasterScript.RecordUndo(cur_pos);
+                gameMasterScript.RecordUndo(gameObject, cur_pos);
                 Move(cur_pos, 0, 0, -1);
             }
 
