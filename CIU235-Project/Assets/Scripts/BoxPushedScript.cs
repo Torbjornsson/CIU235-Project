@@ -84,7 +84,8 @@ public class BoxPushedScript : Pusher
 
         // Starting to move in the right direction
         direction = c_script.direction;
-        speed = c_script.speed;
+        speed = c_script.speed_push;
+
         next_pos = cur_pos + direction * Utility.GRID_SIZE;
         moving = true;
 

@@ -6,7 +6,7 @@ public abstract class Pusher : MonoBehaviour
     protected bool moving;
 
     // Stops moving at a certain position
-    public void Stop(Vector3 position)
+    public virtual void Stop(Vector3 position)
     {
         moving = false;
         rb.MovePosition(position);
@@ -39,6 +39,7 @@ public abstract class Pusher : MonoBehaviour
                 if (!collision)
                 {
                     box_script.Pushed(gameObject);
+                    gameObject.GetComponent<CharacterControllerScript>().pushing = true;
                 }
             }
 

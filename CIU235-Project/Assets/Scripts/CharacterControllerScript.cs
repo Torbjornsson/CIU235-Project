@@ -8,9 +8,10 @@ public class CharacterControllerScript : Pusher
     public const float EPSILON = 0.0001f;
     public const float DEAD_ZONE = 0.3f;
     public const float SQUEEZE_SIZE = 0.25f;
+    public const float PUSHING_FACTOR = 0.8f;
 
     //private Rigidbody rb;
-    private float move_delay;
+    //private float move_delay;
 
     //private bool moving;
     private Vector3 next_pos;
@@ -18,6 +19,9 @@ public class CharacterControllerScript : Pusher
     public Vector3 direction;
     public float rotation;
     public float speed;
+
+    public bool pushing;
+    public float speed_push;
 
     private GameMasterScript game_master_script;
 
@@ -30,6 +34,8 @@ public class CharacterControllerScript : Pusher
         direction = new Vector3();
         next_pos = rb.position;
         rotation = 0;
+        pushing = false;
+        speed_push = speed * PUSHING_FACTOR;
     }
 
     // Update is called once per frame
@@ -41,36 +47,48 @@ public class CharacterControllerScript : Pusher
         if (!moving)
         {
             if (Input.GetAxis("Horizontal") > DEAD_ZONE
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("HorizontalDpadOSX") > DEAD_ZONE)
-                || (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("HorizontalDpadLIN") > DEAD_ZONE)
-                || (game_master_script.GetSystem() == GameMasterScript.System.WIN && Input.GetAxis("HorizontalDpadWIN") > DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("HorizontalDpadOSX") > DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("HorizontalDpadLIN") > DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.WIN && Input.GetAxis("HorizontalDpadWIN") > DEAD_ZONE)
+                || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) > DEAD_ZONE
                 )
             {
-                Move(cur_pos, 1, 0, 0);
+                //Move(cur_pos, 1, 0, 0);
+                SetDir(1, 0, 0);
+                moving = true;
             }
             if (Input.GetAxis("Horizontal") < -DEAD_ZONE
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("HorizontalDpadOSX") < -DEAD_ZONE)
-                || (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("HorizontalDpadLIN") < -DEAD_ZONE)
-                || (game_master_script.GetSystem() == GameMasterScript.System.WIN && Input.GetAxis("HorizontalDpadWIN") < -DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("HorizontalDpadOSX") < -DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("HorizontalDpadLIN") < -DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.WIN && Input.GetAxis("HorizontalDpadWIN") < -DEAD_ZONE)
+                || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) < -DEAD_ZONE
                 )
             {
-                Move(cur_pos, -1, 0, 0);
+                //Move(cur_pos, -1, 0, 0);
+                SetDir(-1, 0, 0);
+                moving = true;
             }
             if (Input.GetAxis("Vertical") > DEAD_ZONE
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("VerticalDpadOSX") > DEAD_ZONE)
-                || (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("VerticalDpadLIN") > DEAD_ZONE)
-                || (game_master_script.GetSystem() == GameMasterScript.System.WIN && Input.GetAxis("VerticalDpadWIN") > DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("VerticalDpadOSX") > DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("VerticalDpadLIN") > DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.WIN && Input.GetAxis("VerticalDpadWIN") > DEAD_ZONE)
+                || Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()) > DEAD_ZONE
                 )
             {
-                Move(cur_pos, 0, 0, 1);
+                //Move(cur_pos, 0, 0, 1);
+                SetDir(0, 0, 1);
+                moving = true;
             }
             if (Input.GetAxis("Vertical") < -DEAD_ZONE
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("VerticalDpadOSX") < -DEAD_ZONE)
-                || (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("VerticalDpadLIN") < -DEAD_ZONE)
-                || (game_master_script.GetSystem() == GameMasterScript.System.WIN && Input.GetAxis("VerticalDpadWIN") < -DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("VerticalDpadOSX") < -DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("VerticalDpadLIN") < -DEAD_ZONE)
+                //|| (game_master_script.GetSystem() == GameMasterScript.System.WIN && Input.GetAxis("VerticalDpadWIN") < -DEAD_ZONE)
+                || Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()) < -DEAD_ZONE
                 )
             {
-                Move(cur_pos, 0, 0, -1);
+                //Move(cur_pos, 0, 0, -1);
+                SetDir(0, 0, -1);
+                moving = true;
             }
 
             // After getting a direction and starts to move, checks for collision in that direction
@@ -78,11 +96,16 @@ public class CharacterControllerScript : Pusher
             {
                 Stop(cur_pos);
             }
+            else
+            {
+                SetNextPos(cur_pos, direction);
+            }
         }
 
         if (moving)
         {
-            Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
+            float factor = pushing ? PUSHING_FACTOR : 1;
+            Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime * factor;
             if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
                 || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
             {
@@ -95,7 +118,7 @@ public class CharacterControllerScript : Pusher
 
             // For walking animation:
             float distance = Vector3.Distance(rb.position, next_pos); // Should be between [0,1]
-            float height = (1-SQUEEZE_SIZE) + Mathf.Abs(0.5f - distance) * SQUEEZE_SIZE * 2; // Only change constant, no terms here
+            float height = (1 - SQUEEZE_SIZE) + Mathf.Abs(0.5f - distance) * SQUEEZE_SIZE * 2; // Only change constant, no terms here
             Vector3 scale = new Vector3(1, height, 1); // Only height is affected
             gameObject.GetComponent<Transform>().localScale = scale;
         }
@@ -127,17 +150,36 @@ public class CharacterControllerScript : Pusher
         gameObject.GetComponent<Transform>().rotation = target;
     }
 
-    // Starts to move in a certain direction
-    public void Move(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
+    public void SetDir(float dir_x, float dir_y, float dir_z)
     {
-        next_pos = new Vector3(cur_pos.x + Utility.GRID_SIZE * dir_x, cur_pos.y + Utility.GRID_SIZE * dir_y, cur_pos.z + Utility.GRID_SIZE * dir_z);
         direction.x = dir_x;
         direction.y = dir_y;
         direction.z = dir_z;
-        moving = true;
     }
 
-    public bool IsMoving(){
-        return moving;
+    public void SetNextPos(Vector3 cur_pos, Vector3 dir)
+    {
+        SetNextPos(cur_pos, dir.x, dir.y, dir.z);
+    }
+
+    public void SetNextPos(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
+    {
+        next_pos = new Vector3(cur_pos.x + Utility.GRID_SIZE * dir_x, cur_pos.y + Utility.GRID_SIZE * dir_y, cur_pos.z + Utility.GRID_SIZE * dir_z);
+    }
+
+    // Starts to move in a certain direction
+    //public void Move(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
+    //{
+    //    //next_pos = new Vector3(cur_pos.x + Utility.GRID_SIZE * dir_x, cur_pos.y + Utility.GRID_SIZE * dir_y, cur_pos.z + Utility.GRID_SIZE * dir_z);
+    //    direction.x = dir_x;
+    //    direction.y = dir_y;
+    //    direction.z = dir_z;
+    //    moving = true;
+    //}
+
+    public override void Stop(Vector3 position)
+    {
+        base.Stop(position);
+        pushing = false;
     }
 }
