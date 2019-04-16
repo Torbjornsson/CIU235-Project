@@ -5,6 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class GameMasterScript : MonoBehaviour
 {
+    enum System
+    {
+        OSX, LIN, WIN
+    }
+    private System system;
+
+    private string buttonReset;
+    private string buttonMenu;
+
     bool isAxisUsed;
     bool levelWin;
 
@@ -12,6 +21,9 @@ public class GameMasterScript : MonoBehaviour
     public static GameMasterScript Instance {
         get { return instance; }
     }
+
+    public float EPSILON = 0.00001f;
+
     private void Awake() {
         if (instance != null && instance != this) 
         {
@@ -30,22 +42,41 @@ public class GameMasterScript : MonoBehaviour
     {
         levelWin = false;
         isAxisUsed = false;
+
+        if (Application.platform.Equals(RuntimePlatform.OSXEditor) || Application.platform.Equals(RuntimePlatform.OSXPlayer))
+        {
+            system = System.OSX;
+        }
+        else if (Application.platform.Equals(RuntimePlatform.LinuxEditor) || Application.platform.Equals(RuntimePlatform.LinuxPlayer))
+        {
+            system = System.LIN;
+        }
+        else if (Application.platform.Equals(RuntimePlatform.WindowsEditor) || Application.platform.Equals(RuntimePlatform.WindowsPlayer))
+        {
+            system = System.WIN;
+        }
+        Debug.Log("Running platform: "+system);
+
+        buttonReset = (system == System.OSX) ? "ResetOSX" : "Reset";
+        buttonMenu = (system == System.OSX) ? "MenuOSX" : "Menu";
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetAxis("Reset") != 0){
+        if (Mathf.Abs(Input.GetAxis(buttonReset)) > EPSILON)
+        {
             if (!isAxisUsed){
                 isAxisUsed = true;
                 ResetLevel();
             }
         }
-        else if (Input.GetAxis("Reset") == 0)
+        else if (Mathf.Abs(Input.GetAxis(buttonReset)) <= EPSILON)
         {
             isAxisUsed = false;
         }
-        if (Input.GetAxis("Menu") != 0)
+
+        if (Mathf.Abs(Input.GetAxis(buttonMenu)) > EPSILON)
         {
             if (!isAxisUsed){
                 isAxisUsed = true;
@@ -53,7 +84,7 @@ public class GameMasterScript : MonoBehaviour
                 Quit();
             }
         }
-        else if(Input.GetAxis("Menu") == 0)
+        else if(Mathf.Abs(Input.GetAxis(buttonMenu)) <= EPSILON)
         {
             isAxisUsed = false;
         }
