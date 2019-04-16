@@ -17,10 +17,12 @@ public class CharacterControllerScript : Pusher
     public Vector3 direction;
     public float rotation;
     public float speed;
+    public GameMasterScript gameMasterScript;
 
     // Start is called before the first frame update
     void Start()
     {
+        gameMasterScript = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         rb = GetComponent<Rigidbody>();
         moving = false;
         direction = new Vector3();
@@ -33,9 +35,15 @@ public class CharacterControllerScript : Pusher
     {
 
         Vector3 cur_pos = rb.position;
+        
 
         if (!moving)
         {
+            if (Input.GetButtonDown("G")) 
+            {
+                Vector3 prev_pos = gameMasterScript.Undo();
+                Move(cur_pos, prev_pos.x, prev_pos.y, prev_pos.z);
+            }
             if (Input.GetAxis("Horizontal") > DEAD_ZONE) Move(cur_pos, 1, 0, 0);
             if (Input.GetAxis("Horizontal") < -DEAD_ZONE) Move(cur_pos, -1, 0, 0);
             if (Input.GetAxis("Vertical") > DEAD_ZONE) Move(cur_pos, 0, 0, 1);
@@ -55,6 +63,7 @@ public class CharacterControllerScript : Pusher
                 || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
             {
                 Stop(next_pos);
+                gameMasterScript.RecordUndo(next_pos);
                 //Debug.Log("CHARACTER - Stopped at next_pos: " + next_pos);
             }
             else
