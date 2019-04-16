@@ -41,22 +41,26 @@ public class CharacterControllerScript : Pusher
         if (!moving)
         {
             if (Input.GetAxis("Horizontal") > DEAD_ZONE
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("HorizontalDpad") > DEAD_ZONE))
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("HorizontalDpadOSX") > DEAD_ZONE)
+                || (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("HorizontalDpadLIN") > DEAD_ZONE))
             {
                 Move(cur_pos, 1, 0, 0);
             }
             if (Input.GetAxis("Horizontal") < -DEAD_ZONE
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("HorizontalDpad") < -DEAD_ZONE))
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("HorizontalDpadOSX") < -DEAD_ZONE)
+                || (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("HorizontalDpadLIN") < -DEAD_ZONE))
             {
                 Move(cur_pos, -1, 0, 0);
             }
             if (Input.GetAxis("Vertical") > DEAD_ZONE
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("VerticalDpad") > DEAD_ZONE))
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("VerticalDpadOSX") > DEAD_ZONE)
+                || (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("VerticalDpadLIN") > DEAD_ZONE))
             {
                 Move(cur_pos, 0, 0, 1);
             }
             if (Input.GetAxis("Vertical") < -DEAD_ZONE
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("VerticalDpad") < -DEAD_ZONE))
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetAxis("VerticalDpadOSX") < -DEAD_ZONE)
+                || (game_master_script.GetSystem() == GameMasterScript.System.LIN && Input.GetAxis("VerticalDpadLIN") < -DEAD_ZONE))
             {
                 Move(cur_pos, 0, 0, -1);
             }
