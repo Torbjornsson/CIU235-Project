@@ -16,8 +16,8 @@ public class GameMasterScript : MonoBehaviour
     private string button_accept;
     private string button_cancel;
 
-    bool isAxisUsed;
-    bool levelWin;
+    public Stack undoStack = new Stack();
+    public Stack undoStackC = new Stack();
     bool is_axis_used;
     bool level_win;
 
