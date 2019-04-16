@@ -5,15 +5,29 @@ using UnityEngine.SceneManagement;
 
 public class GameMasterScript : MonoBehaviour
 {
+    public enum System
+    {
+        OSX, LIN, WIN
+    }
+    private System system;
+
+    private string button_reset;
+    private string button_menu;
+    private string button_accept;
+    private string button_cancel;
+
     bool isAxisUsed;
     bool levelWin;
-    public Stack undoStack = new Stack();
-    public Stack undoStackC = new Stack();
+    bool is_axis_used;
+    bool level_win;
 
     private static GameMasterScript instance = null;
     public static GameMasterScript Instance {
         get { return instance; }
     }
+
+    public float EPSILON = 0.00001f;
+
     private void Awake() {
         if (instance != null && instance != this) 
         {
@@ -30,40 +44,73 @@ public class GameMasterScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        levelWin = false;
-        isAxisUsed = false;
+        level_win = false;
+        is_axis_used = false;
+
+        if (Application.platform.Equals(RuntimePlatform.OSXEditor) || Application.platform.Equals(RuntimePlatform.OSXPlayer))
+        {
+            system = System.OSX;
+        }
+        else if (Application.platform.Equals(RuntimePlatform.LinuxEditor) || Application.platform.Equals(RuntimePlatform.LinuxPlayer))
+        {
+            system = System.LIN;
+        }
+        else if (Application.platform.Equals(RuntimePlatform.WindowsEditor) || Application.platform.Equals(RuntimePlatform.WindowsPlayer))
+        {
+            system = System.WIN;
+        }
+        Debug.Log("Running platform: "+system);
+
+        button_reset = (system == System.OSX) ? "ResetOSX" : "Reset";
+        button_menu = (system == System.OSX) ? "MenuOSX" : "Menu";
+        button_accept = (system == System.OSX) ? "AcceptOSX" : "Accept";
+        button_cancel = (system == System.OSX) ? "CancelOSX" : "Cancel";
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetAxis("Reset") != 0){
-            if (!isAxisUsed){
-                isAxisUsed = true;
+        if (Mathf.Abs(Input.GetAxis(button_reset)) > EPSILON)
+        {
+            if (!is_axis_used)
+            {
+                is_axis_used = true;
                 ResetLevel();
             }
         }
-        else if (Input.GetAxis("Reset") == 0)
+        else if (Mathf.Abs(Input.GetAxis(button_reset)) <= EPSILON)
         {
-            isAxisUsed = false;
+            is_axis_used = false;
         }
-        if (Input.GetAxis("Menu") != 0)
+
+        if (Mathf.Abs(Input.GetAxis(button_menu)) > EPSILON)
         {
-            if (!isAxisUsed){
-                isAxisUsed = true;
+            if (!is_axis_used)
+            {
+                is_axis_used = true;
                 Debug.Log("QUIT");
                 Quit();
             }
         }
-        else if(Input.GetAxis("Menu") == 0)
+        else if(Mathf.Abs(Input.GetAxis(button_menu)) <= EPSILON)
         {
-            isAxisUsed = false;
+            is_axis_used = false;
+        }
+
+        if (Mathf.Abs(Input.GetAxis(button_accept)) > EPSILON)
+        {
+            Debug.Log("ACCEPT");
+        }
+
+        if (Mathf.Abs(Input.GetAxis(button_cancel)) > EPSILON)
+        {
+            Debug.Log("CANCEL");
         }
     }
 
     public void LevelWin()
     {
-        levelWin = true;
+        level_win = true;
         Debug.Log("Start new level");
         int bIndex = SceneManager.GetActiveScene().buildIndex + 1;
         if (bIndex >= SceneManager.sceneCountInBuildSettings){
@@ -108,5 +155,10 @@ public class GameMasterScript : MonoBehaviour
         Debug.Log("Recorded " + go.name + " at pos " + pos);
         undoStack.Push(pos);
         undoStackC.Push(go);
+    }
+
+    public System GetSystem()
+    {
+        return system;
     }
 }

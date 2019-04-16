@@ -19,6 +19,8 @@ public class CameraControls : MonoBehaviour
         
         character = GameObject.Find("Character");
 
+        transform.position += character.transform.position;
+
         offset = transform.position - character.transform.position;
 
         rotating = false;
