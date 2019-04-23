@@ -50,6 +50,7 @@ public abstract class Pusher : MonoBehaviour
             //Debug.Log("Collision registered by [" + gameObject.name + "]: " + hit.collider.gameObject.name);
         }
 
+        // Registering undo-states when needed
         if (gameObject.name == "Character" && !collision) gameMasterScript.RecordUndo(gameObject, rb.position);
         if (box != null) gameMasterScript.RecordUndo(box, box_script.rb.position);
 

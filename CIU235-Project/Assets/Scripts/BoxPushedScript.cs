@@ -20,7 +20,7 @@ public class BoxPushedScript : Pusher
     private float color_alpha;
     private int color_dir;
 
-    public GameMasterScript gameMasterScript;
+    //public GameMasterScript gameMasterScript;
 
     // Start is called before the first frame update
     void Start()
@@ -78,7 +78,6 @@ public class BoxPushedScript : Pusher
         GameObject c = pusher;
         CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
         Vector3 cur_pos = rb.position;
-        //gameMasterScript.RecordUndo(gameObject, cur_pos);
 
         // Checking character diff from original position
         Vector3 c_pos = c.GetComponent<Rigidbody>().position;
