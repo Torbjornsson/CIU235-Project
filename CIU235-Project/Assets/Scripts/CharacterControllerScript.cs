@@ -48,6 +48,7 @@ public class CharacterControllerScript : Pusher
                 rb.MovePosition(prev_pos);
                 cur_pos = prev_pos;
             }
+
             if (Input.GetAxis("Horizontal") > DEAD_ZONE
                 || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) > DEAD_ZONE)
             {
@@ -72,6 +73,11 @@ public class CharacterControllerScript : Pusher
                 SetDir(0, 0, -1);
                 moving = true;
             }
+
+            //if (direction.z > 0 || direction.z < 0)
+            //{
+            //    Debug.Log("Vertical: " + Input.GetAxis("Vertical") + ", VerticalDpad: " + Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()));
+            //}
 
             // After getting a direction and starts to move, checks for collision in that direction
             if (moving && CollisionCheckInFront(direction))
