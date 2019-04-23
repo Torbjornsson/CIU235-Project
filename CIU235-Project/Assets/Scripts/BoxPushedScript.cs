@@ -45,6 +45,7 @@ public class BoxPushedScript : Pusher
             Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
 
             if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
+                || (direction.y > 0 && new_pos.y >= next_pos.y) || (direction.y < 0 && new_pos.y <= next_pos.y)
                 || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
             {
                 Stop(next_pos);
@@ -76,19 +77,31 @@ public class BoxPushedScript : Pusher
     {
         // Getting things to use
         GameObject c = pusher;
-        CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
+        if (c.tag == "Elevator"){
+            Elevator c_script = c.GetComponent<Elevator>();
+            direction = c_script.direction;
+            speed = 1;
+        }
+        else {
+            CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
+            direction = c_script.direction;
+            speed = c_script.speed_push;
+        }
+        
         Vector3 cur_pos = rb.position;
         gameMasterScript.RecordUndo(gameObject, cur_pos);
 
         // Checking character diff from original position
         Vector3 c_pos = c.GetComponent<Rigidbody>().position;
         Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
-        c_grid_pos.y = c_pos.y;
+        //c_grid_pos.y = c_pos.y;
         Vector3 diff = c_pos - c_grid_pos;
+        if (c.tag == "Elevator")
+            diff.y += 0.5f;
 
         // Starting to move in the right direction
-        direction = c_script.direction;
-        speed = c_script.speed_push;
+        //direction = c_script.direction;
+        //speed = c_script.speed_push;
 
         next_pos = cur_pos + direction * Utility.GRID_SIZE;
         moving = true;

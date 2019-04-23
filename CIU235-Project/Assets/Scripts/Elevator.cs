@@ -12,6 +12,7 @@ public class Elevator : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        direction = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -24,11 +25,11 @@ public class Elevator : MonoBehaviour
             rb.MovePosition(pos);
             if (rb.position.y == 0.5){
                 level = 1;
-                direction = Vector3.up;
+                direction = Vector3.zero;
             }
             else if (rb.position.y == -0.5){
                 level = 0;
-                direction = Vector3.down;
+                direction = Vector3.zero;
             }
 
         }
@@ -37,12 +38,22 @@ public class Elevator : MonoBehaviour
     void OnTriggerEnter(Collider other){
         if (other.gameObject.name == "Character")
         {
-            direction.y *= -1;
+            if (level == 0)
+                    direction = Vector3.up;
+                else
+                    direction = Vector3.down;
             new_pos = rb.position + direction;
         }
     }
     void OnTriggerStay(Collider other)
     {
+        if (other.gameObject.tag == "Box"){
+            BoxPushedScript BPS = other.gameObject.GetComponent<BoxPushedScript>();
+            if (!BPS.IsMoving()){
+                BPS.Pushed(gameObject);
+            }
+            
+        }
         if (other.gameObject.name == "Character")
         {
             CharacterControllerScript CCS = other.GetComponent<CharacterControllerScript>();
@@ -50,33 +61,11 @@ public class Elevator : MonoBehaviour
             
             if (!CCS.IsMoving() && CRB.position.y == level)
             {
-                if ((level == 0 && direction.Equals(Vector3.up)) || level == 1 && direction.Equals(Vector3.down)){
-                CCS.SetDir(direction.x, direction.y, direction.z);
-                Vector3 cur_pos = CRB.position;
-                CCS.SetNextPos(cur_pos, direction);
-                CCS.SetMoving(true);
-                }
-            }
-            
-            if (level == 0 && direction.Equals(Vector3.up) && CRB.position.x == rb.position.x && CRB.position.z == rb.position.z)
-            {
-                rb.MovePosition(rb.position + direction * Time.deltaTime * CCS.speed);
-                if (rb.position.y >= new_pos.y)
-                {
-                    rb.MovePosition(new_pos);
-                    level = 1;
+                if (level == 1 && direction.y == -1 || level == 0 && direction.y == 1){
+                    CCS.SetDir(direction.x, direction.y, direction.z);
+                    Vector3 cur_pos = CRB.position;
+                    CCS.SetNextPos(cur_pos, direction);
                     CCS.SetMoving(true);
-                }
-                
-            }
-
-            if(level == 1 && direction.Equals(Vector3.down) && CRB.position.x == rb.position.x && CRB.position.z == rb.position.z)
-            {
-                rb.MovePosition(rb.position + direction * Time.deltaTime * CCS.speed);
-                if (rb.position.y <= new_pos.y){
-                    rb.MovePosition(new_pos);
-                    level = 0;
-                    //CCS.SetMoving(false);
                 }
             }
         }
