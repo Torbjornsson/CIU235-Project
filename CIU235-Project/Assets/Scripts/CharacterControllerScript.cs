@@ -24,12 +24,12 @@ public class CharacterControllerScript : Pusher
     public bool pushing;
     public float speed_push;
 
-    private GameMasterScript game_master_script;
+    //private GameMasterScript game_master_script;
 
     // Start is called before the first frame update
     void Start()
     {
-        gameMasterScript = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
+        //game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         rb = GetComponent<Rigidbody>();
         game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         moving = false;
@@ -48,10 +48,10 @@ public class CharacterControllerScript : Pusher
 
         if (!moving)
         {
-        	if (gameMasterScript.UndoAvailable() && (Input.GetButtonDown("Undo")
+        	if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
                 || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX")))) 
             {
-                Vector3 prev_pos = gameMasterScript.Undo();
+                Vector3 prev_pos = game_master_script.Undo();
                 Debug.Log("prev pos" + prev_pos);
                 rb.MovePosition(prev_pos);
             }

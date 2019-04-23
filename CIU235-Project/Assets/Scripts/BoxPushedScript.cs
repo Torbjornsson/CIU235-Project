@@ -25,7 +25,7 @@ public class BoxPushedScript : Pusher
     // Start is called before the first frame update
     void Start()
     {
-        gameMasterScript = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
+        game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         rb = GetComponent<Rigidbody>();
         direction = new Vector3();
         next_pos = rb.position;

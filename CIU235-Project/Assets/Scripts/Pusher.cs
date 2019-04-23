@@ -4,7 +4,7 @@ public abstract class Pusher : MonoBehaviour
 {
     public Rigidbody rb;
     protected bool moving;
-    protected GameMasterScript gameMasterScript;
+    protected GameMasterScript game_master_script;
 
     // Stops moving at a certain position
     public virtual void Stop(Vector3 position)
@@ -51,8 +51,8 @@ public abstract class Pusher : MonoBehaviour
         }
 
         // Registering undo-states when needed
-        if (gameObject.name == "Character" && !collision) gameMasterScript.RecordUndo(gameObject, rb.position);
-        if (box != null) gameMasterScript.RecordUndo(box, box_script.rb.position);
+        if (gameObject.name == "Character" && !collision) game_master_script.RecordUndo(gameObject, rb.position);
+        if (box != null) game_master_script.RecordUndo(box, box_script.rb.position);
 
         return collision;
     }
