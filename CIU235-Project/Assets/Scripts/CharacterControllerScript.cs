@@ -10,26 +10,18 @@ public class CharacterControllerScript : Pusher
     public const float SQUEEZE_SIZE = 0.25f;
     public const float PUSHING_FACTOR = 0.8f;
 
-    //private Rigidbody rb;
-    //private float move_delay;
-
-    //private bool moving;
     private Vector3 next_pos;
 
     public Vector3 direction;
     public float rotation;
     public float speed;
-    //public GameMasterScript gameMasterScript;
 
     public bool pushing;
     public float speed_push;
 
-    //private GameMasterScript game_master_script;
-
     // Start is called before the first frame update
     void Start()
     {
-        //game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         rb = GetComponent<Rigidbody>();
         game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         moving = false;
