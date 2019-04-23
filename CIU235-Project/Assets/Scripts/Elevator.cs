@@ -17,7 +17,12 @@ public class Elevator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (rb.position.y + 0.5f != GameObject.Find("Character").GetComponent<Rigidbody>().position.y){
+            Vector3 pos = rb.position;
+            pos.y = GameObject.Find("Character").GetComponent<Rigidbody>().position.y;
+            pos.y -= 0.5f;
+            rb.MovePosition(pos);
+        }
     }
 
     void OnTriggerEnter(Collider other){
@@ -36,7 +41,6 @@ public class Elevator : MonoBehaviour
             
             if (!CCS.IsMoving() && CRB.position.y == level)
             {
-                Debug.Log("Level " + level + "Direction "+ direction);
                 if ((level == 0 && direction.Equals(Vector3.up)) || level == 1 && direction.Equals(Vector3.down)){
                 CCS.SetDir(direction.x, direction.y, direction.z);
                 Vector3 cur_pos = CRB.position;
