@@ -20,8 +20,8 @@ public class Elevator : MonoBehaviour
         
     }
 
-    void OnTriggerEnter(Collider col){
-        if (col.gameObject.name == "Character")
+    void OnTriggerEnter(Collider other){
+        if (other.gameObject.name == "Character")
         {
             direction.y *= -1;
             new_pos = rb.position + direction;
@@ -29,35 +29,43 @@ public class Elevator : MonoBehaviour
     }
     void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.name == "Character"){
-            Debug.Log(direction);
-            if (level == 0 && direction.Equals(Vector3.up))
+        if (other.gameObject.name == "Character")
+        {
+            CharacterControllerScript CCS = other.GetComponent<CharacterControllerScript>();
+            Rigidbody CRB = other.GetComponent<Rigidbody>();
+            
+            if (!CCS.IsMoving() && CRB.position.y == level)
             {
-                Move(other);
-                if (rb.position.y >= new_pos.y){
+                Debug.Log("Level " + level + "Direction "+ direction);
+                if ((level == 0 && direction.Equals(Vector3.up)) || level == 1 && direction.Equals(Vector3.down)){
+                CCS.SetDir(direction.x, direction.y, direction.z);
+                Vector3 cur_pos = CRB.position;
+                CCS.SetNextPos(cur_pos, direction);
+                CCS.SetMoving(true);
+                }
+            }
+            
+            if (level == 0 && direction.Equals(Vector3.up) && CRB.position.x == rb.position.x && CRB.position.z == rb.position.z)
+            {
+                rb.MovePosition(rb.position + direction * Time.deltaTime * CCS.speed);
+                if (rb.position.y >= new_pos.y)
+                {
                     rb.MovePosition(new_pos);
-                    other.GetComponent<Rigidbody>().MovePosition(new_pos + direction/2);
-                    direction = Vector3.up;
                     level = 1;
+                    CCS.SetMoving(true);
                 }
                 
             }
-            if(level == 1 && direction.Equals(Vector3.down))
+
+            if(level == 1 && direction.Equals(Vector3.down) && CRB.position.x == rb.position.x && CRB.position.z == rb.position.z)
             {
-                Move(other);
+                rb.MovePosition(rb.position + direction * Time.deltaTime * CCS.speed);
                 if (rb.position.y <= new_pos.y){
                     rb.MovePosition(new_pos);
-                    other.GetComponent<Rigidbody>().MovePosition(new_pos - direction/2);
-                    direction = Vector3.down;
                     level = 0;
+                    //CCS.SetMoving(false);
                 }
             }
         }
-    }
-
-    void Move(Collider other){
-        Vector3 cur_pos = other.GetComponent<Rigidbody>().position;
-        other.GetComponent<Rigidbody>().MovePosition(cur_pos + direction * Time.deltaTime);
-        rb.MovePosition(rb.position + direction * Time.deltaTime);
     }
 }
