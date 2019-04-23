@@ -97,6 +97,28 @@ public class CharacterControllerScript : Pusher
                 SetNextPos(cur_pos, direction);
                 gameMasterScript.RecordUndo(gameObject, cur_pos);
             }
+            if (!CollisionCheckInFront(Vector3.down)){
+                RaycastHit hit = new RaycastHit();
+                Vector3 pos = rb.position;
+                pos += Vector3.down;
+                Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
+                if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
+                    
+                }
+                if (hit.collider == null){
+                    Debug.Log("Fall");
+                    if (moving){
+                        Stop(next_pos);
+                    }
+                    if (!moving){
+                        SetDir(0, -1, 0);
+                        moving = true;
+                        SetNextPos(cur_pos, direction);
+                    }
+                }
+                
+                
+            }
         }
 
         if (moving)
