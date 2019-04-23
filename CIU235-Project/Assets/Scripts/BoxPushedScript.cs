@@ -76,7 +76,17 @@ public class BoxPushedScript : Pusher
     {
         // Getting things to use
         GameObject c = pusher;
-        CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
+        if (c.tag == "Elevator"){
+            Elevator c_script = c.GetComponent<Elevator>();
+            direction = c_script.direction;
+            speed = 1;
+        }
+        else {
+            CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
+            direction = c_script.direction;
+            speed = c_script.speed_push;
+        }
+        
         Vector3 cur_pos = rb.position;
         gameMasterScript.RecordUndo(gameObject, cur_pos);
 
@@ -87,8 +97,8 @@ public class BoxPushedScript : Pusher
         Vector3 diff = c_pos - c_grid_pos;
 
         // Starting to move in the right direction
-        direction = c_script.direction;
-        speed = c_script.speed_push;
+        //direction = c_script.direction;
+        //speed = c_script.speed_push;
 
         next_pos = cur_pos + direction * Utility.GRID_SIZE;
         moving = true;
