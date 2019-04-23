@@ -18,7 +18,9 @@ public abstract class Pusher : MonoBehaviour
         bool collision = false;
 
         RaycastHit hit = new RaycastHit();
-        Physics.Raycast(rb.position, direction,out hit, Utility.GRID_SIZE);
+        Vector3 pos = rb.position;
+        pos.y += 0.1f;
+        Physics.Raycast(pos, direction,out hit, Utility.GRID_SIZE);
         if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
         {
             // Nothing can move through walls
