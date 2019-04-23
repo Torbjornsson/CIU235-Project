@@ -5,14 +5,20 @@ using UnityEngine;
 public class WinTrigger : MonoBehaviour
 {
     public bool activated;
-    private GameMasterScript gameMasterScript;
 
-    private GameObject door;
+    private GameMasterScript game_master_script;
+
+    private ArrayList triggers;
+
+    public GameObject win_light;
+    public GameObject win_pad;
+
     // Start is called before the first frame update
     void Start()
     {
-        gameMasterScript = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
-        door = GameObject.Find("Door");
+        game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
+        triggers = new ArrayList(GameObject.FindGameObjectsWithTag("Trigger"));
+        TriggerActivated();
     }
 
     // Update is called once per frame
@@ -21,17 +27,35 @@ public class WinTrigger : MonoBehaviour
         //Change to som animation trigger and so on
         if (activated)
         {
-            door.SetActive(false);
+            win_light.SetActive(true);
+            win_pad.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
         }
         else
         {
-            door.SetActive(true);
+            win_light.SetActive(false);
+            win_pad.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
         }
     }
 
-    void OnTriggerEnter(Collider other) {
-        if (other.gameObject.name == "Character" && activated){
-            gameMasterScript.LevelWin();
+    // Checks for wins (that is, WinTrigger is active and player is present)
+    void OnTriggerStay(Collider other) {
+        if (other.gameObject.name == "Character" && activated &&
+            !other.gameObject.GetComponent<CharacterControllerScript>().IsMoving())
+        {
+            game_master_script.SendMessage("LevelWin");
+            //activated = false;
+        }
+    }
+
+    // Called whenever a Trigger object is activated
+    // Checks if ALL Triggers are active, and in that case activates itself
+    public void TriggerActivated()
+    {
+        activated = true;
+        foreach (GameObject item in triggers)
+        {
+            if (!item.gameObject.GetComponent<Trigger>().activated)
+                activated = false;
         }
     }
 }

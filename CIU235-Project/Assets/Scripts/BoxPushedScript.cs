@@ -1,66 +1,127 @@
 ﻿using UnityEngine;
 
-public class BoxPushedScript : MonoBehaviour
+public class BoxPushedScript : Pusher
 {
-    private Rigidbody rb;
+    private Color COLOR_CORRECT = Color.white;
+    private Color COLOR_WRONG = Color.red;
 
-    private bool moving;
+    public enum State
+    {
+        IDLE, CORRECT, WRONG
+    }
+
+    public float speed;
+    public GameObject shine;
+
     private Vector3 direction;
     private Vector3 next_pos;
 
-    public float speed;
+    private State state;
+    private float color_alpha;
+    private int color_dir;
 
     // Start is called before the first frame update
     void Start()
     {
+        game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         rb = GetComponent<Rigidbody>();
         direction = new Vector3();
         next_pos = rb.position;
         moving = false;
+        state = State.WRONG;
+        SetState(State.IDLE);
     }
 
-    // Update is called once per frame
-    void Update() { }
-
-    void FixedUpdate()
+    // LastUpdate is called once per frame, AFTER every normal Update()
+    // -- This needs to be late because otherwise it will conflict with pushing mechanics from Character
+    void LateUpdate()
     {
+        Vector3 cur_pos = rb.position;
+
         if (moving)
         {
-            Vector3 cur_pos = rb.position;
-            rb.MovePosition(cur_pos + direction * speed * Time.deltaTime);
-            if ((direction.x > 0 && rb.position.x > next_pos.x) || (direction.x < 0 && rb.position.x < next_pos.x)
-                || (direction.z > 0 && rb.position.z > next_pos.z) || (direction.z < 0 && rb.position.z < next_pos.z))
+            Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
+
+            if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
+                || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
             {
-                rb.MovePosition(next_pos);
-                moving = false;
+                Stop(next_pos);
             }
+            else
+            {
+                rb.MovePosition(new_pos);
+            }
+        }
+
+        if (state == State.WRONG)
+        {
+            color_alpha += Time.deltaTime * color_dir;
+
+            if ((color_dir < 0 && color_alpha <= 0) || (color_dir > 0 && color_alpha >= 1))
+            {
+                color_alpha = Mathf.Min(Mathf.Max(color_alpha, 0), 1);
+                color_dir *= -1;
+            }
+            //Debug.Log("Color alpha: "+color_alpha+", color dir: "+color_dir);
+            shine.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(color_alpha, COLOR_WRONG.g, COLOR_WRONG.b, 1));
+            //shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", new Color(COLOR_WRONG.r, COLOR_WRONG.g, COLOR_WRONG.b, color_alpha));
+            shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", new Color(color_alpha, COLOR_WRONG.g, COLOR_WRONG.b, 1));
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    // Called every time the box is supposed to be pushed in some direction, by a pusher (Character)
+    public void Pushed(GameObject pusher)
     {
-        if (!moving && other.gameObject.name == "Character")
+        // Getting things to use
+        GameObject c = pusher;
+        CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
+        Vector3 cur_pos = rb.position;
+
+        // Checking character diff from original position
+        Vector3 c_pos = c.GetComponent<Rigidbody>().position;
+        Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
+        c_grid_pos.y = c_pos.y;
+        Vector3 diff = c_pos - c_grid_pos;
+
+        // Starting to move in the right direction
+        direction = c_script.direction;
+        speed = c_script.speed_push;
+
+        next_pos = cur_pos + direction * Utility.GRID_SIZE;
+        moving = true;
+
+        // Updating position to be off exactly as much as character, from grid
+        cur_pos += diff;
+        rb.MovePosition(cur_pos);
+    }
+
+    public void SetState(State state)
+    {
+        if (this.state != state)
         {
-            // Getting things to use
-            GameObject c = other.gameObject;
-            CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
-            Vector3 cur_pos = rb.position;
-
-            // Checking character diff from original position
-            Vector3 c_pos = c.GetComponent<Rigidbody>().position;
-            Vector3 c_grid_pos = Utility.GetGridPos(c_pos, c_script.grid_size);
-            c_grid_pos.y = c_pos.y;
-            Vector3 diff = c_pos - c_grid_pos;
-
-            // Starting to move in the right direction
-            direction = c_script.direction;
-            speed = c_script.speed;
-            next_pos = cur_pos + direction * c_script.grid_size;
-            moving = true;
-
-            // Updating position to be off exactly as much as character, from grid
-            cur_pos += diff;
-            rb.MovePosition(cur_pos);
+            switch (state)
+            {
+                case State.IDLE:
+                    shine.SetActive(false);
+                    //shine.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
+                    break;
+                case State.CORRECT:
+                    shine.SetActive(true);
+                    shine.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
+                    shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", COLOR_CORRECT);
+                    shine.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", COLOR_CORRECT);
+                    break;
+                case State.WRONG:
+                    shine.SetActive(true);
+                    shine.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
+                    shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", COLOR_WRONG);
+                    shine.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", COLOR_WRONG);
+                    color_alpha = 0;
+                    color_dir = 1;
+                    break;
+            }
+            this.state = state;
         }
+
     }
 }
