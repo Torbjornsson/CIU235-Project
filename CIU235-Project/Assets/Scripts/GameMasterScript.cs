@@ -131,12 +131,19 @@ public class GameMasterScript : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    public void Quit(){
+    public void Quit()
+    {
         Debug.Log("Quit application");
         Application.Quit();
     }
 
-    public Vector3 Undo(){
+    public bool UndoAvailable()
+    {
+        return undoStack.Count > 0;
+    }
+
+    public Vector3 Undo()
+    {
         GameObject go = (GameObject)undoStackC.Pop();
         Vector3 pos = (Vector3)undoStack.Pop();
         if (go.tag == "Box")
@@ -151,7 +158,8 @@ public class GameMasterScript : MonoBehaviour
         return pos;
     }
 
-    public void RecordUndo(GameObject go,Vector3 pos){
+    public void RecordUndo(GameObject go,Vector3 pos)
+    {
         Debug.Log("Recorded " + go.name + " at pos " + pos);
         undoStack.Push(pos);
         undoStackC.Push(go);

@@ -48,8 +48,8 @@ public class CharacterControllerScript : Pusher
 
         if (!moving)
         {
-        	if (Input.GetButtonDown("Undo")
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX"))) 
+        	if (gameMasterScript.UndoAvailable() && (Input.GetButtonDown("Undo")
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX")))) 
             {
                 Vector3 prev_pos = gameMasterScript.Undo();
                 Debug.Log("prev pos" + prev_pos);
