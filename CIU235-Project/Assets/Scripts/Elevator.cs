@@ -22,6 +22,15 @@ public class Elevator : MonoBehaviour
             pos.y = GameObject.Find("Character").GetComponent<Rigidbody>().position.y;
             pos.y -= 0.5f;
             rb.MovePosition(pos);
+            if (rb.position.y == 0.5){
+                level = 1;
+                direction = Vector3.up;
+            }
+            else if (rb.position.y == -0.5){
+                level = 0;
+                direction = Vector3.down;
+            }
+
         }
     }
 
