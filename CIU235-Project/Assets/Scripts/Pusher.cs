@@ -2,8 +2,9 @@
 
 public abstract class Pusher : MonoBehaviour
 {
-    protected Rigidbody rb;
+    public Rigidbody rb;
     protected bool moving;
+    protected GameMasterScript game_master_script;
 
     // Stops moving at a certain position
     public virtual void Stop(Vector3 position)
@@ -16,6 +17,8 @@ public abstract class Pusher : MonoBehaviour
     public bool CollisionCheckInFront(Vector3 direction)
     {
         bool collision = false;
+        BoxPushedScript box_script = null;
+        GameObject box = null;
 
         RaycastHit hit = new RaycastHit();
         Physics.Raycast(rb.position, direction,out hit, Utility.GRID_SIZE);
@@ -34,17 +37,22 @@ public abstract class Pusher : MonoBehaviour
             // IF the box does not collide, in turn
             if (gameObject.name == "Character" && hit.collider.gameObject.tag == "Box")
             {
-                BoxPushedScript box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
+                box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
                 collision |= box_script.CollisionCheckInFront(direction);
                 if (!collision)
                 {
                     box_script.Pushed(gameObject);
                     gameObject.GetComponent<CharacterControllerScript>().pushing = true;
+                    box = hit.collider.gameObject;
                 }
             }
 
             //Debug.Log("Collision registered by [" + gameObject.name + "]: " + hit.collider.gameObject.name);
         }
+
+        // Registering undo-states when needed
+        if (gameObject.name == "Character" && !collision) game_master_script.RecordUndo(gameObject, rb.position);
+        if (box != null) game_master_script.RecordUndo(box, box_script.rb.position);
 
         return collision;
     }

@@ -10,26 +10,18 @@ public class CharacterControllerScript : Pusher
     public const float SQUEEZE_SIZE = 0.25f;
     public const float PUSHING_FACTOR = 0.8f;
 
-    //private Rigidbody rb;
-    //private float move_delay;
-
-    //private bool moving;
     private Vector3 next_pos;
 
     public Vector3 direction;
     public float rotation;
     public float speed;
-    public GameMasterScript gameMasterScript;
 
     public bool pushing;
     public float speed_push;
 
-    private GameMasterScript game_master_script;
-
     // Start is called before the first frame update
     void Start()
     {
-        gameMasterScript = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         rb = GetComponent<Rigidbody>();
         game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         moving = false;
@@ -45,47 +37,40 @@ public class CharacterControllerScript : Pusher
     {
 
         Vector3 cur_pos = rb.position;
-        
 
         if (!moving)
         {
-        	if (Input.GetButtonDown("Undo")
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX"))) 
+        	if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX")))) 
             {
-                Vector3 prev_pos = gameMasterScript.Undo();
+                Vector3 prev_pos = game_master_script.Undo();
                 Debug.Log("prev pos" + prev_pos);
                 rb.MovePosition(prev_pos);
             }
             if (Input.GetAxis("Horizontal") > DEAD_ZONE
-                || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) > DEAD_ZONE
-                )
+                || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) > DEAD_ZONE)
             {
                 SetDir(1, 0, 0);
                 moving = true;
             }
             if (Input.GetAxis("Horizontal") < -DEAD_ZONE
-                || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) < -DEAD_ZONE
-                )
+                || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) < -DEAD_ZONE)
             {
                 SetDir(-1, 0, 0);
                 moving = true;
             }
             if (Input.GetAxis("Vertical") > DEAD_ZONE
-                || Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()) > DEAD_ZONE
-                )
+                || Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()) > DEAD_ZONE)
             {
                 SetDir(0, 0, 1);
                 moving = true;
             }
             if (Input.GetAxis("Vertical") < -DEAD_ZONE
-                || Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()) < -DEAD_ZONE
-                )
+                || Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()) < -DEAD_ZONE)
             {
                 SetDir(0, 0, -1);
                 moving = true;
             }
-
-            //if (moving) gameMasterScript.RecordUndo(gameObject, cur_pos);
 
             // After getting a direction and starts to move, checks for collision in that direction
             if (moving && CollisionCheckInFront(direction))
@@ -95,7 +80,6 @@ public class CharacterControllerScript : Pusher
             else if (moving)
             {
                 SetNextPos(cur_pos, direction);
-                gameMasterScript.RecordUndo(gameObject, cur_pos);
             }
         }
 
