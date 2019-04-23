@@ -46,6 +46,7 @@ public class CharacterControllerScript : Pusher
                 Vector3 prev_pos = game_master_script.Undo();
                 Debug.Log("prev pos" + prev_pos);
                 rb.MovePosition(prev_pos);
+                cur_pos = prev_pos;
             }
             if (Input.GetAxis("Horizontal") > DEAD_ZONE
                 || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) > DEAD_ZONE)
