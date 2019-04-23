@@ -19,7 +19,7 @@ public class CharacterControllerScript : Pusher
     public Vector3 direction;
     public float rotation;
     public float speed;
-    public GameMasterScript gameMasterScript;
+    //public GameMasterScript gameMasterScript;
 
     public bool pushing;
     public float speed_push;
@@ -95,7 +95,7 @@ public class CharacterControllerScript : Pusher
             else if (moving)
             {
                 SetNextPos(cur_pos, direction);
-                gameMasterScript.RecordUndo(gameObject, cur_pos);
+                //gameMasterScript.RecordUndo(gameObject, cur_pos);
             }
         }
 
