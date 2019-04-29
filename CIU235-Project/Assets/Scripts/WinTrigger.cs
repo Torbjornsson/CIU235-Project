@@ -30,7 +30,7 @@ public class WinTrigger : MonoBehaviour
         {
             win_light.SetActive(true);
             //win_point_light.SetActive(true);
-            win_point_light.GetComponent<Light>().intensity = 2f;
+            win_point_light.GetComponent<Light>().intensity = 1.5f;
             win_pad.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
         }
         else
