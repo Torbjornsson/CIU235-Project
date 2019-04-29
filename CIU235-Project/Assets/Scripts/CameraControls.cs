@@ -112,17 +112,30 @@ public class CameraControls : MonoBehaviour
 
         if (target_angle > 0)
         {
-            transform.RotateAround(character.transform.position, Vector3.up, -rotation_delta);
-            target_angle -= rotation_delta;
+            //transform.RotateAround(character.transform.position, Vector3.up, -rotation_delta);
+            //target_angle -= rotation_delta;
+            //offset = Quaternion.AngleAxis(-rotation_delta, Vector3.up) * offset;
+            RotateStep(-rotation_delta);
         }
         else if (target_angle < 0)
         {
-            transform.RotateAround(character.transform.position, Vector3.up, rotation_delta);
-            target_angle += rotation_delta;
+            //transform.RotateAround(character.transform.position, Vector3.up, rotation_delta);
+            //target_angle += rotation_delta;
+            //offset = Quaternion.AngleAxis(rotation_delta, Vector3.up) * offset;
+            RotateStep(rotation_delta);
         }
 
-        offset = transform.position - character.transform.position;
+        //Vector3 rotatedVector = Quaternion.AngleAxis(30, Vector3.up) * originalVector;
+
+        //offset = transform.position - character.transform.position;
         //Quaternion.AngleAxis(30, Vector3.up);
+    }
+
+    private void RotateStep(float rotation_delta)
+    {
+        transform.RotateAround(character.transform.position, Vector3.up, rotation_delta);
+        target_angle += rotation_delta;
+        offset = Quaternion.AngleAxis(rotation_delta, Vector3.up) * offset;
     }
 
     //private void RotateC(Transform t1, Transform t2, float degrees, float rotatetime){
