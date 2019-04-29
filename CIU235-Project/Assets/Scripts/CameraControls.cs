@@ -95,7 +95,7 @@ public class CameraControls : MonoBehaviour
                 break;
         }
         facing = Facing.ROTATING;
-        Debug.Log("Rotating! " + target_angle + ", next facing: " + next_facing + ", actual rotation: " + transform.rotation);
+        //Debug.Log("Rotating! " + target_angle + ", next facing: " + next_facing + ", actual rotation: " + transform.rotation);
     }
 
     private void Rotate()

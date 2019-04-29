@@ -80,11 +80,6 @@ public class CharacterControllerScript : Pusher
                 }
             }
 
-            //if (direction.z > 0 || direction.z < 0)
-            //{
-            //    Debug.Log("Vertical: " + Input.GetAxis("Vertical") + ", VerticalDpad: " + Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()));
-            //}
-
             // After getting a direction and starts to move, checks for collision in that direction
             if (moving && CollisionCheckInFront(direction))
             {
@@ -146,9 +141,6 @@ public class CharacterControllerScript : Pusher
 
     public void SetDir(float dir_x, float dir_y, float dir_z)
     {
-        //direction.x = dir_x;
-        //direction.y = dir_y;
-        //direction.z = dir_z;
         direction = Utility.RotateInputVector(dir_x, dir_y, dir_z, camera_script.GetFacing());
     }
 
