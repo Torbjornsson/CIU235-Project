@@ -44,11 +44,22 @@ public class Elevator : MonoBehaviour
     void OnTriggerEnter(Collider other){
         if (other.gameObject.name == "Character")
         {
+            CharacterControllerScript ccs = other.gameObject.GetComponent<CharacterControllerScript>();
+            Vector3 inverse = new Vector3(-1.0f,-1.0f,-1.0f);
+            Vector3 pos = rb.position;
+            pos.y += 0.5f;
+            
+            RaycastHit hit = new RaycastHit();
+            Physics.Raycast(pos, Vector3.Scale(ccs.direction, inverse), out hit, Utility.GRID_SIZE);
+            
+            if (hit.collider == null || (hit.collider != null && hit.collider.gameObject.tag != "Elevator"))
+            {
             if (level == 0)
-                    direction = Vector3.up;
-                else
-                    direction = Vector3.down;
+                direction = Vector3.up;
+            else
+                direction = Vector3.down;
             new_pos = rb.position + direction;
+            }
         }
     }
     void OnTriggerStay(Collider other)
