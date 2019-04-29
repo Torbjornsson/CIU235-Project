@@ -89,6 +89,28 @@ public class CharacterControllerScript : Pusher
             {
                 SetNextPos(cur_pos, direction);
             }
+            if (!CollisionCheckInFront(Vector3.down)){
+                RaycastHit hit = new RaycastHit();
+                Vector3 pos = rb.position;
+                pos += Vector3.down;
+                Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
+                if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
+                    
+                }
+                if (hit.collider == null){
+                    Debug.Log("Fall");
+                    if (moving){
+                        Stop(next_pos);
+                    }
+                    if (!moving){
+                        SetDir(0, -1, 0);
+                        moving = true;
+                        SetNextPos(cur_pos, direction);
+                    }
+                }
+                
+                
+            }
         }
 
         if (moving)
@@ -96,6 +118,7 @@ public class CharacterControllerScript : Pusher
             float factor = pushing ? PUSHING_FACTOR : 1;
             Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime * factor;
             if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
+                || (direction.y > 0 && new_pos.y >= next_pos.y) || (direction.y < 0 && new_pos.y <= next_pos.y)
                 || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
             {
                 Stop(next_pos);
@@ -105,11 +128,13 @@ public class CharacterControllerScript : Pusher
                 rb.MovePosition(new_pos);
             }
 
+            if (direction.y == 0){
             // For walking animation:
             float distance = Vector3.Distance(rb.position, next_pos); // Should be between [0,1]
             float height = (1 - SQUEEZE_SIZE) + Mathf.Abs(0.5f - distance) * SQUEEZE_SIZE * 2; // Only change constant, no terms here
             Vector3 scale = new Vector3(1, height, 1); // Only height is affected
             gameObject.GetComponent<Transform>().localScale = scale;
+            }
         }
 
         UpdateFacing();
@@ -158,5 +183,10 @@ public class CharacterControllerScript : Pusher
     {
         base.Stop(position);
         pushing = false;
+    }
+
+    public void SetMoving(bool ismoving)
+    {
+        moving = ismoving;
     }
 }

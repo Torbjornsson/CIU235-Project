@@ -21,7 +21,9 @@ public abstract class Pusher : MonoBehaviour
         GameObject box = null;
 
         RaycastHit hit = new RaycastHit();
-        Physics.Raycast(rb.position, direction,out hit, Utility.GRID_SIZE);
+        Vector3 pos = rb.position;
+        pos.y += 0.1f;
+        Physics.Raycast(pos, direction,out hit, Utility.GRID_SIZE);
         if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
         {
             // Nothing can move through walls
@@ -37,13 +39,20 @@ public abstract class Pusher : MonoBehaviour
             // IF the box does not collide, in turn
             if (gameObject.name == "Character" && hit.collider.gameObject.tag == "Box")
             {
+<<<<<<< HEAD
                 box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
+=======
+                BoxPushedScript box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
+>>>>>>> Height
                 collision |= box_script.CollisionCheckInFront(direction);
                 if (!collision)
                 {
                     box_script.Pushed(gameObject);
                     gameObject.GetComponent<CharacterControllerScript>().pushing = true;
+<<<<<<< HEAD
                     box = hit.collider.gameObject;
+=======
+>>>>>>> Height
                 }
             }
 
