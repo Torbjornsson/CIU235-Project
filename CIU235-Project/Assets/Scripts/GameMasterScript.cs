@@ -160,7 +160,7 @@ public class GameMasterScript : MonoBehaviour
 
     public void RecordUndo(GameObject go,Vector3 pos)
     {
-        Debug.Log("Recorded " + go.name + " at pos " + pos);
+        //Debug.Log("Recorded " + go.name + " at pos " + pos);
         undoStack.Push(pos);
         undoStackC.Push(go);
     }

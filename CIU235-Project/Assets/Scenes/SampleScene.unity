@@ -443,7 +443,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 0}
+<<<<<<< HEAD
+=======
   speed: 0
+>>>>>>> master
 --- !u!1001 &888524736
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1012,11 +1015,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8330957297601213646, guid: 9448685e3ad186061b8aff352fdda41a,
+    - target: {fileID: 8330957297601213635, guid: 9448685e3ad186061b8aff352fdda41a,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 3eb9fffc0b5044f988312657ca35574b, type: 2}
+      propertyPath: m_Constraints
+      value: 80
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9448685e3ad186061b8aff352fdda41a, type: 3}
 --- !u!1001 &8983165245367036540
