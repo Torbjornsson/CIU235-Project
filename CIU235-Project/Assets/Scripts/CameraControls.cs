@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class CameraControls : MonoBehaviour
 {
+    public enum Facing
+    {
+        NORTH, EAST, SOUTH, WEST, ROTATING
+    }
+
     public const float DEAD_ZONE = 0.5f;
     public const float EPSILON = 0.0001f;
     public const float ROTATION_SPEED = 150f;
@@ -13,6 +18,9 @@ public class CameraControls : MonoBehaviour
 
     private Vector3 offset;
     private float target_angle;
+
+    private Facing facing;
+    private Facing next_facing;
 
     private string stick_rotate;
 
@@ -29,6 +37,8 @@ public class CameraControls : MonoBehaviour
         stick_rotate = (game_master_script.GetSystem() == GameMasterScript.System.OSX) ? "RotateOSX" : "RotateOther";
 
         target_angle = 0;
+        facing = Facing.NORTH;
+        next_facing = Facing.NORTH;
     }
 
     // Update is called once per frame
@@ -59,6 +69,35 @@ public class CameraControls : MonoBehaviour
         transform.position = character.transform.position + offset;
     }
 
+    private void InitiateRotation(float angle)
+    {
+        target_angle = angle;
+
+        switch (facing)
+        {
+            case Facing.NORTH:
+                if (angle < 0) next_facing = Facing.EAST;
+                else next_facing = Facing.WEST;
+                break;
+            case Facing.EAST:
+                if (angle < 0) next_facing = Facing.SOUTH;
+                else next_facing = Facing.NORTH;
+                break;
+            case Facing.SOUTH:
+                if (angle < 0) next_facing = Facing.WEST;
+                else next_facing = Facing.EAST;
+                break;
+            case Facing.WEST:
+                if (angle < 0) next_facing = Facing.NORTH;
+                else next_facing = Facing.SOUTH;
+                break;
+            case Facing.ROTATING:
+                break;
+        }
+        facing = Facing.ROTATING;
+        Debug.Log("Rotating! " + target_angle + ", next facing: " + next_facing + ", actual rotation: " + transform.rotation);
+    }
+
     private void Rotate()
     {
 
@@ -74,12 +113,8 @@ public class CameraControls : MonoBehaviour
         {
             RotateStep(rotation_delta);
         }
-    }
 
-    private void InitiateRotation(float angle)
-    {
-        target_angle = angle;
-        //Debug.Log("Rotating! " + target_angle);
+        if (Mathf.Abs(target_angle) < EPSILON) facing = next_facing;
     }
 
     private void RotateStep(float rotation_delta)
@@ -87,5 +122,10 @@ public class CameraControls : MonoBehaviour
         transform.RotateAround(character.transform.position, Vector3.up, rotation_delta);
         target_angle += rotation_delta;
         offset = Quaternion.AngleAxis(rotation_delta, Vector3.up) * offset;
+    }
+
+    public Facing GetFacing()
+    {
+        return facing;
     }
 }

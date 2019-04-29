@@ -21,4 +21,22 @@ public static class Utility
     {
         return new Vector3(Mathf.Round(x / grid_size) * grid_size, Mathf.Round(y / grid_size) * grid_size, Mathf.Round(z / grid_size) * grid_size);
     }
+
+    // Method for applying camera rotation to controls
+    public static Vector3 RotateInputVector(float dir_x, float dir_y, float dir_z, CameraControls.Facing camera_facing)
+    {
+        switch(camera_facing)
+        {
+            case CameraControls.Facing.NORTH:
+                return new Vector3(dir_x, dir_y, dir_z);
+            case CameraControls.Facing.EAST:
+                return new Vector3(dir_z, dir_y, -dir_x);
+            case CameraControls.Facing.SOUTH:
+                return new Vector3(-dir_x, dir_y, -dir_z);
+            case CameraControls.Facing.WEST:
+                return new Vector3(-dir_z, dir_y, dir_x);
+            default:
+                return new Vector3(0, 0, 0);
+        }
+    }
 }

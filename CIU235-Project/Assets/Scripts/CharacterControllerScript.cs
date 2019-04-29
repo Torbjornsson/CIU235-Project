@@ -19,11 +19,14 @@ public class CharacterControllerScript : Pusher
     public bool pushing;
     public float speed_push;
 
+    private CameraControls camera_script;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
+        camera_script = GameObject.Find("Main Camera").GetComponent<CameraControls>();
         moving = false;
         direction = new Vector3();
         next_pos = rb.position;
@@ -49,29 +52,32 @@ public class CharacterControllerScript : Pusher
                 cur_pos = prev_pos;
             }
 
-            if (Input.GetAxis("Horizontal") > DEAD_ZONE
-                || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) > DEAD_ZONE)
+            if (camera_script.GetFacing() != CameraControls.Facing.ROTATING)
             {
-                SetDir(1, 0, 0);
-                moving = true;
-            }
-            if (Input.GetAxis("Horizontal") < -DEAD_ZONE
-                || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) < -DEAD_ZONE)
-            {
-                SetDir(-1, 0, 0);
-                moving = true;
-            }
-            if (Input.GetAxis("Vertical") > DEAD_ZONE
-                || Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()) > DEAD_ZONE)
-            {
-                SetDir(0, 0, 1);
-                moving = true;
-            }
-            if (Input.GetAxis("Vertical") < -DEAD_ZONE
-                || Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()) < -DEAD_ZONE)
-            {
-                SetDir(0, 0, -1);
-                moving = true;
+                if (Input.GetAxis("Horizontal") > DEAD_ZONE
+                    || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) > DEAD_ZONE)
+                {
+                    SetDir(1, 0, 0);
+                    moving = true;
+                }
+                if (Input.GetAxis("Horizontal") < -DEAD_ZONE
+                    || Input.GetAxis("HorizontalDpad" + game_master_script.GetSystem()) < -DEAD_ZONE)
+                {
+                    SetDir(-1, 0, 0);
+                    moving = true;
+                }
+                if (Input.GetAxis("Vertical") > DEAD_ZONE
+                    || Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()) > DEAD_ZONE)
+                {
+                    SetDir(0, 0, 1);
+                    moving = true;
+                }
+                if (Input.GetAxis("Vertical") < -DEAD_ZONE
+                    || Input.GetAxis("VerticalDpad" + game_master_script.GetSystem()) < -DEAD_ZONE)
+                {
+                    SetDir(0, 0, -1);
+                    moving = true;
+                }
             }
 
             //if (direction.z > 0 || direction.z < 0)
@@ -140,9 +146,10 @@ public class CharacterControllerScript : Pusher
 
     public void SetDir(float dir_x, float dir_y, float dir_z)
     {
-        direction.x = dir_x;
-        direction.y = dir_y;
-        direction.z = dir_z;
+        //direction.x = dir_x;
+        //direction.y = dir_y;
+        //direction.z = dir_z;
+        direction = Utility.RotateInputVector(dir_x, dir_y, dir_z, camera_script.GetFacing());
     }
 
     public void SetNextPos(Vector3 cur_pos, Vector3 dir)
