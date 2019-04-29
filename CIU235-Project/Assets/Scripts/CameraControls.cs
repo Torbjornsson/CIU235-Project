@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraControls : MonoBehaviour
 {
     public const float DEAD_ZONE = 0.5f;
+    public const float EPSILON = 0.0001f;
 
     public GameObject character;
     protected GameMasterScript game_master_script;
@@ -16,6 +17,11 @@ public class CameraControls : MonoBehaviour
     //private bool rotating;
     private int rotate_dir;
     private string stick_rotate;
+
+    private float target_angle;
+    const float rotation_amount = 1.5f;
+    public float r_distance;
+    public float r_speed;
 
     // Start is called before the first frame update
     void Start()
@@ -29,16 +35,19 @@ public class CameraControls : MonoBehaviour
         speed = 0.1f;
 
         stick_rotate = (game_master_script.GetSystem() == GameMasterScript.System.OSX) ? "RotateOSX" : "RotateOther";
+
+        target_angle = 0;
+        r_distance = 1.0f;
+        r_speed = 1.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
         
-        if (rotate_dir == 0)
+        if (Mathf.Abs(target_angle) < EPSILON)
+        //if (rotate_dir == 0)
         {
-            from = transform.rotation;
-            to = from;
             if (Input.GetAxis(stick_rotate) > DEAD_ZONE || Input.GetAxis("Rotate") > DEAD_ZONE)
             {
                 //Debug.Log(to.eulerAngles.y);
@@ -46,25 +55,34 @@ public class CameraControls : MonoBehaviour
                 //to.x = 0;
                 //to.z = 0;
                 //transform.RotateAround(character.transform.position, Vector3.up, 90.0f);
-                rotate_dir = 1;
-                
+
+                //rotate_dir = 1;
+                //Rotate(rotate_dir);
+                target_angle = 90f;
             }
             else if (Input.GetAxis(stick_rotate) < -DEAD_ZONE || Input.GetAxis("Rotate") < -DEAD_ZONE)
             {
-                rotate_dir = -1;
+                //rotate_dir = -1;
+                //Rotate(rotate_dir);
+                target_angle = -90f;
             }
         }
 
-        if (rotate_dir != 0)
+        if (Mathf.Abs(target_angle) > EPSILON)
+        //if (rotate_dir != 0)
         {
-            Debug.Log("Rotating! "+rotate_dir);
+            //Debug.Log("Rotating! "+rotate_dir);
+            Debug.Log("Rotating! " + target_angle);
+
+            //rotate_dir = 0;
 
             //transform.rotation = Quaternion.RotateTowards(from, to, Time.deltaTime * speed);
+            Rotate();
             //if (transform.rotation == to)
             //{
-            //    rotating = false;
+            //    //rotating = false;
+            //    rotate_dir = 0;
             //}
-            rotate_dir = 0;
         }
 
     }
@@ -72,6 +90,30 @@ public class CameraControls : MonoBehaviour
     private void LateUpdate() 
     {
         transform.position = character.transform.position + offset;
+    }
+
+    private void Rotate()
+    {
+        //from = transform.rotation;
+        //to = from;
+
+        //Debug.Log(to.eulerAngles.y);
+
+        float step = r_speed * Time.deltaTime;
+        float orbit_circumfrance = 2F * r_distance * Mathf.PI;
+        float distance_degrees = (r_speed / orbit_circumfrance) * 360;
+        float distance_radians = (r_speed / orbit_circumfrance) * 2 * Mathf.PI;
+
+        if (target_angle > 0)
+        {
+            transform.RotateAround(gameObject.transform.position, Vector3.up, -rotation_amount);
+            target_angle -= rotation_amount;
+        }
+        else if (target_angle < 0)
+        {
+            transform.RotateAround(gameObject.transform.position, Vector3.up, rotation_amount);
+            target_angle += rotation_amount;
+        }
     }
 
     //private void RotateC(Transform t1, Transform t2, float degrees, float rotatetime){
