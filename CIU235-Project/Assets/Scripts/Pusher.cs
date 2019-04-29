@@ -39,20 +39,13 @@ public abstract class Pusher : MonoBehaviour
             // IF the box does not collide, in turn
             if (gameObject.name == "Character" && hit.collider.gameObject.tag == "Box")
             {
-<<<<<<< HEAD
                 box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
-=======
-                BoxPushedScript box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
->>>>>>> Height
                 collision |= box_script.CollisionCheckInFront(direction);
                 if (!collision)
                 {
                     box_script.Pushed(gameObject);
                     gameObject.GetComponent<CharacterControllerScript>().pushing = true;
-<<<<<<< HEAD
                     box = hit.collider.gameObject;
-=======
->>>>>>> Height
                 }
             }
 
