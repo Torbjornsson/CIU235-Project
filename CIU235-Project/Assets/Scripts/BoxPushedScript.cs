@@ -130,9 +130,17 @@ public class BoxPushedScript : Pusher
         next_pos = cur_pos + direction * Utility.GRID_SIZE;
         moving = true;
 
+        //Check if box is on top of box if so move it also
+        RaycastHit hit = new RaycastHit();
+        Physics.Raycast(rb.position, Vector3.up, out hit, Utility.GRID_SIZE);
+        if (hit.collider != null && hit.collider.tag == "Box"){
+            hit.collider.GetComponent<BoxPushedScript>().Pushed(c);
+        }
+
         // Updating position to be off exactly as much as character, from grid
         cur_pos += diff;
         rb.MovePosition(cur_pos);
+        
     }
 
     public void SetState(State state)
