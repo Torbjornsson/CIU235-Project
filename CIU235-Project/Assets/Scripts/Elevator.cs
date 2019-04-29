@@ -22,6 +22,12 @@ public class Elevator : MonoBehaviour
             Vector3 pos = rb.position;
             pos.y = GameObject.Find("Character").GetComponent<Rigidbody>().position.y;
             pos.y -= 0.5f;
+            if(pos.y < rb.position.y){
+                direction = Vector3.down;
+            }
+            else{
+                direction = Vector3.up;
+            }
             rb.MovePosition(pos);
             if (rb.position.y == 0.5){
                 level = 1;
@@ -49,7 +55,7 @@ public class Elevator : MonoBehaviour
     {
         if (other.gameObject.tag == "Box"){
             BoxPushedScript BPS = other.gameObject.GetComponent<BoxPushedScript>();
-            if (!BPS.IsMoving()){
+            if (!BPS.IsMoving() && !direction.Equals(Vector3.zero)){
                 BPS.Pushed(gameObject);
             }
             
