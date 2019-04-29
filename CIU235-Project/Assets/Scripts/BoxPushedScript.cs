@@ -55,6 +55,30 @@ public class BoxPushedScript : Pusher
                 rb.MovePosition(new_pos);
             }
         }
+        if (!CollisionCheckInFront(Vector3.down) && !moving){
+                RaycastHit hit = new RaycastHit();
+                Vector3 pos = rb.position;
+                pos += Vector3.down;
+                Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
+                if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
+                    Debug.Log("Test");
+                }
+                if (hit.collider.tag == "Box"){
+                    Debug.Log("Fall");
+                    if (moving){
+                        Stop(next_pos);
+                    }
+                    if (!moving){
+                        direction = Vector3.down;
+                        moving = true;
+                        next_pos = cur_pos + direction * Utility.GRID_SIZE;
+                        Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
+                        rb.MovePosition(new_pos);
+                    }   
+                }
+                
+                
+            }
 
         if (state == State.WRONG)
         {
