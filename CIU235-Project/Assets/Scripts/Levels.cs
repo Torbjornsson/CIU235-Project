@@ -2,21 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor;
+using UnityEngine.UI;
 
 public class Levels : MonoBehaviour
 {
     public int nmr_scns;
+
+    public GameObject button_prefab;
     // Start is called before the first frame update
     void Start()
     {
         nmr_scns = SceneManager.sceneCountInBuildSettings;
 
         for (int i = 1; i < nmr_scns; i++){
-            GameObject btn = new GameObject();
-            btn.transform.SetParent(gameObject.transform);
-            btn.AddComponent<RectTransform>();
-            //btn.AddComponent<Button>();
+            GameObject go = (GameObject)Instantiate(button_prefab);
+            go.transform.SetParent(this.transform, false);
+
+            Button btn = go.GetComponent<Button>();
+            int tmp = i;
+            
+            btn.onClick.AddListener(() => SelectLevel(tmp));
+            btn.GetComponentInChildren<Text>().text = tmp.ToString();
         }
     }
     
@@ -25,5 +31,11 @@ public class Levels : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void SelectLevel(int n)
+    {
+        Debug.Log("Load level " + n);
+        SceneManager.LoadScene(n);
     }
 }
