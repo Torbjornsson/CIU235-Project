@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GUI : MonoBehaviour
 {
+    public UnityEngine.Canvas levelSelection;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +19,13 @@ public class GUI : MonoBehaviour
 
     public void StartGame(){
         UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
+    }
+
+    public void LevelSelect()
+    {
+        
+        levelSelection.gameObject.SetActive(true);
+        gameObject.SetActive(false);
     }
 
     public void Exit()

@@ -8,6 +8,8 @@ public class Levels : MonoBehaviour
 {
     public int nmr_scns;
 
+    public Canvas menu, levelSelection;
+
     public GameObject button_prefab;
     // Start is called before the first frame update
     void Start()
@@ -37,5 +39,11 @@ public class Levels : MonoBehaviour
     {
         Debug.Log("Load level " + n);
         SceneManager.LoadScene(n);
+    }
+
+    public void Back()
+    {
+        menu.gameObject.SetActive(true);
+        levelSelection.gameObject.SetActive(false);
     }
 }
