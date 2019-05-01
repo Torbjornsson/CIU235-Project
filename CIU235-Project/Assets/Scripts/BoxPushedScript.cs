@@ -12,6 +12,7 @@ public class BoxPushedScript : Pusher
 
     public float speed;
     public GameObject shine;
+    public GameObject shine_point_light;
 
     private Vector3 direction;
     private Vector3 next_pos;
@@ -66,6 +67,8 @@ public class BoxPushedScript : Pusher
             shine.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(color_alpha, COLOR_WRONG.g, COLOR_WRONG.b, 1));
             //shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", new Color(COLOR_WRONG.r, COLOR_WRONG.g, COLOR_WRONG.b, color_alpha));
             shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", new Color(color_alpha, COLOR_WRONG.g, COLOR_WRONG.b, 1));
+
+            shine_point_light.GetComponent<Light>().intensity = color_alpha * 0.5f + 1f;
         }
     }
 
@@ -103,6 +106,7 @@ public class BoxPushedScript : Pusher
             {
                 case State.IDLE:
                     shine.SetActive(false);
+                    shine_point_light.SetActive(false);
                     //shine.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
                     break;
                 case State.CORRECT:
@@ -110,12 +114,18 @@ public class BoxPushedScript : Pusher
                     shine.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
                     shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", COLOR_CORRECT);
                     shine.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", COLOR_CORRECT);
+                    shine_point_light.SetActive(true);
+                    shine_point_light.GetComponent<Light>().color = COLOR_CORRECT;
+                    shine_point_light.GetComponent<Light>().intensity = 0.5f;
                     break;
                 case State.WRONG:
                     shine.SetActive(true);
                     shine.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
                     shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", COLOR_WRONG);
                     shine.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", COLOR_WRONG);
+                    shine_point_light.SetActive(true);
+                    shine_point_light.GetComponent<Light>().color = COLOR_WRONG;
+                    shine_point_light.GetComponent<Light>().intensity = 0f;
                     color_alpha = 0;
                     color_dir = 1;
                     break;
