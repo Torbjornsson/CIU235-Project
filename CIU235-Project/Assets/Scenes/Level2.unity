@@ -1501,6 +1501,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Plane
       objectReference: {fileID: 0}
+    - target: {fileID: 5682307526748035591, guid: 335ffb9045c7026899fa143e96d99f7e,
+        type: 3}
+      propertyPath: m_TagString
+      value: Wall
+      objectReference: {fileID: 0}
     - target: {fileID: 5682307526748035587, guid: 335ffb9045c7026899fa143e96d99f7e,
         type: 3}
       propertyPath: m_LocalPosition.x
