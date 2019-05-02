@@ -13227,6 +13227,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: LightAbove2
       objectReference: {fileID: 0}
+    - target: {fileID: 8874814602644751686, guid: 2891e2b6d6f4847129f76cc1fcbd7133,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8874814602644751680, guid: 2891e2b6d6f4847129f76cc1fcbd7133,
         type: 3}
       propertyPath: m_LocalPosition.x
