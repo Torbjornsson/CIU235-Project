@@ -45,8 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EPSILON: 0.00001
-  pause_menu: {fileID: 3356761680030387602, guid: df3ed7879c13daf67a94d91f3f256614,
-    type: 3}
+  pause_menu: {fileID: 4149364321483315342}
 --- !u!1001 &1657355634760979740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -374,6 +373,12 @@ PrefabInstance:
 --- !u!224 &4149364321483315343 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3356761680030387603, guid: df3ed7879c13daf67a94d91f3f256614,
+    type: 3}
+  m_PrefabInstance: {fileID: 1657355634760979740}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &4149364321483315342 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 3356761680030387602, guid: df3ed7879c13daf67a94d91f3f256614,
     type: 3}
   m_PrefabInstance: {fileID: 1657355634760979740}
   m_PrefabAsset: {fileID: 0}
