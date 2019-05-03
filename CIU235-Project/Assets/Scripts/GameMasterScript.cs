@@ -72,42 +72,41 @@ public class GameMasterScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Mathf.Abs(Input.GetAxis(button_reset)) > EPSILON)
+        if ((Input.GetButton(button_reset)))
         {
             if (!is_axis_used)
             {
-                is_axis_used = true;
                 ResetLevel();
             }
         }
-        else if (Mathf.Abs(Input.GetAxis(button_reset)) <= EPSILON)
-        {
-            is_axis_used = false;
-        }
 
-        if (Mathf.Abs(Input.GetAxis(button_menu)) > EPSILON)
+        if ((Input.GetButton(button_menu)))
         {
-            //Todo: fix that this keeps being pressed
-            Debug.Log(Mathf.Abs(Input.GetAxis(button_menu)));
             if (!is_axis_used && !pause_menu.isActiveAndEnabled)
             {
                 is_axis_used = true;
                 Pause();
             }
-        }
-        else if(Mathf.Abs(Input.GetAxis(button_menu)) <= EPSILON)
-        {
-            is_axis_used = false;
+            else if (!is_axis_used && pause_menu.isActiveAndEnabled)
+            {
+                is_axis_used = true;
+                Resume();
+            }
         }
 
-        if (Mathf.Abs(Input.GetAxis(button_accept)) > EPSILON)
+        if (Input.GetButton(button_accept))
         {
             Debug.Log("ACCEPT");
         }
 
-        if (Mathf.Abs(Input.GetAxis(button_cancel)) > EPSILON)
+        if ((Input.GetButton(button_cancel)))
         {
             Debug.Log("CANCEL");
+        }
+
+        if (is_axis_used && !Input.GetButton(button_menu) && !Input.GetButton(button_reset))
+        {
+            is_axis_used = false;
         }
     }
 
