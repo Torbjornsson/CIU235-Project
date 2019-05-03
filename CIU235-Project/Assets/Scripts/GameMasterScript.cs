@@ -18,7 +18,6 @@ public class GameMasterScript : MonoBehaviour
 
     public Stack undoStack = new Stack();
     public Stack undoStackC = new Stack();
-    bool is_axis_used;
     bool level_win;
 
     private static GameMasterScript instance = null;
@@ -72,41 +71,31 @@ public class GameMasterScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((Input.GetButton(button_reset)))
+        if ((Input.GetButtonDown(button_reset)))
         {
-            if (!is_axis_used)
-            {
                 ResetLevel();
-            }
         }
 
-        if ((Input.GetButton(button_menu)))
+        if ((Input.GetButtonDown(button_menu)))
         {
-            if (!is_axis_used && !pause_menu.isActiveAndEnabled)
+            if (!pause_menu.isActiveAndEnabled)
             {
-                is_axis_used = true;
                 Pause();
             }
-            else if (!is_axis_used && pause_menu.isActiveAndEnabled)
+            else if (pause_menu.isActiveAndEnabled)
             {
-                is_axis_used = true;
                 Resume();
             }
         }
 
-        if (Input.GetButton(button_accept))
+        if (Input.GetButtonDown(button_accept))
         {
             Debug.Log("ACCEPT");
         }
 
-        if ((Input.GetButton(button_cancel)))
+        if ((Input.GetButtonDown(button_cancel)))
         {
             Debug.Log("CANCEL");
-        }
-
-        if (is_axis_used && !Input.GetButton(button_menu) && !Input.GetButton(button_reset))
-        {
-            is_axis_used = false;
         }
     }
 
