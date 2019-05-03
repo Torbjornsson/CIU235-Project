@@ -13,10 +13,12 @@
     SubShader
     {
     
+        //Tags { "RenderType"="Opaque" "LightMode"="ForwardAdd" }
         Tags { "RenderType"="Opaque" "LightMode"="ForwardBase" }
         
         pass
         {       
+            //Tags { "LightMode"="ForwardAdd"}
             Tags { "LightMode"="ForwardBase"}
 
             CGPROGRAM
@@ -27,6 +29,7 @@
             #pragma vertex vertShadow
             #pragma fragment fragShadow
             #pragma multi_compile_fwdbase
+            //#pragma multi_compile_fwdadd_fullshadows
 
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
