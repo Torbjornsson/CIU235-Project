@@ -17,13 +17,31 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level2.unity
     guid: af019b6bd90994e16b115fb9efe95e59
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level3.unity
     guid: 721a4b939dd044da6bada6cc0a2c8f28
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level4.unity
     guid: 5d216d26208b24b3ab93537d95b6ab0e
   - enabled: 1
-    path: Assets/Scenes/Level5.unity
+    path: Assets/Scenes/LevelPlayground.unity
+    guid: ca77bc6c585f94969aab0eb4e7f02b62
+  - enabled: 1
+    path: Assets/Scenes/LevelBoxAndFail.unity
+    guid: b646d812cf03f4200a91720e09652da7
+  - enabled: 1
+    path: Assets/Scenes/LevelNotThroughGoal.unity
+    guid: 98a3323f8e304464cad83e7099be4266
+  - enabled: 1
+    path: Assets/Scenes/LevelBacktrackButton.unity
+    guid: 6396a535ac51048f0a4933497cb2b5fd
+  - enabled: 1
+    path: Assets/Scenes/LevelOneButton.unity
+    guid: 5392d6d2276a6428db4d36a94819c991
+  - enabled: 1
+    path: Assets/Scenes/LevelThreeYellows.unity
     guid: d4f4f2d21de0d4dff9398e38a11b5a66
+  - enabled: 1
+    path: Assets/Scenes/LevelButtonSwap.unity
+    guid: 8f726c5d8aca142db9e7b83f4d333bf6
   m_configObjects: {}
