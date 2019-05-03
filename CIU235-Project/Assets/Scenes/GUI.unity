@@ -1667,11 +1667,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 300185194}
     m_Modifications:
-    - target: {fileID: 2374548627848633979, guid: e14f8eab322144bd3a6920f50f87ce73,
-        type: 3}
-      propertyPath: m_Name
-      value: BackButton
-      objectReference: {fileID: 0}
     - target: {fileID: 2374548627848633860, guid: e14f8eab322144bd3a6920f50f87ce73,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1806,6 +1801,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2374548627848633979, guid: e14f8eab322144bd3a6920f50f87ce73,
+        type: 3}
+      propertyPath: m_Name
+      value: BackButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e14f8eab322144bd3a6920f50f87ce73, type: 3}

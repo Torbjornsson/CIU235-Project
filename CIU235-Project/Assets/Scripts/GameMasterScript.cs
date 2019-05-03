@@ -28,6 +28,8 @@ public class GameMasterScript : MonoBehaviour
 
     public float EPSILON = 0.00001f;
 
+    public Canvas pause_menu;
+
     private void Awake() {
         if (instance != null && instance != this) 
         {
@@ -85,11 +87,12 @@ public class GameMasterScript : MonoBehaviour
 
         if (Mathf.Abs(Input.GetAxis(button_menu)) > EPSILON)
         {
-            if (!is_axis_used)
+            //Todo: fix that this keeps being pressed
+            Debug.Log(Mathf.Abs(Input.GetAxis(button_menu)));
+            if (!is_axis_used && !pause_menu.isActiveAndEnabled)
             {
                 is_axis_used = true;
-                Debug.Log("QUIT");
-                Quit();
+                Pause();
             }
         }
         else if(Mathf.Abs(Input.GetAxis(button_menu)) <= EPSILON)
@@ -168,5 +171,21 @@ public class GameMasterScript : MonoBehaviour
     public System GetSystem()
     {
         return system;
+    }
+
+    public void Pause(){
+        Debug.Log("Menu");
+        pause_menu.gameObject.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void Resume(){
+        Debug.Log("Resume");
+        pause_menu.gameObject.SetActive(false);
+        Time.timeScale = 1;
+    }
+
+    public void LoadLevel(int n){
+        SceneManager.LoadScene(n);
     }
 }
