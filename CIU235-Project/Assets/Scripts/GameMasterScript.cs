@@ -173,6 +173,7 @@ public class GameMasterScript : MonoBehaviour
     }
 
     public void LoadLevel(int n){
+        Debug.Log(SceneManager.GetSceneByBuildIndex(n).name);
         SceneManager.LoadScene(n);
     }
 }

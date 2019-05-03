@@ -18,12 +18,11 @@ public class GUI : MonoBehaviour
     }
 
     public void StartGame(){
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
+        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
 
     public void LevelSelect()
     {
-        
         levelSelection.gameObject.SetActive(true);
         GameObject.Find("BackButton").GetComponent<UnityEngine.UI.Button>().Select();
         gameObject.SetActive(false);
