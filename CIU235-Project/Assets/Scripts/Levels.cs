@@ -44,6 +44,7 @@ public class Levels : MonoBehaviour
     public void Back()
     {
         menu.gameObject.SetActive(true);
+        GameObject.Find("Start").GetComponent<Button>().Select();
         levelSelection.gameObject.SetActive(false);
     }
 }

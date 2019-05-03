@@ -25,6 +25,7 @@ public class GUI : MonoBehaviour
     {
         
         levelSelection.gameObject.SetActive(true);
+        GameObject.Find("BackButton").GetComponent<UnityEngine.UI.Button>().Select();
         gameObject.SetActive(false);
     }
 

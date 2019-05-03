@@ -33,6 +33,8 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void QuitToMenu(){
+        Time.timeScale = 1;
+        gameObject.SetActive(false);
         game_master_script.LoadLevel(0);
     }
 }

@@ -46,7 +46,6 @@ public class GameMasterScript : MonoBehaviour
     void Start()
     {
         level_win = false;
-        is_axis_used = false;
 
         if (Application.platform.Equals(RuntimePlatform.OSXEditor) || Application.platform.Equals(RuntimePlatform.OSXPlayer))
         {
@@ -76,7 +75,7 @@ public class GameMasterScript : MonoBehaviour
                 ResetLevel();
         }
 
-        if ((Input.GetButtonDown(button_menu)))
+        if ((Input.GetButtonDown(button_menu)) && SceneManager.GetActiveScene().buildIndex > 0)
         {
             if (!pause_menu.isActiveAndEnabled)
             {
