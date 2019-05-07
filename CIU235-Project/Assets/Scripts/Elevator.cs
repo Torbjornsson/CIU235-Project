@@ -18,22 +18,22 @@ public class Elevator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (rb.position.y + 0.5f != GameObject.Find("Character").GetComponent<Rigidbody>().position.y){
+        if (rb.position.y != GameObject.Find("Character").GetComponent<Rigidbody>().position.y){
             Vector3 pos = rb.position;
             pos.y = GameObject.Find("Character").GetComponent<Rigidbody>().position.y;
-            pos.y -= 0.5f;
-            if(pos.y < rb.position.y && rb.position.y > (-0.5f)){
+            //pos.y -= 0.5f;
+            if(pos.y < rb.position.y && rb.position.y > 0){
                 direction = Vector3.down;
             }
-            else if (rb.position.y < 0.5f){
+            else if (rb.position.y < 1){
                 direction = Vector3.up;
             }
             rb.MovePosition(pos);
-            if (rb.position.y == 0.5){
+            if (rb.position.y == 1){
                 level = 1;
                 direction = Vector3.zero;
             }
-            else if (rb.position.y == -0.5){
+            else if (rb.position.y == 0){
                 level = 0;
                 direction = Vector3.zero;
             }
