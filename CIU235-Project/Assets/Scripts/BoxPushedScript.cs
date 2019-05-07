@@ -57,12 +57,12 @@ public class BoxPushedScript : Pusher
         if (!CollisionCheckInFront(Vector3.down) && !moving){
                 RaycastHit hit = new RaycastHit();
                 Vector3 pos = rb.position;
-                pos += Vector3.down;
+                pos.y -= 2;
                 Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
                 if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
                     Debug.Log("Test");
                 }
-                if (hit.collider.tag == "Box"){
+                if (hit.collider == null){
                     Debug.Log("Fall");
                     if (moving){
                         Stop(next_pos);
@@ -102,15 +102,15 @@ public class BoxPushedScript : Pusher
     {
         // Getting things to use
         GameObject c = pusher;
-        if (c.tag == "Elevator"){
-            Elevator c_script = c.GetComponent<Elevator>();
-            direction = c_script.direction;
-            speed = 5;
-        }
-        else {
+        if (c.name == "Character") {
             CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
             direction = c_script.direction;
             speed = c_script.speed_push;
+        }
+        else{
+            Elevator c_script = c.GetComponent<Elevator>();
+            direction = c_script.direction;
+            speed = 5;
         }
         
         Vector3 cur_pos = rb.position;

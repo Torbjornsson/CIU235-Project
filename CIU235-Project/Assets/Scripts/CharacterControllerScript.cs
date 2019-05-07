@@ -30,6 +30,7 @@ public class CharacterControllerScript : Pusher
         moving = false;
         direction = new Vector3();
         next_pos = rb.position;
+        
         rotation = 0;
         pushing = false;
         speed_push = speed * PUSHING_FACTOR;
@@ -92,7 +93,7 @@ public class CharacterControllerScript : Pusher
             if (!CollisionCheckInFront(Vector3.down)){
                 RaycastHit hit = new RaycastHit();
                 Vector3 pos = rb.position;
-                pos += Vector3.down;
+                pos.y -= 2;
                 Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
                 if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
                     
@@ -107,9 +108,7 @@ public class CharacterControllerScript : Pusher
                         moving = true;
                         SetNextPos(cur_pos, direction);
                     }
-                }
-                
-                
+                } 
             }
         }
 
