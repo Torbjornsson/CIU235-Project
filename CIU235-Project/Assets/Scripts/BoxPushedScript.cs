@@ -75,8 +75,6 @@ public class BoxPushedScript : Pusher
                         rb.MovePosition(new_pos);
                     }   
                 }
-                
-                
             }
 
         if (state == State.WRONG)
