@@ -32,9 +32,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelNotThroughGoal.unity
     guid: 98a3323f8e304464cad83e7099be4266
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/LevelBacktrackButton.unity
     guid: 6396a535ac51048f0a4933497cb2b5fd
+  - enabled: 1
+    path: Assets/Scenes/LevelBacktrackButton2.unity
+    guid: 64a3875a75406442997eae6aa334eb6c
   - enabled: 1
     path: Assets/Scenes/LevelOneButton.unity
     guid: 5392d6d2276a6428db4d36a94819c991
