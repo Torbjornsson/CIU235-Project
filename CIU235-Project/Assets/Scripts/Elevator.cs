@@ -21,6 +21,7 @@ public class Elevator : MonoBehaviour
         if (rb.position.y != GameObject.Find("Character").GetComponent<Rigidbody>().position.y){
             Vector3 pos = rb.position;
             pos.y = GameObject.Find("Character").GetComponent<Rigidbody>().position.y;
+            Debug.Log("Elevator pos.y: " + rb.position.y + ", character pos.y: " + pos.y);
             //pos.y -= 0.5f;
             if(pos.y < rb.position.y && rb.position.y > 0){
                 direction = Vector3.down;
@@ -58,10 +59,10 @@ public class Elevator : MonoBehaviour
             
             if (hit.collider == null || (hit.collider != null && hit.collider.gameObject.tag != "Elevator"))
             {
-            if (level == 0)
-                direction = Vector3.up;
-            else
-                direction = Vector3.down;
+                if (level == 0)
+                    direction = Vector3.up;
+                else
+                    direction = Vector3.down;
             }
         }
     }
