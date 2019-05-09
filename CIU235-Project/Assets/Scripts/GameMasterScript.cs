@@ -16,8 +16,8 @@ public class GameMasterScript : MonoBehaviour
     private string button_accept;
     private string button_cancel;
 
-    public Stack undoStack = new Stack();
-    public Stack undoStackC = new Stack();
+    public Stack undo_stack = new Stack();
+    //public Stack undoStackC = new Stack();
     bool level_win;
 
     private static GameMasterScript instance = null;
@@ -108,7 +108,7 @@ public class GameMasterScript : MonoBehaviour
         }
         else
         {
-            undoStack.Clear();
+            undo_stack.Clear();
             SceneManager.LoadScene(bIndex);
         }
         
@@ -117,7 +117,7 @@ public class GameMasterScript : MonoBehaviour
     public void ResetLevel()
     {
         Debug.Log("Reset level");
-        undoStack.Clear();
+        undo_stack.Clear();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -129,31 +129,61 @@ public class GameMasterScript : MonoBehaviour
 
     public bool UndoAvailable()
     {
-        return undoStack.Count > 0;
+        return undo_stack.Count > 0;
     }
 
-    public Vector3 Undo()
+    public void Undo()
     {
-        GameObject go = (GameObject)undoStackC.Pop();
-        Vector3 pos = (Vector3)undoStack.Pop();
-        if (go.tag == "Box")
+        if (UndoAvailable())
         {
-            Debug.Log(go.GetComponent<Rigidbody>().position);
-            go.GetComponent<Rigidbody>().MovePosition(pos);
-            go = (GameObject)undoStackC.Pop();
-            pos = (Vector3)undoStack.Pop();
+            StatePackage state = (StatePackage) undo_stack.Pop();
+            Debug.Log("Undo !");
+            state.ResetState();
+            state.Destroy();
         }
-        Debug.Log("Undo " + go + " to pos " + pos);
-
-        return pos;
     }
+    //public Vector3 Undo()
+    //{
+    //    GameObject go = (GameObject)undoStackC.Pop();
+    //    Vector3 pos = (Vector3)undoStack.Pop();
+    //    if (go.tag == "Box")
+    //    {
+    //        Debug.Log(go.GetComponent<Rigidbody>().position);
+    //        go.GetComponent<Rigidbody>().MovePosition(pos);
+    //        go = (GameObject)undoStackC.Pop();
+    //        pos = (Vector3)undoStack.Pop();
+    //    }
+    //    Debug.Log("Undo " + go + " to pos " + pos);
 
-    public void RecordUndo(GameObject go,Vector3 pos)
+    //    return pos;
+    //}
+
+    public void RecordUndo()
     {
-        //Debug.Log("Recorded " + go.name + " at pos " + pos);
-        undoStack.Push(pos);
-        undoStackC.Push(go);
+        GameObject character = GameObject.FindWithTag("Player");
+        RecordUndo(character, character.GetComponent<Rigidbody>().position);
     }
+
+    public void RecordUndo(GameObject character, Vector3 position)
+    {
+        StatePackage state = new StatePackage(character, position);
+        //Debug.Log("Recorded " + character.name + " at pos " + position);
+
+        GameObject[] boxes = GameObject.FindGameObjectsWithTag("Box");
+        foreach(GameObject box in boxes)
+        {
+            state.AddObject(box, box.GetComponent<Rigidbody>().position);
+        }
+
+        undo_stack.Push(state);
+    }
+
+    //public void RecordUndo(GameObject go,Vector3 pos)
+    //{
+    //    //Debug.Log("Recorded " + go.name + " at pos " + pos);
+    //    undoStack.Push(pos);
+    //    undoStackC.Push(go);
+    //}
 
     public System GetSystem()
     {

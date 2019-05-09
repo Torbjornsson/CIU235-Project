@@ -41,16 +41,20 @@ public class CharacterControllerScript : Pusher
     {
 
         Vector3 cur_pos = rb.position;
+        bool move_input = false;
 
         if (!moving)
         {
         	if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
                 || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX")))) 
             {
-                Vector3 prev_pos = game_master_script.Undo();
-                Debug.Log("prev pos" + prev_pos);
-                rb.MovePosition(prev_pos);
-                cur_pos = prev_pos;
+                //Vector3 prev_pos = game_master_script.Undo();
+                //Debug.Log("prev pos" + prev_pos);
+                //rb.MovePosition(prev_pos);
+                //cur_pos = prev_pos;
+
+                game_master_script.Undo();
+                cur_pos = rb.position;
             }
 
             if (camera_script.GetFacing() != CameraControls.Facing.ROTATING)
@@ -79,6 +83,7 @@ public class CharacterControllerScript : Pusher
                     SetDir(0, 0, -1);
                     moving = true;
                 }
+                if (moving) move_input = true;
             }
 
             // After getting a direction and starts to move, checks for collision in that direction
@@ -89,7 +94,11 @@ public class CharacterControllerScript : Pusher
             else if (moving)
             {
                 SetNextPos(cur_pos, direction);
+                //game_master_script.RecordUndo(gameObject, cur_pos);
+                if (move_input) game_master_script.RecordUndo();
             }
+
+            // Initiating fall
             if (!CollisionCheckInFront(Vector3.down)){
                 RaycastHit hit = new RaycastHit();
                 Vector3 pos = rb.position;

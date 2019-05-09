@@ -53,8 +53,8 @@ public abstract class Pusher : MonoBehaviour
         }
 
         // Registering undo-states when needed
-        if (gameObject.name == "Character" && !collision) game_master_script.RecordUndo(gameObject, rb.position);
-        if (box != null) game_master_script.RecordUndo(box, box_script.rb.position);
+        //if (gameObject.name == "Character" && !collision) game_master_script.RecordUndo(gameObject, rb.position);
+        //if (box != null) game_master_script.RecordUndo(box, box_script.rb.position);
 
         return collision;
     }

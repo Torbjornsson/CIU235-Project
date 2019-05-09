@@ -31,4 +31,9 @@ public class StatePackage
             obj.GetComponent<Rigidbody>().MovePosition((Vector3)objects[obj]);
         }
     }
+
+    public void Destroy()
+    {
+        objects.Clear();
+    }
 }
