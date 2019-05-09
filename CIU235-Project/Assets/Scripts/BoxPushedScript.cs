@@ -54,26 +54,27 @@ public class BoxPushedScript : Pusher
                 rb.MovePosition(new_pos);
             }
         }
+        if (!moving)
+        {
         if (!CollisionCheckInFront(Vector3.down) && !moving){
                 RaycastHit hit = new RaycastHit();
                 Vector3 pos = rb.position;
                 pos.y -= 2;
-                Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
+                Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE * 2);
                 if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
                     Debug.Log("Test");
                 }
                 if (hit.collider == null || hit.collider.gameObject.tag == "Box"){
-                    Debug.Log("Fall");
+                    Debug.Log("Box y pos" + cur_pos.y);
                     
-                    if (!moving && cur_pos == next_pos){
+                    if (!moving && cur_pos.y >= 1){
                         direction = Vector3.down;
                         moving = true;
                         next_pos = cur_pos + direction * Utility.GRID_SIZE;
-                        Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
-                        rb.MovePosition(new_pos);
                     }   
                 }
             }
+        }
 
         if (state == State.WRONG)
         {
@@ -123,8 +124,15 @@ public class BoxPushedScript : Pusher
         //direction = c_script.direction;
         //speed = c_script.speed_push;
 
-        next_pos = cur_pos + direction * Utility.GRID_SIZE;
-        moving = true;
+        if (!moving){
+            next_pos = cur_pos + direction * Utility.GRID_SIZE;
+            moving = true;
+            if (next_pos.y < 0.5f || next_pos.y > 1.5f)
+            {
+                next_pos = cur_pos;
+                moving = false;
+            }
+        }
 
         //Check if box is on top of box if so move it also
         RaycastHit hit = new RaycastHit();
@@ -136,7 +144,6 @@ public class BoxPushedScript : Pusher
         // Updating position to be off exactly as much as character, from grid
         cur_pos += diff;
         rb.MovePosition(cur_pos);
-        
     }
 
     public void SetState(State state)
