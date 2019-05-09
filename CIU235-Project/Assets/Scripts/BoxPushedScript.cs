@@ -59,10 +59,13 @@ public class BoxPushedScript : Pusher
         if (!CollisionCheckInFront(Vector3.down) && !moving){
                 RaycastHit hit = new RaycastHit();
                 Vector3 pos = rb.position;
+                Physics.Raycast(pos, Vector3.down, out hit, Utility.GRID_SIZE * 0.5f);
+                if (hit.collider != null) return;
+
                 pos.y -= 2;
                 Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE * 2);
                 if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
-                    Debug.Log("Test");
+                    return;
                 }
                 if (hit.collider == null || hit.collider.gameObject.tag == "Box"){
                     Debug.Log("Box y pos" + cur_pos.y);

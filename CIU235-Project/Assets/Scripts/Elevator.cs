@@ -21,12 +21,12 @@ public class Elevator : MonoBehaviour
         if (rb.position.y != GameObject.Find("Character").GetComponent<Rigidbody>().position.y){
             Vector3 pos = rb.position;
             pos.y = GameObject.Find("Character").GetComponent<Rigidbody>().position.y;
-            Debug.Log("Elevator pos.y: " + rb.position.y + ", character pos.y: " + pos.y);
+            
             //pos.y -= 0.5f;
-            if(pos.y < rb.position.y && rb.position.y > 0){
+            if(pos.y - rb.position.y < -0.1f){
                 direction = Vector3.down;
             }
-            else if (rb.position.y < 1){
+            else if (pos.y - rb.position.y > 0.1f){
                 direction = Vector3.up;
             }
             rb.MovePosition(pos);
@@ -69,7 +69,6 @@ public class Elevator : MonoBehaviour
     }
     void OnTriggerStay(Collider other)
     {
-        
         if (other.gameObject.name == "Character")
         {
             CharacterControllerScript CCS = other.GetComponent<CharacterControllerScript>();
@@ -88,6 +87,7 @@ public class Elevator : MonoBehaviour
         else if (other.gameObject.tag == "Box"){
             BoxPushedScript BPS = other.gameObject.GetComponent<BoxPushedScript>();
             if (!BPS.IsMoving() && !direction.Equals(Vector3.zero)){
+                Debug.Log("Pushing box " + direction);
                 BPS.Pushed(gameObject);
             }
             
