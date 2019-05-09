@@ -192,6 +192,7 @@ MonoBehaviour:
   speed: 5
   pushing: 0
   speed_push: 0
+  eye: {fileID: 957807983951571879}
 --- !u!65 &8330957297601213647
 BoxCollider:
   m_ObjectHideFlags: 0
