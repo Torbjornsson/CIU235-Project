@@ -57,6 +57,9 @@ EditorBuildSettings:
     path: Assets/Scenes/LevelRailings.unity
     guid: 90122b781738c44f1a118a1c538c30bc
   - enabled: 1
+    path: Assets/Scenes/LevelChooseWisely.unity
+    guid: 91ac05a442fb246e39df7d50e8a5f32a
+  - enabled: 1
     path: Assets/Scenes/LevelBoxDown.unity
     guid: 2182f759ece854fc7af5b0f2a878df15
   m_configObjects: {}
