@@ -118,8 +118,8 @@ public class BoxPushedScript : Pusher
         Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
         //c_grid_pos.y = c_pos.y;
         Vector3 diff = c_pos - c_grid_pos;
-        if (c.tag == "Elevator")
-            diff.y += 0.5f;
+        //if (c.tag == "Elevator")
+            //diff.y += 0.5f;
 
         // Starting to move in the right direction
         //direction = c_script.direction;

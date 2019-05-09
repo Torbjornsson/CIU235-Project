@@ -48,6 +48,7 @@ public class Elevator : MonoBehaviour
             CharacterControllerScript ccs = other.gameObject.GetComponent<CharacterControllerScript>();
             Vector3 inverse = new Vector3(-1.0f,-1.0f,-1.0f);
             Vector3 pos = rb.position;
+            pos.y -= 0.5f;
             
             //Check from where the character entered
             RaycastHit hit = new RaycastHit();
