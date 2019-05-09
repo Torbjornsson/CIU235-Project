@@ -99,7 +99,6 @@ public class CharacterControllerScript : Pusher
                     
                 }
                 if (hit.collider == null || hit.collider != null && hit.collider.gameObject.tag == "Goal"){
-                    Debug.Log("Fall");
                     if (moving){
                         Stop(next_pos);
                     }
