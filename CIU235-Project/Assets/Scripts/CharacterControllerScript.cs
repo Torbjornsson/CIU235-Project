@@ -127,12 +127,13 @@ public class CharacterControllerScript : Pusher
                 rb.MovePosition(new_pos);
             }
 
-            if (direction.y == 0){
-            // For walking animation:
-            float distance = Vector3.Distance(rb.position, next_pos); // Should be between [0,1]
-            float height = (1 - SQUEEZE_SIZE) + Mathf.Abs(0.5f - distance) * SQUEEZE_SIZE * 2; // Only change constant, no terms here
-            Vector3 scale = new Vector3(1, height, 1); // Only height is affected
-            gameObject.GetComponent<Transform>().localScale = scale;
+            if (direction.y == 0)
+            {
+                // For walking animation:
+                float distance = Vector3.Distance(rb.position, next_pos); // Should be between [0,1]
+                float height = (1 - SQUEEZE_SIZE) + Mathf.Abs(0.5f - distance) * SQUEEZE_SIZE * 2; // Only change constant, no terms here
+                Vector3 scale = new Vector3(1, height, 1); // Only height is affected
+                gameObject.GetComponent<Transform>().localScale = scale;
             }
         }
 

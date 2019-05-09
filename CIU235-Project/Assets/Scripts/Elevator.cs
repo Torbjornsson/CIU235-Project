@@ -18,22 +18,23 @@ public class Elevator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (rb.position.y + 0.5f != GameObject.Find("Character").GetComponent<Rigidbody>().position.y){
+        if (rb.position.y != GameObject.Find("Character").GetComponent<Rigidbody>().position.y){
             Vector3 pos = rb.position;
             pos.y = GameObject.Find("Character").GetComponent<Rigidbody>().position.y;
-            pos.y -= 0.5f;
-            if(pos.y < rb.position.y && rb.position.y > (-0.5f)){
+            Debug.Log("Elevator pos.y: " + rb.position.y + ", character pos.y: " + pos.y);
+            //pos.y -= 0.5f;
+            if(pos.y < rb.position.y && rb.position.y > 0){
                 direction = Vector3.down;
             }
-            else if (rb.position.y < 0.5f){
+            else if (rb.position.y < 1){
                 direction = Vector3.up;
             }
             rb.MovePosition(pos);
-            if (rb.position.y == 0.5){
+            if (rb.position.y == 1){
                 level = 1;
                 direction = Vector3.zero;
             }
-            else if (rb.position.y == -0.5){
+            else if (rb.position.y == 0){
                 level = 0;
                 direction = Vector3.zero;
             }
@@ -47,6 +48,7 @@ public class Elevator : MonoBehaviour
             CharacterControllerScript ccs = other.gameObject.GetComponent<CharacterControllerScript>();
             Vector3 inverse = new Vector3(-1.0f,-1.0f,-1.0f);
             Vector3 pos = rb.position;
+            pos.y -= 0.5f;
             
             //Check from where the character entered
             RaycastHit hit = new RaycastHit();
@@ -58,10 +60,10 @@ public class Elevator : MonoBehaviour
             
             if (hit.collider == null || (hit.collider != null && hit.collider.gameObject.tag != "Elevator"))
             {
-            if (level == 0)
-                direction = Vector3.up;
-            else
-                direction = Vector3.down;
+                if (level == 0)
+                    direction = Vector3.up;
+                else
+                    direction = Vector3.down;
             }
         }
     }

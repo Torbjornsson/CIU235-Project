@@ -62,12 +62,10 @@ public class BoxPushedScript : Pusher
                 if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
                     Debug.Log("Test");
                 }
-                if (hit.collider == null){
+                if (hit.collider == null || hit.collider.gameObject.tag == "Box"){
                     Debug.Log("Fall");
-                    if (moving){
-                        Stop(next_pos);
-                    }
-                    if (!moving){
+                    
+                    if (!moving && cur_pos == next_pos){
                         direction = Vector3.down;
                         moving = true;
                         next_pos = cur_pos + direction * Utility.GRID_SIZE;
@@ -118,8 +116,8 @@ public class BoxPushedScript : Pusher
         Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
         //c_grid_pos.y = c_pos.y;
         Vector3 diff = c_pos - c_grid_pos;
-        if (c.tag == "Elevator")
-            diff.y += 0.5f;
+        //if (c.tag == "Elevator")
+            //diff.y += 0.5f;
 
         // Starting to move in the right direction
         //direction = c_script.direction;
