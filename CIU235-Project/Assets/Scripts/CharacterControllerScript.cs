@@ -108,11 +108,11 @@ public class CharacterControllerScript : Pusher
                     
                 }
                 if (hit.collider == null || hit.collider != null && hit.collider.gameObject.tag == "Goal"){
-                    Debug.Log("Fall");
                     if (moving){
                         Stop(next_pos);
                     }
-                    if (!moving){
+                    if (!moving)
+                    {
                         SetDir(0, -1, 0);
                         moving = true;
                         SetNextPos(cur_pos, direction);
@@ -189,6 +189,7 @@ public class CharacterControllerScript : Pusher
     public void SetNextPos(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
     {
         next_pos = new Vector3(cur_pos.x + Utility.GRID_SIZE * dir_x, cur_pos.y + Utility.GRID_SIZE * dir_y, cur_pos.z + Utility.GRID_SIZE * dir_z);
+        next_pos = Utility.GetGridPos(next_pos);
     }
 
     public override void Stop(Vector3 position)
