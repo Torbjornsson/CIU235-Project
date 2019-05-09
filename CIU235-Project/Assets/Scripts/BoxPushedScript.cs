@@ -127,25 +127,16 @@ public class BoxPushedScript : Pusher
 
         if (!moving){
             next_pos = cur_pos + direction * Utility.GRID_SIZE;
-<<<<<<< HEAD
             next_pos = Utility.GetGridPos(next_pos);
             moving = true;
             if (next_pos.y < 0 || next_pos.y > 1)
-=======
-            moving = true;
-            if (next_pos.y < 0.5f || next_pos.y > 1.5f)
->>>>>>> a30662e2914b61428b326b9e33047ec3fff193e0
             {
                 next_pos = cur_pos;
                 moving = false;
             }
         }
-<<<<<<< HEAD
         if (moving)
         {
-=======
-
->>>>>>> a30662e2914b61428b326b9e33047ec3fff193e0
         //Check if box is on top of box if so move it also
         RaycastHit hit = new RaycastHit();
         Physics.Raycast(rb.position, Vector3.up, out hit, Utility.GRID_SIZE);
@@ -156,10 +147,7 @@ public class BoxPushedScript : Pusher
         // Updating position to be off exactly as much as character, from grid
         cur_pos += diff;
         rb.MovePosition(cur_pos);
-<<<<<<< HEAD
         }
-=======
->>>>>>> a30662e2914b61428b326b9e33047ec3fff193e0
     }
 
     public void SetState(State state)
