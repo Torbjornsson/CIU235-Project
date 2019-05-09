@@ -46,6 +46,8 @@ public class Elevator : MonoBehaviour
         if (other.gameObject.name == "Character")
         {
             CharacterControllerScript ccs = other.gameObject.GetComponent<CharacterControllerScript>();
+            if (!ccs.IsMoving()) return;
+
             Vector3 inverse = new Vector3(-1.0f,-1.0f,-1.0f);
             Vector3 pos = rb.position;
             pos.y -= 0.5f;

@@ -48,8 +48,18 @@ public class Trigger : MonoBehaviour
         }
     }
 
-    // Helper method that makes sure everything is activated or deactivated only when it needs to
-    private void SetActivated(bool activated)
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Box")
+        {
+            BoxPushedScript other_script = other.gameObject.GetComponent<BoxPushedScript>();
+            SetActivated(false);
+            other_script.SetState(BoxPushedScript.State.IDLE);
+        }
+    }
+
+        // Helper method that makes sure everything is activated or deactivated only when it needs to
+        private void SetActivated(bool activated)
     {
         if (activated != this.activated)
         {
