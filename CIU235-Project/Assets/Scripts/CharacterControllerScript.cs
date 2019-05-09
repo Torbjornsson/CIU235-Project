@@ -90,12 +90,12 @@ public class CharacterControllerScript : Pusher
             if (moving && CollisionCheckInFront(direction))
             {
                 Stop(cur_pos);
+                move_input = false;
             }
             else if (moving)
             {
                 SetNextPos(cur_pos, direction);
                 //game_master_script.RecordUndo(gameObject, cur_pos);
-                if (move_input) game_master_script.RecordUndo();
             }
 
             // Initiating fall
@@ -117,8 +117,11 @@ public class CharacterControllerScript : Pusher
                         moving = true;
                         SetNextPos(cur_pos, direction);
                     }
-                } 
+                    move_input = false;
+                }
             }
+
+            if (move_input) game_master_script.RecordUndo();
         }
 
         if (moving)
