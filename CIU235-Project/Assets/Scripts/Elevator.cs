@@ -89,7 +89,6 @@ public class Elevator : MonoBehaviour
         else if (other.gameObject.tag == "Box"){
             BoxPushedScript BPS = other.gameObject.GetComponent<BoxPushedScript>();
             if (!BPS.IsMoving() && !direction.Equals(Vector3.zero)){
-                Debug.Log("Pushing box " + direction);
                 BPS.Pushed(gameObject);
             }
             
