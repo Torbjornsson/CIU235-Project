@@ -62,4 +62,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelBoxDown.unity
     guid: 2182f759ece854fc7af5b0f2a878df15
+  - enabled: 1
+    path: Assets/Scenes/LevelStacks.unity
+    guid: 06bf6dca64ac14337b4bfd1bc586fc68
   m_configObjects: {}
