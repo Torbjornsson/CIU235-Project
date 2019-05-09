@@ -67,10 +67,11 @@ public class BoxPushedScript : Pusher
                 if (hit.collider == null || hit.collider.gameObject.tag == "Box"){
                     Debug.Log("Box y pos" + cur_pos.y);
                     
-                    if (!moving && cur_pos.y >= 1){
+                    if (!moving && cur_pos.y == 1){
                         direction = Vector3.down;
                         moving = true;
                         next_pos = cur_pos + direction * Utility.GRID_SIZE;
+                        next_pos = Utility.GetGridPos(next_pos);
                     }   
                 }
             }
@@ -126,14 +127,16 @@ public class BoxPushedScript : Pusher
 
         if (!moving){
             next_pos = cur_pos + direction * Utility.GRID_SIZE;
+            next_pos = Utility.GetGridPos(next_pos);
             moving = true;
-            if (next_pos.y < 0.5f || next_pos.y > 1.5f)
+            if (next_pos.y < 0 || next_pos.y > 1)
             {
                 next_pos = cur_pos;
                 moving = false;
             }
         }
-
+        if (moving)
+        {
         //Check if box is on top of box if so move it also
         RaycastHit hit = new RaycastHit();
         Physics.Raycast(rb.position, Vector3.up, out hit, Utility.GRID_SIZE);
@@ -144,6 +147,7 @@ public class BoxPushedScript : Pusher
         // Updating position to be off exactly as much as character, from grid
         cur_pos += diff;
         rb.MovePosition(cur_pos);
+        }
     }
 
     public void SetState(State state)
