@@ -8,7 +8,7 @@ public class CharacterControllerScript : Pusher
     public const float EPSILON = 0.0001f;
     public const float DEAD_ZONE = 0.3f;
     public const float SQUEEZE_SIZE = 0.25f;
-    public const float PUSHING_FACTOR = 0.8f;
+    //public const float PUSHING_FACTOR = 0.8f;
 
     private Vector3 next_pos;
 
@@ -35,7 +35,8 @@ public class CharacterControllerScript : Pusher
         
         rotation = 0;
         pushing = false;
-        speed_push = speed * PUSHING_FACTOR;
+        //speed_push = speed * PUSHING_FACTOR;
+        speed = Utility.CHARACTER_SPEED;
     }
 
     // Update is called once per frame
@@ -134,9 +135,9 @@ public class CharacterControllerScript : Pusher
         {
             Vector3 cur_pos = rb.position;
 
-            float factor = pushing ? PUSHING_FACTOR : 1;
-            float temp_speed = (direction.y != 0) ? Utility.ELEVATOR_SPEED : speed;
-            Vector3 new_pos = cur_pos + direction * temp_speed * Time.deltaTime * factor;
+            //float factor = pushing ? PUSHING_FACTOR : 1;
+            float temp_speed = (pushing) ? Utility.PUSHING_SPEED : (direction.y != 0) ? Utility.ELEVATOR_SPEED : speed;
+            Vector3 new_pos = cur_pos + direction * temp_speed * Time.deltaTime;
 
             if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
                 || (direction.y > 0 && new_pos.y >= next_pos.y) || (direction.y < 0 && new_pos.y <= next_pos.y)

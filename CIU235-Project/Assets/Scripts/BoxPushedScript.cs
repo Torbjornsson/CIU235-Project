@@ -108,7 +108,8 @@ public class BoxPushedScript : Pusher
         {
             CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
             direction = c_script.direction;
-            speed = c_script.speed_push;
+            //speed = c_script.speed_push;
+            speed = Utility.PUSHING_SPEED;
         }
         else if (c.tag == "Elevator")
         {
