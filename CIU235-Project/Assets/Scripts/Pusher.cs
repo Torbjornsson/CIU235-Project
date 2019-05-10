@@ -24,7 +24,6 @@ public abstract class Pusher : MonoBehaviour
         bool collision = false;
         BoxPushedScript box_script = null;
         CharacterControllerScript char_script = null;
-        //GameObject box = null;
 
         RaycastHit hit = new RaycastHit();
         Vector3 pos = rb.position;
@@ -64,7 +63,6 @@ public abstract class Pusher : MonoBehaviour
                 {
                     box_script.Pushed(gameObject);
                     gameObject.GetComponent<CharacterControllerScript>().pushing = true;
-                    //box = hit.collider.gameObject;
                 }
             }
 
@@ -84,10 +82,6 @@ public abstract class Pusher : MonoBehaviour
             //Debug.Log("Collision registered by [" + gameObject.name + "]: " + hit.collider.gameObject.name);
         }
 
-        // Registering undo-states when needed
-        //if (gameObject.name == "Character" && !collision) game_master_script.RecordUndo(gameObject, rb.position);
-        //if (box != null) game_master_script.RecordUndo(box, box_script.rb.position);
-
         return collision;
     }
 
@@ -102,7 +96,6 @@ public abstract class Pusher : MonoBehaviour
 
     public virtual void SetDir(float dir_x, float dir_y, float dir_z)
     {
-        //direction = Utility.RotateInputVector(dir_x, dir_y, dir_z, camera_script.GetFacing());
         direction = new Vector3(dir_x, dir_y, dir_z);
     }
 
@@ -125,34 +118,21 @@ public abstract class Pusher : MonoBehaviour
     public void CheckForFall()
     {
         falling = false;
-        // Initiating fall
+
         if (!CollisionCheckInFront(Vector3.down))
         {
-            //RaycastHit hit = new RaycastHit();
-            //Vector3 pos = rb.position;
-            //pos.y -= 2;
-            //Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
-            //if (hit.collider != null && hit.collider.gameObject.tag == "Elevator")
-            //{
+            if (moving)
+            {
+                Stop(next_pos);
+            }
+            if (!moving)
+            {
+                SetDir(0, -1, 0);
+                moving = true;
+                SetNextPos(rb.position, direction);
+            }
 
-            //}
-            //if (hit.collider == null || (hit.collider != null && hit.collider.gameObject.tag == "Goal"))
-            //{
-                if (moving)
-                {
-                    Stop(next_pos);
-                }
-                if (!moving)
-                {
-                    SetDir(0, -1, 0);
-                    moving = true;
-                    SetNextPos(rb.position, direction);
-                }
-            //move_input = false;
-            //}
-            //return true;
             falling = true;
         }
-        //return false;
     }
 }

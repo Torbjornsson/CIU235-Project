@@ -8,16 +8,11 @@ public class CharacterControllerScript : Pusher
     public const float EPSILON = 0.0001f;
     public const float DEAD_ZONE = 0.3f;
     public const float SQUEEZE_SIZE = 0.25f;
-    //public const float PUSHING_FACTOR = 0.8f;
 
-    //private Vector3 next_pos;
-
-    //public Vector3 direction;
     public float rotation;
     public float speed;
 
     public bool pushing;
-    //public bool falling;
     public float speed_push;
 
     public GameObject eye;
@@ -36,7 +31,6 @@ public class CharacterControllerScript : Pusher
         
         rotation = 0;
         pushing = false;
-        //speed_push = speed * PUSHING_FACTOR;
         speed = Utility.CHARACTER_SPEED;
     }
 
@@ -58,11 +52,6 @@ public class CharacterControllerScript : Pusher
             if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
                 || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX"))))
             {
-                //Vector3 prev_pos = game_master_script.Undo();
-                //Debug.Log("prev pos" + prev_pos);
-                //rb.MovePosition(prev_pos);
-                //cur_pos = prev_pos;
-
                 game_master_script.Undo();
                 cur_pos = rb.position;
             }
@@ -105,31 +94,7 @@ public class CharacterControllerScript : Pusher
             else if (moving)
             {
                 SetNextPos(cur_pos, direction);
-                //game_master_script.RecordUndo(gameObject, cur_pos);
             }
-
-            //// Initiating fall
-            //if (!CollisionCheckInFront(Vector3.down)) {
-            //    RaycastHit hit = new RaycastHit();
-            //    Vector3 pos = rb.position;
-            //    pos.y -= 2;
-            //    Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
-            //    if (hit.collider != null && hit.collider.gameObject.tag == "Elevator") {
-
-            //    }
-            //    if (hit.collider == null || hit.collider != null && hit.collider.gameObject.tag == "Goal") {
-            //        if (moving) {
-            //            Stop(next_pos);
-            //        }
-            //        if (!moving)
-            //        {
-            //            SetDir(0, -1, 0);
-            //            moving = true;
-            //            SetNextPos(cur_pos, direction);
-            //        }
-            //        move_input = false;
-            //    }
-            //}
 
             if (move_input) game_master_script.RecordUndo();
         }
@@ -142,7 +107,6 @@ public class CharacterControllerScript : Pusher
         {
             Vector3 cur_pos = rb.position;
 
-            //float factor = pushing ? PUSHING_FACTOR : 1;
             float temp_speed = speed;
             if (falling) temp_speed = Utility.FALLING_SPEED;
             else if (pushing) temp_speed = Utility.PUSHING_SPEED;
@@ -203,17 +167,6 @@ public class CharacterControllerScript : Pusher
         direction = Utility.RotateInputVector(dir_x, dir_y, dir_z, camera_script.GetFacing());
     }
 
-    //public void SetNextPos(Vector3 cur_pos, Vector3 dir)
-    //{
-    //    SetNextPos(cur_pos, dir.x, dir.y, dir.z);
-    //}
-
-    //public void SetNextPos(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
-    //{
-    //    next_pos = new Vector3(cur_pos.x + Utility.GRID_SIZE * dir_x, cur_pos.y + Utility.GRID_SIZE * dir_y, cur_pos.z + Utility.GRID_SIZE * dir_z);
-    //    next_pos = Utility.GetGridPos(next_pos);
-    //}
-
     public override void Stop(Vector3 position)
     {
         base.Stop(position);
@@ -240,26 +193,12 @@ public class CharacterControllerScript : Pusher
         // Checking character diff from original position
         Vector3 c_pos = c.GetComponent<Rigidbody>().position;
         Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
-        //c_grid_pos.y = c_pos.y;
         Vector3 diff = c_pos - c_grid_pos;
-        //if (c.tag == "Elevator")
-        //diff.y += 0.5f;
-
-        // Starting to move in the right direction
-        //direction = c_script.direction;
-        //speed = c_script.speed_push;
 
         if (!moving)
         {
             SetNextPos(cur_pos, direction);
-            //next_pos = cur_pos + direction * Utility.GRID_SIZE;
-            //next_pos = Utility.GetGridPos(next_pos);
             moving = true;
-            //if (next_pos.y < 0 || next_pos.y > 1)
-            //{
-            //    next_pos = cur_pos;
-            //    moving = false;
-            //}
         }
 
         if (moving)

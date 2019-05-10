@@ -169,21 +169,6 @@ public class GameMasterScript : MonoBehaviour
             state.Destroy();
         }
     }
-    //public Vector3 Undo()
-    //{
-    //    GameObject go = (GameObject)undoStackC.Pop();
-    //    Vector3 pos = (Vector3)undoStack.Pop();
-    //    if (go.tag == "Box")
-    //    {
-    //        Debug.Log(go.GetComponent<Rigidbody>().position);
-    //        go.GetComponent<Rigidbody>().MovePosition(pos);
-    //        go = (GameObject)undoStackC.Pop();
-    //        pos = (Vector3)undoStack.Pop();
-    //    }
-    //    Debug.Log("Undo " + go + " to pos " + pos);
-
-    //    return pos;
-    //}
 
     public void RecordUndo()
     {

@@ -64,32 +64,6 @@ public class BoxPushedScript : Pusher
                 rb.MovePosition(new_pos);
             }
         }
-        //if (!moving)
-        //{
-        //    if (!CollisionCheckInFront(Vector3.down) && !moving)
-        //    {
-        //        RaycastHit hit = new RaycastHit();
-        //        Vector3 pos = rb.position;
-        //        Physics.Raycast(pos, Vector3.down, out hit, Utility.GRID_SIZE * 0.5f);
-        //        if (hit.collider != null) return;
-
-        //        pos.y -= 2;
-        //        Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE * 2);
-        //        if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
-        //            return;
-        //        }
-        //        if (hit.collider == null || hit.collider.gameObject.tag == "Box"){
-        //            Debug.Log("Box y pos" + cur_pos.y);
-                    
-        //            if (!moving && cur_pos.y == 1){
-        //                direction = Vector3.down;
-        //                moving = true;
-        //                next_pos = cur_pos + direction * Utility.GRID_SIZE;
-        //                next_pos = Utility.GetGridPos(next_pos);
-        //            }   
-        //        }
-        //    }
-        //}
 
         if (state == State.WRONG)
         {
@@ -118,14 +92,12 @@ public class BoxPushedScript : Pusher
         {
             CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
             direction = c_script.GetDir();
-            //speed = c_script.speed_push;
             speed = Utility.PUSHING_SPEED;
         }
         else if (c.tag == "Elevator")
         {
             Elevator c_script = c.GetComponent<Elevator>();
             direction = c_script.GetDir();
-            //speed = 5;
             speed = Utility.ELEVATOR_SPEED;
         }
         
@@ -134,25 +106,14 @@ public class BoxPushedScript : Pusher
         // Checking character diff from original position
         Vector3 c_pos = c.GetComponent<Rigidbody>().position;
         Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
-        //c_grid_pos.y = c_pos.y;
         Vector3 diff = c_pos - c_grid_pos;
-        //if (c.tag == "Elevator")
-            //diff.y += 0.5f;
 
         // Starting to move in the right direction
-        //direction = c_script.direction;
-        //speed = c_script.speed_push;
-
         if (!moving)
         {
             next_pos = cur_pos + direction * Utility.GRID_SIZE;
             next_pos = Utility.GetGridPos(next_pos);
             moving = true;
-            //if (next_pos.y < 0 || next_pos.y > 1)
-            //{
-            //    next_pos = cur_pos;
-            //    moving = false;
-            //}
         }
         if (moving)
         {
