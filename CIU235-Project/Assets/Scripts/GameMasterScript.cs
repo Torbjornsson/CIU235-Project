@@ -20,24 +20,28 @@ public class GameMasterScript : MonoBehaviour
     //public Stack undoStackC = new Stack();
     bool level_win;
 
-    private static GameMasterScript instance = null;
-    public static GameMasterScript Instance {
-        get { return instance; }
-    }
+    private int elevator_level;
 
     public float EPSILON = 0.00001f;
 
     public Canvas pause_menu;
 
+    private GameObject character;
+
+    private static GameMasterScript instance = null;
+    public static GameMasterScript Instance {
+        get { return instance; }
+    }
+
     private void Awake() {
         if (instance != null && instance != this) 
         {
-         Destroy(this.gameObject);
-         return;
+            Destroy(this.gameObject);
+            return;
         } 
         else 
         {
-         instance = this;
+            instance = this;
         }
         DontDestroyOnLoad(this.gameObject);
     }
@@ -70,9 +74,11 @@ public class GameMasterScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
+
         if ((Input.GetButtonDown(button_reset)))
         {
-                ResetLevel();
+            ResetLevel();
         }
 
         if ((Input.GetButtonDown(button_menu)) && SceneManager.GetActiveScene().buildIndex > 0)
@@ -90,6 +96,27 @@ public class GameMasterScript : MonoBehaviour
         if (Input.GetButtonDown(button_accept))
         {
             Debug.Log("ACCEPT");
+            if (!character.GetComponent<CharacterControllerScript>().IsMoving())
+            {
+                GameObject[] elevators = GameObject.FindGameObjectsWithTag("Elevator");
+                //GameObject[] boxes = GameObject.FindGameObjectsWithTag("Box");
+                bool ok_to_move = true;
+                foreach (GameObject elevator in elevators)
+                {
+                    ok_to_move &= !elevator.GetComponent<Elevator>().IsMoving();
+                }
+
+                if (ok_to_move)
+                {
+                    elevator_level = (elevator_level + 1) % 2;
+                    Debug.Log("CHANGE LEVEL!! to: " + elevator_level);
+
+                    foreach (GameObject elevator in elevators)
+                    {
+                        elevator.GetComponent<Elevator>().MoveToLevel(elevator_level);
+                    }
+                }
+            }
         }
 
         if ((Input.GetButtonDown(button_cancel)))
@@ -205,5 +232,24 @@ public class GameMasterScript : MonoBehaviour
     public void LoadLevel(int n){
         Debug.Log(SceneManager.GetSceneByBuildIndex(n).name);
         SceneManager.LoadScene(n);
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
+
+        character = GameObject.Find("Character");
+        elevator_level = (character.GetComponent<Rigidbody>().position.y > 0.5f) ? 1 : 0;
+        //Debug.Log("Elevator level: "+elevator_level);
     }
 }

@@ -56,7 +56,8 @@ public class BoxPushedScript : Pusher
         }
         if (!moving)
         {
-        if (!CollisionCheckInFront(Vector3.down) && !moving){
+            if (!CollisionCheckInFront(Vector3.down) && !moving)
+            {
                 RaycastHit hit = new RaycastHit();
                 Vector3 pos = rb.position;
                 Physics.Raycast(pos, Vector3.down, out hit, Utility.GRID_SIZE * 0.5f);
@@ -140,16 +141,16 @@ public class BoxPushedScript : Pusher
         }
         if (moving)
         {
-        //Check if box is on top of box if so move it also
-        RaycastHit hit = new RaycastHit();
-        Physics.Raycast(rb.position, Vector3.up, out hit, Utility.GRID_SIZE);
-        if (hit.collider != null && hit.collider.tag == "Box"){
-            hit.collider.GetComponent<BoxPushedScript>().Pushed(c);
-        }
+            //Check if box is on top of box if so move it also
+            RaycastHit hit = new RaycastHit();
+            Physics.Raycast(rb.position, Vector3.up, out hit, Utility.GRID_SIZE);
+            if (hit.collider != null && hit.collider.tag == "Box"){
+                hit.collider.GetComponent<BoxPushedScript>().Pushed(c);
+            }
 
-        // Updating position to be off exactly as much as character, from grid
-        cur_pos += diff;
-        rb.MovePosition(cur_pos);
+            // Updating position to be off exactly as much as character, from grid
+            cur_pos += diff;
+            rb.MovePosition(cur_pos);
         }
     }
 
