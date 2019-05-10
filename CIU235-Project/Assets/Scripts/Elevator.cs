@@ -5,7 +5,7 @@ using UnityEngine;
 public class Elevator : Pusher
 {
     //public int level;
-    public Vector3 direction;
+    //public Vector3 direction;
     //public Rigidbody rb;
     //private Vector3 new_pos, c_new_pos;
 
@@ -13,7 +13,7 @@ public class Elevator : Pusher
     //private Rigidbody char_rb;
 
     //public float speed;
-    private Vector3 next_pos;
+    //private Vector3 next_pos;
 
     // Start is called before the first frame update
     void Start()

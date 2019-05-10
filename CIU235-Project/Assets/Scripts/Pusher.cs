@@ -2,8 +2,12 @@
 
 public abstract class Pusher : MonoBehaviour
 {
-    public Rigidbody rb;
     protected bool moving;
+
+    protected Vector3 next_pos;
+    protected Vector3 direction;
+
+    public Rigidbody rb;
     protected GameMasterScript game_master_script;
 
     // Stops moving at a certain position
@@ -45,6 +49,9 @@ public abstract class Pusher : MonoBehaviour
 
             // Boxes can't move through other boxes
             collision |= (gameObject.tag == "Box" && hit.collider.gameObject.tag == "Box");
+
+            // Boxes or character don't fall through elevators
+            collision |= ((gameObject.tag == "Box" || gameObject.name == "Character") && hit.collider.gameObject.tag == "Elevator");
 
             // Character can push a box, thus being able to continue move,
             // IF the box does not collide, in turn
@@ -90,4 +97,59 @@ public abstract class Pusher : MonoBehaviour
     }
 
     public virtual void Pushed(GameObject pusher) { }
+
+
+    public virtual void SetDir(float dir_x, float dir_y, float dir_z)
+    {
+        //direction = Utility.RotateInputVector(dir_x, dir_y, dir_z, camera_script.GetFacing());
+        direction = new Vector3(dir_x, dir_y, dir_z);
+    }
+
+    public Vector3 GetDir()
+    {
+        return direction;
+    }
+
+    public void SetNextPos(Vector3 cur_pos, Vector3 dir)
+    {
+        SetNextPos(cur_pos, dir.x, dir.y, dir.z);
+    }
+
+    public void SetNextPos(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
+    {
+        next_pos = new Vector3(cur_pos.x + Utility.GRID_SIZE * dir_x, cur_pos.y + Utility.GRID_SIZE * dir_y, cur_pos.z + Utility.GRID_SIZE * dir_z);
+        next_pos = Utility.GetGridPos(next_pos);
+    }
+
+    public bool CheckForFall()
+    {
+        // Initiating fall
+        if (!CollisionCheckInFront(Vector3.down))
+        {
+            //RaycastHit hit = new RaycastHit();
+            //Vector3 pos = rb.position;
+            //pos.y -= 2;
+            //Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
+            //if (hit.collider != null && hit.collider.gameObject.tag == "Elevator")
+            //{
+
+            //}
+            //if (hit.collider == null || (hit.collider != null && hit.collider.gameObject.tag == "Goal"))
+            //{
+                if (moving)
+                {
+                    Stop(next_pos);
+                }
+                if (!moving)
+                {
+                    SetDir(0, -1, 0);
+                    moving = true;
+                    SetNextPos(rb.position, direction);
+                }
+            //move_input = false;
+            //}
+            return true;
+        }
+        return false;
+    }
 }

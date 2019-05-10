@@ -14,8 +14,8 @@ public class BoxPushedScript : Pusher
     public GameObject shine;
     public GameObject shine_point_light;
 
-    private Vector3 direction;
-    private Vector3 next_pos;
+    //private Vector3 direction;
+    //private Vector3 next_pos;
 
     private State state;
     private float color_alpha;
@@ -54,32 +54,32 @@ public class BoxPushedScript : Pusher
                 rb.MovePosition(new_pos);
             }
         }
-        if (!moving)
-        {
-            if (!CollisionCheckInFront(Vector3.down) && !moving)
-            {
-                RaycastHit hit = new RaycastHit();
-                Vector3 pos = rb.position;
-                Physics.Raycast(pos, Vector3.down, out hit, Utility.GRID_SIZE * 0.5f);
-                if (hit.collider != null) return;
+        //if (!moving)
+        //{
+        //    if (!CollisionCheckInFront(Vector3.down) && !moving)
+        //    {
+        //        RaycastHit hit = new RaycastHit();
+        //        Vector3 pos = rb.position;
+        //        Physics.Raycast(pos, Vector3.down, out hit, Utility.GRID_SIZE * 0.5f);
+        //        if (hit.collider != null) return;
 
-                pos.y -= 2;
-                Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE * 2);
-                if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
-                    return;
-                }
-                if (hit.collider == null || hit.collider.gameObject.tag == "Box"){
-                    Debug.Log("Box y pos" + cur_pos.y);
+        //        pos.y -= 2;
+        //        Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE * 2);
+        //        if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
+        //            return;
+        //        }
+        //        if (hit.collider == null || hit.collider.gameObject.tag == "Box"){
+        //            Debug.Log("Box y pos" + cur_pos.y);
                     
-                    if (!moving && cur_pos.y == 1){
-                        direction = Vector3.down;
-                        moving = true;
-                        next_pos = cur_pos + direction * Utility.GRID_SIZE;
-                        next_pos = Utility.GetGridPos(next_pos);
-                    }   
-                }
-            }
-        }
+        //            if (!moving && cur_pos.y == 1){
+        //                direction = Vector3.down;
+        //                moving = true;
+        //                next_pos = cur_pos + direction * Utility.GRID_SIZE;
+        //                next_pos = Utility.GetGridPos(next_pos);
+        //            }   
+        //        }
+        //    }
+        //}
 
         if (state == State.WRONG)
         {
@@ -107,14 +107,14 @@ public class BoxPushedScript : Pusher
         if (c.name == "Character")
         {
             CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
-            direction = c_script.direction;
+            direction = c_script.GetDir();
             //speed = c_script.speed_push;
             speed = Utility.PUSHING_SPEED;
         }
         else if (c.tag == "Elevator")
         {
             Elevator c_script = c.GetComponent<Elevator>();
-            direction = c_script.direction;
+            direction = c_script.GetDir();
             //speed = 5;
             speed = Utility.ELEVATOR_SPEED;
         }
