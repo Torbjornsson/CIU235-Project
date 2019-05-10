@@ -3,6 +3,7 @@
 public abstract class Pusher : MonoBehaviour
 {
     protected bool moving;
+    protected bool falling;
 
     protected Vector3 next_pos;
     protected Vector3 direction;
@@ -121,8 +122,9 @@ public abstract class Pusher : MonoBehaviour
         next_pos = Utility.GetGridPos(next_pos);
     }
 
-    public bool CheckForFall()
+    public void CheckForFall()
     {
+        falling = false;
         // Initiating fall
         if (!CollisionCheckInFront(Vector3.down))
         {
@@ -148,8 +150,9 @@ public abstract class Pusher : MonoBehaviour
                 }
             //move_input = false;
             //}
-            return true;
+            //return true;
+            falling = true;
         }
-        return false;
+        //return false;
     }
 }

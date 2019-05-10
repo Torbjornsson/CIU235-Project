@@ -33,6 +33,14 @@ public class BoxPushedScript : Pusher
         SetState(State.IDLE);
     }
 
+    void Update()
+    {
+        if (!moving)
+        {
+            CheckForFall();
+        }
+    }
+
     // LastUpdate is called once per frame, AFTER every normal Update()
     // -- This needs to be late because otherwise it will conflict with pushing mechanics from Character
     void LateUpdate()
@@ -41,7 +49,9 @@ public class BoxPushedScript : Pusher
 
         if (moving)
         {
-            Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
+            float temp_speed = speed;
+            if (falling) temp_speed = Utility.FALLING_SPEED;
+            Vector3 new_pos = cur_pos + direction * temp_speed * Time.deltaTime;
 
             if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
                 || (direction.y > 0 && new_pos.y >= next_pos.y) || (direction.y < 0 && new_pos.y <= next_pos.y)

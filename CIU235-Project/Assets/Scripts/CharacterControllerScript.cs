@@ -17,7 +17,7 @@ public class CharacterControllerScript : Pusher
     public float speed;
 
     public bool pushing;
-    public bool falling;
+    //public bool falling;
     public float speed_push;
 
     public GameObject eye;
@@ -49,7 +49,7 @@ public class CharacterControllerScript : Pusher
 
         if (!moving)
         {
-            falling = CheckForFall();
+            CheckForFall();
         }
 
         if (!falling && !moving)
