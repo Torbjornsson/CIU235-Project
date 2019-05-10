@@ -18,11 +18,21 @@ public abstract class Pusher : MonoBehaviour
     {
         bool collision = false;
         BoxPushedScript box_script = null;
-        GameObject box = null;
+        //GameObject box = null;
 
         RaycastHit hit = new RaycastHit();
         Vector3 pos = rb.position;
-        pos.y += 0.1f;
+
+        if (gameObject.tag == "Elevator")
+        {
+            if (direction.y > 0)    pos.y -= 0.1f;
+            else                    pos.y += 1.1f;
+        }
+        else
+        {
+            pos.y += 0.1f;
+        }
+
         Physics.Raycast(pos, direction,out hit, Utility.GRID_SIZE);
         if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
         {
@@ -45,10 +55,15 @@ public abstract class Pusher : MonoBehaviour
                 {
                     box_script.Pushed(gameObject);
                     gameObject.GetComponent<CharacterControllerScript>().pushing = true;
-                    box = hit.collider.gameObject;
+                    //box = hit.collider.gameObject;
                 }
             }
 
+            if (gameObject.tag == "Elevator" && hit.collider.gameObject.tag == "Box")
+            {
+                box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
+                box_script.Pushed(gameObject);
+            }
             //Debug.Log("Collision registered by [" + gameObject.name + "]: " + hit.collider.gameObject.name);
         }
 
@@ -64,4 +79,6 @@ public abstract class Pusher : MonoBehaviour
     {
         return moving;
     }
+
+    public virtual void Pushed(GameObject pusher) { }
 }

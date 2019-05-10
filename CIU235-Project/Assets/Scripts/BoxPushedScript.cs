@@ -100,19 +100,22 @@ public class BoxPushedScript : Pusher
     }
 
     // Called every time the box is supposed to be pushed in some direction, by a pusher (Character)
-    public void Pushed(GameObject pusher)
+    public override void Pushed(GameObject pusher)
     {
         // Getting things to use
         GameObject c = pusher;
-        if (c.name == "Character") {
+        if (c.name == "Character")
+        {
             CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
             direction = c_script.direction;
             speed = c_script.speed_push;
         }
-        else{
+        else if (c.tag == "Elevator")
+        {
             Elevator c_script = c.GetComponent<Elevator>();
             direction = c_script.direction;
-            speed = 5;
+            //speed = 5;
+            speed = c_script.speed;
         }
         
         Vector3 cur_pos = rb.position;
@@ -129,7 +132,8 @@ public class BoxPushedScript : Pusher
         //direction = c_script.direction;
         //speed = c_script.speed_push;
 
-        if (!moving){
+        if (!moving)
+        {
             next_pos = cur_pos + direction * Utility.GRID_SIZE;
             next_pos = Utility.GetGridPos(next_pos);
             moving = true;

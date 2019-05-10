@@ -63,9 +63,7 @@ public class Elevator : Pusher
         {
             Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
 
-            if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
-                || (direction.y > 0 && new_pos.y >= next_pos.y) || (direction.y < 0 && new_pos.y <= next_pos.y)
-                || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
+            if ((direction.y > 0 && new_pos.y >= next_pos.y) || (direction.y < 0 && new_pos.y <= next_pos.y))
             {
                 Stop(next_pos);
             }
@@ -94,9 +92,11 @@ public class Elevator : Pusher
 
             if (direction != Vector3.zero)
             {
-                Debug.Log("Elevator moving! direction: "+direction);
+                //Debug.Log("Elevator moving! direction: "+direction);
                 next_pos = cur_pos + direction * Utility.GRID_SIZE;
                 moving = true;
+
+                CollisionCheckInFront(direction);
             }
         }
     }
