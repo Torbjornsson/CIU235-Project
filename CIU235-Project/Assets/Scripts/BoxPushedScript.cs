@@ -115,7 +115,7 @@ public class BoxPushedScript : Pusher
             Elevator c_script = c.GetComponent<Elevator>();
             direction = c_script.direction;
             //speed = 5;
-            speed = c_script.speed;
+            speed = Utility.ELEVATOR_SPEED;
         }
         
         Vector3 cur_pos = rb.position;
@@ -137,11 +137,11 @@ public class BoxPushedScript : Pusher
             next_pos = cur_pos + direction * Utility.GRID_SIZE;
             next_pos = Utility.GetGridPos(next_pos);
             moving = true;
-            if (next_pos.y < 0 || next_pos.y > 1)
-            {
-                next_pos = cur_pos;
-                moving = false;
-            }
+            //if (next_pos.y < 0 || next_pos.y > 1)
+            //{
+            //    next_pos = cur_pos;
+            //    moving = false;
+            //}
         }
         if (moving)
         {

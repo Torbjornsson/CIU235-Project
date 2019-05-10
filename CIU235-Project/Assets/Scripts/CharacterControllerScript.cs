@@ -47,8 +47,8 @@ public class CharacterControllerScript : Pusher
 
         if (!moving)
         {
-        	if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX")))) 
+            if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX"))))
             {
                 //Vector3 prev_pos = game_master_script.Undo();
                 //Debug.Log("prev pos" + prev_pos);
@@ -101,16 +101,16 @@ public class CharacterControllerScript : Pusher
             }
 
             // Initiating fall
-            if (!CollisionCheckInFront(Vector3.down)){
+            if (!CollisionCheckInFront(Vector3.down)) {
                 RaycastHit hit = new RaycastHit();
                 Vector3 pos = rb.position;
                 pos.y -= 2;
                 Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
-                if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
-                    
+                if (hit.collider != null && hit.collider.gameObject.tag == "Elevator") {
+
                 }
-                if (hit.collider == null || hit.collider != null && hit.collider.gameObject.tag == "Goal"){
-                    if (moving){
+                if (hit.collider == null || hit.collider != null && hit.collider.gameObject.tag == "Goal") {
+                    if (moving) {
                         Stop(next_pos);
                     }
                     if (!moving)
@@ -126,10 +126,18 @@ public class CharacterControllerScript : Pusher
             if (move_input) game_master_script.RecordUndo();
         }
 
+    }
+
+    private void LateUpdate()
+    {
         if (moving)
         {
+            Vector3 cur_pos = rb.position;
+
             float factor = pushing ? PUSHING_FACTOR : 1;
-            Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime * factor;
+            float temp_speed = (direction.y != 0) ? Utility.ELEVATOR_SPEED : speed;
+            Vector3 new_pos = cur_pos + direction * temp_speed * Time.deltaTime * factor;
+
             if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
                 || (direction.y > 0 && new_pos.y >= next_pos.y) || (direction.y < 0 && new_pos.y <= next_pos.y)
                 || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
@@ -203,5 +211,50 @@ public class CharacterControllerScript : Pusher
     public void SetMoving(bool ismoving)
     {
         moving = ismoving;
+    }
+
+    public override void Pushed(GameObject pusher)
+    {
+        // Getting things to use
+        GameObject c = pusher;
+        if (c.tag == "Elevator")
+        {
+            Elevator c_script = c.GetComponent<Elevator>();
+            direction = c_script.direction;
+        }
+
+        Vector3 cur_pos = rb.position;
+
+        // Checking character diff from original position
+        Vector3 c_pos = c.GetComponent<Rigidbody>().position;
+        Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
+        //c_grid_pos.y = c_pos.y;
+        Vector3 diff = c_pos - c_grid_pos;
+        //if (c.tag == "Elevator")
+        //diff.y += 0.5f;
+
+        // Starting to move in the right direction
+        //direction = c_script.direction;
+        //speed = c_script.speed_push;
+
+        if (!moving)
+        {
+            SetNextPos(cur_pos, direction);
+            //next_pos = cur_pos + direction * Utility.GRID_SIZE;
+            //next_pos = Utility.GetGridPos(next_pos);
+            moving = true;
+            //if (next_pos.y < 0 || next_pos.y > 1)
+            //{
+            //    next_pos = cur_pos;
+            //    moving = false;
+            //}
+        }
+
+        if (moving)
+        {
+            // Updating position to be off exactly as much as character, from grid
+            cur_pos += diff;
+            rb.MovePosition(cur_pos);
+        }
     }
 }

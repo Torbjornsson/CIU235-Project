@@ -12,7 +12,7 @@ public class Elevator : Pusher
     //private GameObject character;
     //private Rigidbody char_rb;
 
-    public float speed;
+    //public float speed;
     private Vector3 next_pos;
 
     // Start is called before the first frame update
@@ -61,7 +61,7 @@ public class Elevator : Pusher
 
         if (moving)
         {
-            Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
+            Vector3 new_pos = cur_pos + direction * Utility.ELEVATOR_SPEED * Time.deltaTime;
 
             if ((direction.y > 0 && new_pos.y >= next_pos.y) || (direction.y < 0 && new_pos.y <= next_pos.y))
             {
