@@ -21,12 +21,14 @@ public class GameMasterScript : MonoBehaviour
     bool level_win;
 
     private int elevator_level;
+    GameObject[] elevators;
 
     public float EPSILON = 0.00001f;
 
     public Canvas pause_menu;
 
     private GameObject character;
+    private CharacterControllerScript c_script;
 
     private static GameMasterScript instance = null;
     public static GameMasterScript Instance {
@@ -124,14 +126,44 @@ public class GameMasterScript : MonoBehaviour
         {
             Debug.Log("CANCEL");
         }
+
+        if (!c_script.IsMoving())
+        {
+            if (c_script.elevator_trigger_pos != Utility.GetGridPos(c_script.rb.position))
+            {
+                bool on_elevator = false;
+                foreach (GameObject e in elevators)
+                {
+                    if (e.GetComponent<Elevator>().elevator_trigger.GetComponent<ElevatorTrigger>().CharacterOnElevator())
+                    {
+                        on_elevator = true;
+                        break;
+                    }
+                }
+
+            //if (on_elevator && !c_script.elevator_trigger && c_script.elevator_trigger_pos != Utility.GetGridPos(c_script.rb.position))
+            //{
+            //    ChangeElevatorLevel();
+            //}
+                Debug.Log("Character on elevator - el trigger? " + c_script.elevator_trigger + ", el trigger pos: " + c_script.elevator_trigger_pos + ", char pos: " + Utility.GetGridPos(c_script.rb.position));
+
+                if (on_elevator && !c_script.elevator_trigger)
+                {
+                    ChangeElevatorLevel();
+                }
+
+                c_script.elevator_trigger = on_elevator;
+                c_script.elevator_trigger_pos = Utility.GetGridPos(c_script.rb.position);
+            }
+        }
     }
 
     public void ChangeElevatorLevel()
     {
-        CharacterControllerScript c_script = character.GetComponent<CharacterControllerScript>();
+        //CharacterControllerScript c_script = character.GetComponent<CharacterControllerScript>();
         if (!c_script.IsMoving() || c_script.IsFalling())
         {
-            GameObject[] elevators = GameObject.FindGameObjectsWithTag("Elevator");
+            //GameObject[] elevators = GameObject.FindGameObjectsWithTag("Elevator");
             //GameObject[] boxes = GameObject.FindGameObjectsWithTag("Box");
             bool ok_to_move = true;
             foreach (GameObject elevator in elevators)
@@ -199,7 +231,7 @@ public class GameMasterScript : MonoBehaviour
 
     public void RecordUndo()
     {
-        GameObject character = GameObject.FindWithTag("Player");
+        //GameObject character = GameObject.FindWithTag("Player");
         RecordUndo(character, character.GetComponent<Rigidbody>().position);
     }
 
@@ -261,7 +293,9 @@ public class GameMasterScript : MonoBehaviour
         Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
 
         character = GameObject.Find("Character");
+        c_script = character.GetComponent<CharacterControllerScript>();
         elevator_level = (character.GetComponent<Rigidbody>().position.y > 0.5f) ? 1 : 0;
         //Debug.Log("Elevator level: "+elevator_level);
+        elevators = GameObject.FindGameObjectsWithTag("Elevator");
     }
 }

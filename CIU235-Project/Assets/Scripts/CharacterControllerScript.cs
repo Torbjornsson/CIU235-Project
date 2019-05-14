@@ -60,11 +60,11 @@ public class CharacterControllerScript : Pusher
 
         if (!falling && !moving)
         {
-            if (elevator_trigger_pos != Utility.GetGridPos(rb.position))
-            {
-                elevator_trigger = false;
-                elevator_trigger_pos = Utility.GetGridPos(rb.position);
-            }
+            //if (elevator_trigger_pos != Utility.GetGridPos(rb.position))
+            //{
+            //    elevator_trigger = false;
+            //    elevator_trigger_pos = Utility.GetGridPos(rb.position);
+            //}
 
             if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
                 || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX"))))
@@ -155,6 +155,12 @@ public class CharacterControllerScript : Pusher
         }
 
         //if (!moving) elevator_trigger = false;
+
+        //if (elevator_trigger_pos != Utility.GetGridPos(rb.position))
+        //{
+        //    elevator_trigger = false;
+        //    elevator_trigger_pos = Utility.GetGridPos(rb.position);
+        //}
 
         UpdateFacing();
     }

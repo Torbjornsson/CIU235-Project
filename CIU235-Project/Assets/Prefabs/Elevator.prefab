@@ -164,6 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
+  elevator_trigger: {fileID: 8746514251258049572}
 --- !u!1 &5090744756246869858
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,4 +299,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6a70fa6c95d347e08d573d3f74417c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elevator: {fileID: 2946137431199549178}

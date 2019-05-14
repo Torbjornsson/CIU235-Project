@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Elevator : Pusher
 {
+    public GameObject elevator_trigger;
+
     // Start is called before the first frame update
     void Start()
     {
