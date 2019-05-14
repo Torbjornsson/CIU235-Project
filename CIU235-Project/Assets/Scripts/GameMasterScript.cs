@@ -95,33 +95,60 @@ public class GameMasterScript : MonoBehaviour
 
         if (Input.GetButtonDown(button_accept))
         {
-            Debug.Log("ACCEPT");
-            if (!character.GetComponent<CharacterControllerScript>().IsMoving())
-            {
-                GameObject[] elevators = GameObject.FindGameObjectsWithTag("Elevator");
-                //GameObject[] boxes = GameObject.FindGameObjectsWithTag("Box");
-                bool ok_to_move = true;
-                foreach (GameObject elevator in elevators)
-                {
-                    ok_to_move &= !elevator.GetComponent<Elevator>().IsMoving();
-                }
+            //Debug.Log("ACCEPT");
+            //if (!character.GetComponent<CharacterControllerScript>().IsMoving())
+            //{
+            //    GameObject[] elevators = GameObject.FindGameObjectsWithTag("Elevator");
+            //    //GameObject[] boxes = GameObject.FindGameObjectsWithTag("Box");
+            //    bool ok_to_move = true;
+            //    foreach (GameObject elevator in elevators)
+            //    {
+            //        ok_to_move &= !elevator.GetComponent<Elevator>().IsMoving();
+            //    }
 
-                if (ok_to_move)
-                {
-                    elevator_level = (elevator_level + 1) % 2;
-                    Debug.Log("CHANGE LEVEL!! to: " + elevator_level);
+            //    if (ok_to_move)
+            //    {
+            //        elevator_level = (elevator_level + 1) % 2;
+            //        Debug.Log("CHANGE LEVEL!! to: " + elevator_level);
 
-                    foreach (GameObject elevator in elevators)
-                    {
-                        elevator.GetComponent<Elevator>().MoveToLevel(elevator_level);
-                    }
-                }
-            }
+            //        foreach (GameObject elevator in elevators)
+            //        {
+            //            elevator.GetComponent<Elevator>().MoveToLevel(elevator_level);
+            //        }
+            //    }
+            //}
+            ChangeElevatorLevel();
         }
 
         if ((Input.GetButtonDown(button_cancel)))
         {
             Debug.Log("CANCEL");
+        }
+    }
+
+    public void ChangeElevatorLevel()
+    {
+        CharacterControllerScript c_script = character.GetComponent<CharacterControllerScript>();
+        if (!c_script.IsMoving() || c_script.IsFalling())
+        {
+            GameObject[] elevators = GameObject.FindGameObjectsWithTag("Elevator");
+            //GameObject[] boxes = GameObject.FindGameObjectsWithTag("Box");
+            bool ok_to_move = true;
+            foreach (GameObject elevator in elevators)
+            {
+                ok_to_move &= !elevator.GetComponent<Elevator>().IsMoving();
+            }
+
+            if (ok_to_move)
+            {
+                elevator_level = (elevator_level + 1) % 2;
+                Debug.Log("CHANGE LEVEL!! to: " + elevator_level);
+
+                foreach (GameObject elevator in elevators)
+                {
+                    elevator.GetComponent<Elevator>().MoveToLevel(elevator_level);
+                }
+            }
         }
     }
 

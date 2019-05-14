@@ -61,4 +61,14 @@ public class Elevator : Pusher
             }
         }
     }
+
+    //void OnTriggerStay(Collider other)
+    //{
+    //    Debug.Log("Triggered... by "+ other.gameObject.name);
+    //    if (other.gameObject.name == "Character"
+    //        && other.gameObject.GetComponent<CharacterControllerScript>().prev_ground_tag != "Elevator")
+    //    {
+    //        Debug.Log("Start elevators!!");
+    //    }
+    //}
 }

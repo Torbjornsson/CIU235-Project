@@ -83,6 +83,11 @@ public abstract class Pusher : MonoBehaviour
                 }
             }
             //Debug.Log("Collision registered by [" + gameObject.name + "]: " + hit.collider.gameObject.name);
+
+            //if (gameObject.name == "Character" && collision && direction.y < 0)
+            //{
+            //    gameObject.GetComponent<CharacterControllerScript>().ground_tag = hit.collider.gameObject.tag;
+            //}
         }
 
         return collision;
