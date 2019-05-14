@@ -161,18 +161,18 @@ public class GameMasterScript : MonoBehaviour
     public void RecordUndo()
     {
         GameObject character = GameObject.FindWithTag("Player");
-        RecordUndo(character, character.GetComponent<Rigidbody>().position);
+        RecordUndo(character);
     }
 
-    public void RecordUndo(GameObject character, Vector3 position)
+    public void RecordUndo(GameObject character)
     {
-        StatePackage state = new StatePackage(character, position);
+        StatePackage state = new StatePackage(character);
         //Debug.Log("Recorded " + character.name + " at pos " + position);
 
         GameObject[] boxes = GameObject.FindGameObjectsWithTag("Box");
         foreach(GameObject box in boxes)
         {
-            state.AddObject(box, box.GetComponent<Rigidbody>().position);
+            state.AddObject(box);
         }
 
         undo_stack.Push(state);

@@ -59,6 +59,8 @@ public class CharacterControllerScript : Pusher
 
                 game_master_script.Undo();
                 cur_pos = rb.position;
+                Vector3 dir = GetDirFromRot(rb.rotation);
+                SetDir(dir.x, dir.y, dir.z);
             }
 
             if (camera_script.GetFacing() != CameraControls.Facing.ROTATING)
@@ -205,5 +207,20 @@ public class CharacterControllerScript : Pusher
     public void SetMoving(bool ismoving)
     {
         moving = ismoving;
+    }
+
+    public Vector3 GetDirFromRot(Quaternion rot){
+        Vector3 dir = new Vector3();
+
+        if (rot.y == 0)
+            dir = new Vector3(1,0,0);
+        else if (rot.y == 90)
+            dir = new Vector3(0,0,-1);
+        else if (rot.y == 180)
+            dir = new Vector3(-1,0,0);
+        else if (rot.y == 270)
+            dir = new Vector3(0,0,1);
+
+        return dir;
     }
 }
