@@ -87,26 +87,26 @@ public class BoxPushedScript : Pusher
     public override void Pushed(GameObject pusher)
     {
         // Getting things to use
-        GameObject c = pusher;
-        if (c.name == "Character")
+        GameObject p = pusher;
+        if (p.name == "Character")
         {
-            CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
+            CharacterControllerScript c_script = p.GetComponent<CharacterControllerScript>();
             direction = c_script.GetDir();
             speed = Utility.PUSHING_SPEED;
         }
-        else if (c.tag == "Elevator")
+        else if (p.tag == "Elevator")
         {
-            Elevator c_script = c.GetComponent<Elevator>();
-            direction = c_script.GetDir();
+            Elevator e_script = p.GetComponent<Elevator>();
+            direction = e_script.GetDir();
             speed = Utility.ELEVATOR_SPEED;
         }
-        
+
         Vector3 cur_pos = rb.position;
 
         // Checking character diff from original position
-        Vector3 c_pos = c.GetComponent<Rigidbody>().position;
-        Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
-        Vector3 diff = c_pos - c_grid_pos;
+        Vector3 p_pos = p.GetComponent<Rigidbody>().position;
+        Vector3 p_grid_pos = Utility.GetGridPos(p_pos);
+        Vector3 diff = p_pos - p_grid_pos;
 
         // Starting to move in the right direction
         if (!moving)
@@ -119,9 +119,12 @@ public class BoxPushedScript : Pusher
         {
             //Check if box is on top of box if so move it also
             RaycastHit hit = new RaycastHit();
-            Physics.Raycast(rb.position, Vector3.up, out hit, Utility.GRID_SIZE);
-            if (hit.collider != null && hit.collider.tag == "Box"){
-                hit.collider.GetComponent<BoxPushedScript>().Pushed(c);
+            Vector3 ray_pos = rb.position;
+            ray_pos.y += 0.1f;
+            Physics.Raycast(ray_pos, Vector3.up, out hit, Utility.GRID_SIZE);
+            if (hit.collider != null && hit.collider.tag == "Box")
+            {
+                hit.collider.GetComponent<BoxPushedScript>().Pushed(p);
             }
 
             // Updating position to be off exactly as much as character, from grid

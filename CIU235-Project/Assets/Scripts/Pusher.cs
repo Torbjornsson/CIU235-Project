@@ -58,7 +58,10 @@ public abstract class Pusher : MonoBehaviour
             if (gameObject.name == "Character" && hit.collider.gameObject.tag == "Box")
             {
                 box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
+                box_script.CheckForFall();
+                collision |= box_script.IsFalling();
                 collision |= box_script.CollisionCheckInFront(direction);
+                Debug.Log("Character vs box, box falling: "+box_script.IsFalling());
                 if (!collision)
                 {
                     box_script.Pushed(gameObject);
@@ -89,6 +92,12 @@ public abstract class Pusher : MonoBehaviour
     public bool IsMoving()
     {
         return moving;
+    }
+
+    // Simple getter
+    public bool IsFalling()
+    {
+        return falling;
     }
 
     public virtual void Pushed(GameObject pusher) { }
