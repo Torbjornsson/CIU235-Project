@@ -14,9 +14,6 @@ public class BoxPushedScript : Pusher
     public GameObject shine;
     public GameObject shine_point_light;
 
-    //private Vector3 direction;
-    //private Vector3 next_pos;
-
     private State state;
     private float color_alpha;
     private int color_dir;
@@ -39,8 +36,6 @@ public class BoxPushedScript : Pusher
         {
             CheckForFall();
         }
-        //Debug.Log("Box status: Falling (" + falling + "), Moving (" + moving + ")");
-        //Debug.Log("Box position: " + rb.position);
     }
 
     // LastUpdate is called once per frame, AFTER every normal Update()

@@ -15,8 +15,6 @@ public class CharacterControllerScript : Pusher
     public bool pushing;
     public float speed_push;
 
-    //public string ground_tag;
-    //public string prev_ground_tag;
     public bool elevator_trigger;
     public Vector3 elevator_trigger_pos;
 
@@ -38,9 +36,6 @@ public class CharacterControllerScript : Pusher
         pushing = false;
         speed = Utility.CHARACTER_SPEED;
 
-        //ground_tag = "Wall";
-        //prev_ground_tag = ground_tag;
-
         elevator_trigger = false;
     }
 
@@ -53,19 +48,12 @@ public class CharacterControllerScript : Pusher
 
         if (!moving)
         {
-            //prev_ground_tag = ground_tag;
             CheckForFall();
             if (IsFalling()) game_master_script.ChangeElevatorLevel();
         }
 
         if (!falling && !moving)
         {
-            //if (elevator_trigger_pos != Utility.GetGridPos(rb.position))
-            //{
-            //    elevator_trigger = false;
-            //    elevator_trigger_pos = Utility.GetGridPos(rb.position);
-            //}
-
             if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
                 || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX"))))
             {
@@ -153,14 +141,6 @@ public class CharacterControllerScript : Pusher
                 eye.GetComponent<Transform>().localScale = scale;
             }
         }
-
-        //if (!moving) elevator_trigger = false;
-
-        //if (elevator_trigger_pos != Utility.GetGridPos(rb.position))
-        //{
-        //    elevator_trigger = false;
-        //    elevator_trigger_pos = Utility.GetGridPos(rb.position);
-        //}
 
         UpdateFacing();
     }
