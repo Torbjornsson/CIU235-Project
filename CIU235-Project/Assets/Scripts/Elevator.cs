@@ -5,6 +5,7 @@ using UnityEngine;
 public class Elevator : Pusher
 {
     public GameObject elevator_trigger;
+    public ElevatorTrigger trigger_script;
 
     // Start is called before the first frame update
     void Start()
@@ -13,6 +14,8 @@ public class Elevator : Pusher
 
         moving = false;
         next_pos = rb.position;
+
+        trigger_script = elevator_trigger.GetComponent<ElevatorTrigger>();
     }
 
     // Update is called once per frame

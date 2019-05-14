@@ -5,25 +5,25 @@ using UnityEngine;
 public class ElevatorTrigger : MonoBehaviour
 {
     //public GameObject elevator;
-    private CharacterControllerScript c_script;
-    private GameMasterScript game_master_script;
+    //private CharacterControllerScript c_script;
+    //private GameMasterScript game_master_script;
 
     private bool character_stay;
 
     // Start is called before the first frame update
     void Start()
     {
-        c_script = GameObject.Find("Character").GetComponent<CharacterControllerScript>();
-        game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
+        //c_script = GameObject.Find("Character").GetComponent<CharacterControllerScript>();
+        //game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
 
         character_stay = false;
     }
 
     // Update is called once per frame
-    void LateUpdate()
-    {
+    //void LateUpdate()
+    //{
         //if (!c_script.IsMoving()) c_script.elevator_trigger = false;
-    }
+    //}
 
     void OnTriggerStay(Collider other)
     {
@@ -46,11 +46,14 @@ public class ElevatorTrigger : MonoBehaviour
         //}
 
         character_stay = (other.gameObject.name == "Character");
+
+        //if (character_stay) game_master_script.CheckElevatorTriggering();
     }
 
     void OnTriggerExit(Collider other)
     {
         character_stay = false;
+        //game_master_script.CheckElevatorTriggering();
     }
 
     public bool CharacterOnElevator()

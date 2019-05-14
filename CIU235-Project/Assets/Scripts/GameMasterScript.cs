@@ -127,6 +127,37 @@ public class GameMasterScript : MonoBehaviour
             Debug.Log("CANCEL");
         }
 
+        //if (!c_script.IsMoving())
+        //{
+        //    if (c_script.elevator_trigger_pos != Utility.GetGridPos(c_script.rb.position))
+        //    {
+        //        bool on_elevator = false;
+        //        foreach (GameObject e in elevators)
+        //        {
+        //            if (e.GetComponent<Elevator>().elevator_trigger.GetComponent<ElevatorTrigger>().CharacterOnElevator())
+        //            {
+        //                on_elevator = true;
+        //                break;
+        //            }
+        //        }
+
+        //        Debug.Log("Character on elevator - el trigger? " + c_script.elevator_trigger + ", el trigger pos: " + c_script.elevator_trigger_pos + ", char pos: " + Utility.GetGridPos(c_script.rb.position));
+
+        //        if (on_elevator && !c_script.elevator_trigger)
+        //        {
+        //            ChangeElevatorLevel();
+        //        }
+
+        //        c_script.elevator_trigger = on_elevator;
+        //        c_script.elevator_trigger_pos = Utility.GetGridPos(c_script.rb.position);
+        //    }
+        //}
+
+        CheckElevatorTriggering();
+    }
+
+    public void CheckElevatorTriggering()
+    {
         if (!c_script.IsMoving())
         {
             if (c_script.elevator_trigger_pos != Utility.GetGridPos(c_script.rb.position))
@@ -134,17 +165,13 @@ public class GameMasterScript : MonoBehaviour
                 bool on_elevator = false;
                 foreach (GameObject e in elevators)
                 {
-                    if (e.GetComponent<Elevator>().elevator_trigger.GetComponent<ElevatorTrigger>().CharacterOnElevator())
+                    if (e.GetComponent<Elevator>().trigger_script.CharacterOnElevator())
                     {
                         on_elevator = true;
                         break;
                     }
                 }
 
-            //if (on_elevator && !c_script.elevator_trigger && c_script.elevator_trigger_pos != Utility.GetGridPos(c_script.rb.position))
-            //{
-            //    ChangeElevatorLevel();
-            //}
                 Debug.Log("Character on elevator - el trigger? " + c_script.elevator_trigger + ", el trigger pos: " + c_script.elevator_trigger_pos + ", char pos: " + Utility.GetGridPos(c_script.rb.position));
 
                 if (on_elevator && !c_script.elevator_trigger)
