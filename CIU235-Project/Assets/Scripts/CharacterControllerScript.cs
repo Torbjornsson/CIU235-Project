@@ -145,7 +145,7 @@ public class CharacterControllerScript : Pusher
                 eye.GetComponent<Transform>().localScale = scale;
             }
         }
-        if (prev_dir != direction)
+        if (Vector3.zero != direction)
             UpdateFacing(); 
     }
 
