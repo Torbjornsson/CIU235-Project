@@ -97,6 +97,8 @@ public class CharacterControllerScript : Pusher
             }
 
             if (move_input) game_master_script.RecordUndo();
+
+            //Debug.Log("Character trying to move - moving: "+moving+", move_input: "+move_input+", falling: "+falling);
         }
 
     }

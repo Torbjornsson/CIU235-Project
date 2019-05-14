@@ -39,6 +39,8 @@ public class BoxPushedScript : Pusher
         {
             CheckForFall();
         }
+        //Debug.Log("Box status: Falling (" + falling + "), Moving (" + moving + ")");
+        //Debug.Log("Box position: " + rb.position);
     }
 
     // LastUpdate is called once per frame, AFTER every normal Update()

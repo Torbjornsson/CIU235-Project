@@ -58,10 +58,10 @@ public abstract class Pusher : MonoBehaviour
             if (gameObject.name == "Character" && hit.collider.gameObject.tag == "Box")
             {
                 box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
-                box_script.CheckForFall();
+                if (!box_script.falling) box_script.CheckForFall();
                 collision |= box_script.IsFalling();
                 collision |= box_script.CollisionCheckInFront(direction);
-                Debug.Log("Character vs box, box falling: "+box_script.IsFalling());
+                //Debug.Log("Character vs box, box falling: "+box_script.IsFalling()+", box pos: "+hit.rigidbody.position+", character pos: "+rb.position);
                 if (!collision)
                 {
                     box_script.Pushed(gameObject);
