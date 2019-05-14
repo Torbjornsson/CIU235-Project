@@ -33,7 +33,7 @@ public class CharacterControllerScript : Pusher
         direction = new Vector3();
         next_pos = rb.position;
         
-        rotation = 0;
+        rotation = rb.rotation.y;
         pushing = false;
         speed_push = speed * PUSHING_FACTOR;
     }
@@ -44,6 +44,8 @@ public class CharacterControllerScript : Pusher
 
         Vector3 cur_pos = rb.position;
         bool move_input = false;
+
+        Vector3 prev_dir = direction;
 
         if (!moving)
         {
@@ -150,8 +152,8 @@ public class CharacterControllerScript : Pusher
                 eye.GetComponent<Transform>().localScale = scale;
             }
         }
-
-        UpdateFacing();
+        if (prev_dir != direction)
+            UpdateFacing(); 
     }
 
     // Updates facing of player
