@@ -8,16 +8,15 @@ public class CharacterControllerScript : Pusher
     public const float EPSILON = 0.0001f;
     public const float DEAD_ZONE = 0.3f;
     public const float SQUEEZE_SIZE = 0.25f;
-    public const float PUSHING_FACTOR = 0.8f;
 
-    private Vector3 next_pos;
-
-    public Vector3 direction;
     public float rotation;
     public float speed;
 
     public bool pushing;
     public float speed_push;
+
+    public bool elevator_trigger;
+    public Vector3 elevator_trigger_pos;
 
     public GameObject eye;
 
@@ -35,7 +34,9 @@ public class CharacterControllerScript : Pusher
         
         rotation = rb.rotation.y;
         pushing = false;
-        speed_push = speed * PUSHING_FACTOR;
+        speed = Utility.CHARACTER_SPEED;
+
+        elevator_trigger = false;
     }
 
     // Update is called once per frame
@@ -49,14 +50,15 @@ public class CharacterControllerScript : Pusher
 
         if (!moving)
         {
-        	if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
-                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX")))) 
-            {
-                //Vector3 prev_pos = game_master_script.Undo();
-                //Debug.Log("prev pos" + prev_pos);
-                //rb.MovePosition(prev_pos);
-                //cur_pos = prev_pos;
+            CheckForFall();
+            if (IsFalling()) game_master_script.ChangeElevatorLevel();
+        }
 
+        if (!falling && !moving)
+        {
+            if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
+                || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX"))))
+            {
                 game_master_script.Undo();
                 cur_pos = rb.position;
                 Vector3 dir = GetDirFromRot(rb.rotation);
@@ -101,39 +103,28 @@ public class CharacterControllerScript : Pusher
             else if (moving)
             {
                 SetNextPos(cur_pos, direction);
-                //game_master_script.RecordUndo(gameObject, cur_pos);
-            }
-
-            // Initiating fall
-            if (!CollisionCheckInFront(Vector3.down)){
-                RaycastHit hit = new RaycastHit();
-                Vector3 pos = rb.position;
-                pos.y -= 2;
-                Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
-                if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
-                    
-                }
-                if (hit.collider == null || hit.collider != null && hit.collider.gameObject.tag == "Goal"){
-                    if (moving){
-                        Stop(next_pos);
-                    }
-                    if (!moving)
-                    {
-                        SetDir(0, -1, 0);
-                        moving = true;
-                        SetNextPos(cur_pos, direction);
-                    }
-                    move_input = false;
-                }
             }
 
             if (move_input) game_master_script.RecordUndo();
+
+            //Debug.Log("Character trying to move - moving: "+moving+", move_input: "+move_input+", falling: "+falling);
         }
 
+    }
+
+    private void LateUpdate()
+    {
         if (moving)
         {
-            float factor = pushing ? PUSHING_FACTOR : 1;
-            Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime * factor;
+            Vector3 cur_pos = rb.position;
+
+            float temp_speed = speed;
+            if (falling) temp_speed = Utility.FALLING_SPEED;
+            else if (pushing) temp_speed = Utility.PUSHING_SPEED;
+            else if (direction.y != 0) temp_speed = Utility.ELEVATOR_SPEED;
+
+            Vector3 new_pos = cur_pos + direction * temp_speed * Time.deltaTime;
+
             if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
                 || (direction.y > 0 && new_pos.y >= next_pos.y) || (direction.y < 0 && new_pos.y <= next_pos.y)
                 || (direction.z > 0 && new_pos.z >= next_pos.z) || (direction.z < 0 && new_pos.z <= next_pos.z))
@@ -182,20 +173,9 @@ public class CharacterControllerScript : Pusher
         gameObject.GetComponent<Transform>().rotation = target;
     }
 
-    public void SetDir(float dir_x, float dir_y, float dir_z)
+    public override void SetDir(float dir_x, float dir_y, float dir_z)
     {
         direction = Utility.RotateInputVector(dir_x, dir_y, dir_z, camera_script.GetFacing());
-    }
-
-    public void SetNextPos(Vector3 cur_pos, Vector3 dir)
-    {
-        SetNextPos(cur_pos, dir.x, dir.y, dir.z);
-    }
-
-    public void SetNextPos(Vector3 cur_pos, float dir_x, float dir_y, float dir_z)
-    {
-        next_pos = new Vector3(cur_pos.x + Utility.GRID_SIZE * dir_x, cur_pos.y + Utility.GRID_SIZE * dir_y, cur_pos.z + Utility.GRID_SIZE * dir_z);
-        next_pos = Utility.GetGridPos(next_pos);
     }
 
     public override void Stop(Vector3 position)
@@ -209,7 +189,8 @@ public class CharacterControllerScript : Pusher
         moving = ismoving;
     }
 
-    public Vector3 GetDirFromRot(Quaternion rot){
+    public Vector3 GetDirFromRot(Quaternion rot)
+    {
         Vector3 dir = new Vector3();
 
         if (rot.y == 0)
@@ -222,5 +203,37 @@ public class CharacterControllerScript : Pusher
             dir = new Vector3(0,0,1);
 
         return dir;
+    }
+
+    public override void Pushed(GameObject pusher)
+    {
+        // Getting things to use
+        GameObject c = pusher;
+        if (c.tag == "Elevator")
+        {
+            Elevator c_script = c.GetComponent<Elevator>();
+            direction = c_script.GetDir();
+        }
+
+        Vector3 cur_pos = rb.position;
+
+        // Checking character diff from original position
+        Vector3 c_pos = c.GetComponent<Rigidbody>().position;
+        Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
+        Vector3 diff = c_pos - c_grid_pos;
+
+        if (!moving)
+        {
+            SetNextPos(cur_pos, direction);
+            moving = true;
+        }
+
+        if (moving)
+        {
+            // Updating position to be off exactly as much as character, from grid
+            cur_pos += diff;
+            rb.MovePosition(cur_pos);
+        }
+
     }
 }
