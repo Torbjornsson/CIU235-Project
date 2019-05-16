@@ -166,10 +166,15 @@ public class GameMasterScript : MonoBehaviour
     {
         Debug.Log("Reset elevator level! Current: " + elevator_level + ", should be: " + level);
 
+        bool on_elevator = false;
         foreach (GameObject elevator in elevators)
         {
             elevator.GetComponent<Elevator>().ResetToLevel(level);
+            on_elevator |= elevator.GetComponent<Elevator>().trigger_script.CharacterOnElevator();
         }
+
+        c_script.elevator_trigger = on_elevator;
+        c_script.elevator_trigger_pos = Utility.GetGridPos(c_script.rb.position);
 
         elevator_level = level;
     }
