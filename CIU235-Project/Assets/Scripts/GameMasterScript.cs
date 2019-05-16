@@ -97,8 +97,8 @@ public class GameMasterScript : MonoBehaviour
 
         if (Input.GetButtonDown(button_accept))
         {
-            //Debug.Log("ACCEPT");
-            ChangeElevatorLevel();
+            Debug.Log("ACCEPT");
+            //ChangeElevatorLevel();
         }
 
         if ((Input.GetButtonDown(button_cancel)))
@@ -152,7 +152,7 @@ public class GameMasterScript : MonoBehaviour
             if (ok_to_move)
             {
                 elevator_level = (elevator_level + 1) % 2;
-                Debug.Log("Change elevator level to: " + elevator_level);
+                //Debug.Log("Change elevator level to: " + elevator_level);
 
                 foreach (GameObject elevator in elevators)
                 {
@@ -164,7 +164,7 @@ public class GameMasterScript : MonoBehaviour
 
     private void ResetElevatorLevel(int level)
     {
-        Debug.Log("Reset elevator level! Current: " + elevator_level + ", should be: " + level);
+        //Debug.Log("Reset elevator level! Current: " + elevator_level + ", should be: " + level);
 
         bool on_elevator = false;
         foreach (GameObject elevator in elevators)
@@ -218,7 +218,7 @@ public class GameMasterScript : MonoBehaviour
         if (UndoAvailable())
         {
             StatePackage state = (StatePackage) undo_stack.Pop();
-            Debug.Log("Undo !");
+            //Debug.Log("Undo !");
             state.ResetState();
             ResetElevatorLevel(state.elevator_level);
             state.Destroy();
