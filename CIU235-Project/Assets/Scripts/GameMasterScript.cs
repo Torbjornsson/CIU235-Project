@@ -124,7 +124,7 @@ public class GameMasterScript : MonoBehaviour
                     }
                 }
 
-                Debug.Log("Character on elevator - el trigger? " + c_script.elevator_trigger + ", el trigger pos: " + c_script.elevator_trigger_pos + ", char pos: " + Utility.GetGridPos(c_script.rb.position));
+                //Debug.Log("Character on elevator - el trigger? " + c_script.elevator_trigger + ", el trigger pos: " + c_script.elevator_trigger_pos + ", char pos: " + Utility.GetGridPos(c_script.rb.position));
 
                 if (on_elevator && !c_script.elevator_trigger)
                 {
