@@ -97,6 +97,7 @@ public class GameMasterScript : MonoBehaviour
 
         if (Input.GetButtonDown(button_accept))
         {
+            //Debug.Log("ACCEPT");
             ChangeElevatorLevel();
         }
 
@@ -110,30 +111,28 @@ public class GameMasterScript : MonoBehaviour
 
     public void CheckElevatorTriggering()
     {
-        if (!c_script.IsMoving())
+        if (!c_script.IsMoving()
+            && c_script.elevator_trigger_pos != Utility.GetGridPos(c_script.rb.position))
         {
-            if (c_script.elevator_trigger_pos != Utility.GetGridPos(c_script.rb.position))
+            bool on_elevator = false;
+            foreach (GameObject e in elevators)
             {
-                bool on_elevator = false;
-                foreach (GameObject e in elevators)
+                if (e.GetComponent<Elevator>().trigger_script.CharacterOnElevator())
                 {
-                    if (e.GetComponent<Elevator>().trigger_script.CharacterOnElevator())
-                    {
-                        on_elevator = true;
-                        break;
-                    }
+                    on_elevator = true;
+                    break;
                 }
-
-                //Debug.Log("Character on elevator - el trigger? " + c_script.elevator_trigger + ", el trigger pos: " + c_script.elevator_trigger_pos + ", char pos: " + Utility.GetGridPos(c_script.rb.position));
-
-                if (on_elevator && !c_script.elevator_trigger)
-                {
-                    ChangeElevatorLevel();
-                }
-
-                c_script.elevator_trigger = on_elevator;
-                c_script.elevator_trigger_pos = Utility.GetGridPos(c_script.rb.position);
             }
+
+            //Debug.Log("Character on elevator - el trigger? " + c_script.elevator_trigger + ", el trigger pos: " + c_script.elevator_trigger_pos + ", char pos: " + Utility.GetGridPos(c_script.rb.position));
+
+            if (on_elevator && !c_script.elevator_trigger)
+            {
+                ChangeElevatorLevel();
+            }
+
+            c_script.elevator_trigger = on_elevator;
+            c_script.elevator_trigger_pos = Utility.GetGridPos(c_script.rb.position);
         }
     }
 
@@ -153,7 +152,7 @@ public class GameMasterScript : MonoBehaviour
             if (ok_to_move)
             {
                 elevator_level = (elevator_level + 1) % 2;
-                Debug.Log("CHANGE LEVEL!! to: " + elevator_level);
+                Debug.Log("Change elevator level to: " + elevator_level);
 
                 foreach (GameObject elevator in elevators)
                 {
@@ -161,6 +160,18 @@ public class GameMasterScript : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void ResetElevatorLevel(int level)
+    {
+        Debug.Log("Reset elevator level! Current: " + elevator_level + ", should be: " + level);
+
+        foreach (GameObject elevator in elevators)
+        {
+            elevator.GetComponent<Elevator>().ResetToLevel(level);
+        }
+
+        elevator_level = level;
     }
 
     public void LevelWin()
@@ -204,6 +215,7 @@ public class GameMasterScript : MonoBehaviour
             StatePackage state = (StatePackage) undo_stack.Pop();
             Debug.Log("Undo !");
             state.ResetState();
+            ResetElevatorLevel(state.elevator_level);
             state.Destroy();
         }
     }
@@ -224,6 +236,8 @@ public class GameMasterScript : MonoBehaviour
         {
             state.AddObject(box);
         }
+
+        state.elevator_level = elevator_level;
 
         undo_stack.Push(state);
     }

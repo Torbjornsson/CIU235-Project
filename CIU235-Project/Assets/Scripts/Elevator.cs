@@ -66,4 +66,18 @@ public class Elevator : Pusher
             }
         }
     }
+
+    public void ResetToLevel(int level)
+    {
+        moving = false;
+
+        Vector3 cur_pos = rb.position;
+        if (level == 0 && cur_pos.y > level || level == 1 && cur_pos.y < level)
+        {
+            Vector3 new_pos = Utility.GetGridPos(rb.position);
+            new_pos.y = level;
+            rb.MovePosition(new_pos);
+            next_pos = new_pos;
+        }
+    }
 }

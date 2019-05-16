@@ -5,12 +5,17 @@ using UnityEngine;
 public class StatePackage
 {
     private Hashtable objects = new Hashtable();
+    public int elevator_level;
 
-    public StatePackage(GameObject obj)
+    public StatePackage()
+    {
+        elevator_level = 0;
+    }
+    public StatePackage(GameObject obj) : this()
     {
         AddObject(obj);
     }
-    public StatePackage(GameObject obj, MiniPackage mp)
+    public StatePackage(GameObject obj, MiniPackage mp) : this()
     {
         AddObject(obj, mp);
     }
