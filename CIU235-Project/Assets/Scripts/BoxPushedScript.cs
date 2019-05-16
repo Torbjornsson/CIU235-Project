@@ -46,11 +46,13 @@ public class BoxPushedScript : Pusher
         Vector3 pos = rb.position;
         pos.y += 0.9f;
         Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
-        if (hit.collider != null && hit.distance < Utility.GRID_SIZE
-            && hit.collider.gameObject.tag == "Box")
+        if (hit.collider != null && hit.distance < Utility.GRID_SIZE)
         {
-            BoxPushedScript box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
-            box_script.Fall();
+            if (hit.collider.gameObject.tag == "Box" || hit.collider.gameObject.name == "Character")
+            {
+                Pusher pusher_script = hit.collider.gameObject.GetComponent<Pusher>();
+                pusher_script.Fall();
+            }
         }
     }
 
