@@ -136,12 +136,16 @@ public abstract class Pusher : MonoBehaviour
             }
             if (!moving)
             {
-                SetDir(0, -1, 0);
-                moving = true;
-                SetNextPos(rb.position, direction);
+                Fall();
             }
-
-            falling = true;
         }
+    }
+
+    public virtual void Fall()
+    {
+        SetDir(0, -1, 0);
+        moving = true;
+        SetNextPos(rb.position, direction);
+        falling = true;
     }
 }

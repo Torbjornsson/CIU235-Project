@@ -25,7 +25,8 @@ public class BoxPushedScript : Pusher
         direction = new Vector3();
         next_pos = rb.position;
         moving = false;
-        state = State.WRONG;
+        falling = false;
+        state = State.WRONG; // Both these are needed, because of the way SetState() works!
         SetState(State.IDLE);
     }
 
@@ -34,6 +35,22 @@ public class BoxPushedScript : Pusher
         if (!moving)
         {
             CheckForFall();
+        }
+    }
+
+    public override void Fall()
+    {
+        base.Fall();
+
+        RaycastHit hit = new RaycastHit();
+        Vector3 pos = rb.position;
+        pos.y += 0.9f;
+        Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE);
+        if (hit.collider != null && hit.distance < Utility.GRID_SIZE
+            && hit.collider.gameObject.tag == "Box")
+        {
+            BoxPushedScript box_script = hit.collider.gameObject.GetComponent<BoxPushedScript>();
+            box_script.Fall();
         }
     }
 
