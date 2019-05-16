@@ -4,6 +4,11 @@ public static class Utility
 {
     public const float GRID_SIZE = 1f;
 
+    public const float CHARACTER_SPEED = 5f;
+    public const float ELEVATOR_SPEED = 4f;
+    public const float PUSHING_SPEED = 3f;
+    public const float FALLING_SPEED = 6f;
+
     // Overloaded methods for getting grid positions, based on a specific grid size
     public static Vector3 GetGridPos(Vector3 pos)
     {

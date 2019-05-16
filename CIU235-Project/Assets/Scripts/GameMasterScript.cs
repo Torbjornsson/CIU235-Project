@@ -20,24 +20,30 @@ public class GameMasterScript : MonoBehaviour
     //public Stack undoStackC = new Stack();
     bool level_win;
 
-    private static GameMasterScript instance = null;
-    public static GameMasterScript Instance {
-        get { return instance; }
-    }
+    private int elevator_level;
+    GameObject[] elevators;
 
     public float EPSILON = 0.00001f;
 
     public Canvas pause_menu;
 
+    private GameObject character;
+    private CharacterControllerScript c_script;
+
+    private static GameMasterScript instance = null;
+    public static GameMasterScript Instance {
+        get { return instance; }
+    }
+
     private void Awake() {
         if (instance != null && instance != this) 
         {
-         Destroy(this.gameObject);
-         return;
+            Destroy(this.gameObject);
+            return;
         } 
         else 
         {
-         instance = this;
+            instance = this;
         }
         DontDestroyOnLoad(this.gameObject);
     }
@@ -70,9 +76,11 @@ public class GameMasterScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
+
         if ((Input.GetButtonDown(button_reset)))
         {
-                ResetLevel();
+            ResetLevel();
         }
 
         if ((Input.GetButtonDown(button_menu)) && SceneManager.GetActiveScene().buildIndex > 0)
@@ -89,12 +97,69 @@ public class GameMasterScript : MonoBehaviour
 
         if (Input.GetButtonDown(button_accept))
         {
-            Debug.Log("ACCEPT");
+            ChangeElevatorLevel();
         }
 
         if ((Input.GetButtonDown(button_cancel)))
         {
             Debug.Log("CANCEL");
+        }
+
+        CheckElevatorTriggering();
+    }
+
+    public void CheckElevatorTriggering()
+    {
+        if (!c_script.IsMoving())
+        {
+            if (c_script.elevator_trigger_pos != Utility.GetGridPos(c_script.rb.position))
+            {
+                bool on_elevator = false;
+                foreach (GameObject e in elevators)
+                {
+                    if (e.GetComponent<Elevator>().trigger_script.CharacterOnElevator())
+                    {
+                        on_elevator = true;
+                        break;
+                    }
+                }
+
+                //Debug.Log("Character on elevator - el trigger? " + c_script.elevator_trigger + ", el trigger pos: " + c_script.elevator_trigger_pos + ", char pos: " + Utility.GetGridPos(c_script.rb.position));
+
+                if (on_elevator && !c_script.elevator_trigger)
+                {
+                    ChangeElevatorLevel();
+                }
+
+                c_script.elevator_trigger = on_elevator;
+                c_script.elevator_trigger_pos = Utility.GetGridPos(c_script.rb.position);
+            }
+        }
+    }
+
+    public void ChangeElevatorLevel()
+    {
+        //CharacterControllerScript c_script = character.GetComponent<CharacterControllerScript>();
+        if (!c_script.IsMoving() || c_script.IsFalling())
+        {
+            //GameObject[] elevators = GameObject.FindGameObjectsWithTag("Elevator");
+            //GameObject[] boxes = GameObject.FindGameObjectsWithTag("Box");
+            bool ok_to_move = true;
+            foreach (GameObject elevator in elevators)
+            {
+                ok_to_move &= !elevator.GetComponent<Elevator>().IsMoving();
+            }
+
+            if (ok_to_move)
+            {
+                elevator_level = (elevator_level + 1) % 2;
+                Debug.Log("CHANGE LEVEL!! to: " + elevator_level);
+
+                foreach (GameObject elevator in elevators)
+                {
+                    elevator.GetComponent<Elevator>().MoveToLevel(elevator_level);
+                }
+            }
         }
     }
 
@@ -142,48 +207,26 @@ public class GameMasterScript : MonoBehaviour
             state.Destroy();
         }
     }
-    //public Vector3 Undo()
-    //{
-    //    GameObject go = (GameObject)undoStackC.Pop();
-    //    Vector3 pos = (Vector3)undoStack.Pop();
-    //    if (go.tag == "Box")
-    //    {
-    //        Debug.Log(go.GetComponent<Rigidbody>().position);
-    //        go.GetComponent<Rigidbody>().MovePosition(pos);
-    //        go = (GameObject)undoStackC.Pop();
-    //        pos = (Vector3)undoStack.Pop();
-    //    }
-    //    Debug.Log("Undo " + go + " to pos " + pos);
-
-    //    return pos;
-    //}
 
     public void RecordUndo()
     {
-        GameObject character = GameObject.FindWithTag("Player");
-        RecordUndo(character, character.GetComponent<Rigidbody>().position);
+        //GameObject character = GameObject.FindWithTag("Player");
+        RecordUndo(character);
     }
 
-    public void RecordUndo(GameObject character, Vector3 position)
+    public void RecordUndo(GameObject character)
     {
-        StatePackage state = new StatePackage(character, position);
+        StatePackage state = new StatePackage(character);
         //Debug.Log("Recorded " + character.name + " at pos " + position);
 
         GameObject[] boxes = GameObject.FindGameObjectsWithTag("Box");
         foreach(GameObject box in boxes)
         {
-            state.AddObject(box, box.GetComponent<Rigidbody>().position);
+            state.AddObject(box);
         }
 
         undo_stack.Push(state);
     }
-
-    //public void RecordUndo(GameObject go,Vector3 pos)
-    //{
-    //    //Debug.Log("Recorded " + go.name + " at pos " + pos);
-    //    undoStack.Push(pos);
-    //    undoStackC.Push(go);
-    //}
 
     public System GetSystem()
     {
@@ -205,5 +248,26 @@ public class GameMasterScript : MonoBehaviour
     public void LoadLevel(int n){
         Debug.Log(SceneManager.GetSceneByBuildIndex(n).name);
         SceneManager.LoadScene(n);
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
+
+        character = GameObject.Find("Character");
+        c_script = character.GetComponent<CharacterControllerScript>();
+        elevator_level = (character.GetComponent<Rigidbody>().position.y > 0.5f) ? 1 : 0;
+        //Debug.Log("Elevator level: "+elevator_level);
+        elevators = GameObject.FindGameObjectsWithTag("Elevator");
     }
 }

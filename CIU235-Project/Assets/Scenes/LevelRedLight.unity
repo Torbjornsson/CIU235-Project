@@ -13232,12 +13232,12 @@ PrefabInstance:
     - target: {fileID: 3932046905767414167, guid: 4d3fc0cf590ac98b5a96d503e16350ff,
         type: 3}
       propertyPath: color.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3932046905767414167, guid: 4d3fc0cf590ac98b5a96d503e16350ff,
         type: 3}
       propertyPath: color.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3932046905767414167, guid: 4d3fc0cf590ac98b5a96d503e16350ff,
         type: 3}

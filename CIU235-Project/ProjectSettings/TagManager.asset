@@ -9,6 +9,7 @@ TagManager:
   - Trigger
   - Goal
   - Elevator
+  - ElevatorTrigger
   layers:
   - Default
   - TransparentFX

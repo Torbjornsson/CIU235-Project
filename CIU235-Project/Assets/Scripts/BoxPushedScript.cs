@@ -11,15 +11,11 @@ public class BoxPushedScript : Pusher
     }
 
     public float speed;
-    public GameObject shine;
+    public GameObject shine_white;
+    public GameObject shine_red;
     public GameObject shine_point_light;
 
-    private Vector3 direction;
-    private Vector3 next_pos;
-
     private State state;
-    private float color_alpha;
-    private int color_dir;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +29,14 @@ public class BoxPushedScript : Pusher
         SetState(State.IDLE);
     }
 
+    void Update()
+    {
+        if (!moving)
+        {
+            CheckForFall();
+        }
+    }
+
     // LastUpdate is called once per frame, AFTER every normal Update()
     // -- This needs to be late because otherwise it will conflict with pushing mechanics from Character
     void LateUpdate()
@@ -41,7 +45,9 @@ public class BoxPushedScript : Pusher
 
         if (moving)
         {
-            Vector3 new_pos = cur_pos + direction * speed * Time.deltaTime;
+            float temp_speed = speed;
+            if (falling) temp_speed = Utility.FALLING_SPEED;
+            Vector3 new_pos = cur_pos + direction * temp_speed * Time.deltaTime;
 
             if ((direction.x > 0 && new_pos.x >= next_pos.x) || (direction.x < 0 && new_pos.x <= next_pos.x)
                 || (direction.y > 0 && new_pos.y >= next_pos.y) || (direction.y < 0 && new_pos.y <= next_pos.y)
@@ -54,99 +60,55 @@ public class BoxPushedScript : Pusher
                 rb.MovePosition(new_pos);
             }
         }
-        if (!moving)
-        {
-        if (!CollisionCheckInFront(Vector3.down) && !moving){
-                RaycastHit hit = new RaycastHit();
-                Vector3 pos = rb.position;
-                pos.y -= 2;
-                Physics.Raycast(pos, Vector3.up, out hit, Utility.GRID_SIZE * 2);
-                if (hit.collider != null && hit.collider.gameObject.tag == "Elevator"){
-                    Debug.Log("Test");
-                }
-                if (hit.collider == null || hit.collider.gameObject.tag == "Box"){
-                    Debug.Log("Box y pos" + cur_pos.y);
-                    
-                    if (!moving && cur_pos.y == 1){
-                        direction = Vector3.down;
-                        moving = true;
-                        next_pos = cur_pos + direction * Utility.GRID_SIZE;
-                        next_pos = Utility.GetGridPos(next_pos);
-                    }   
-                }
-            }
-        }
-
-        if (state == State.WRONG)
-        {
-            color_alpha += Time.deltaTime * color_dir;
-
-            if ((color_dir < 0 && color_alpha <= 0) || (color_dir > 0 && color_alpha >= 1))
-            {
-                color_alpha = Mathf.Min(Mathf.Max(color_alpha, 0), 1);
-                color_dir *= -1;
-            }
-            //Debug.Log("Color alpha: "+color_alpha+", color dir: "+color_dir);
-            shine.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(color_alpha, COLOR_WRONG.g, COLOR_WRONG.b, 1));
-            //shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", new Color(COLOR_WRONG.r, COLOR_WRONG.g, COLOR_WRONG.b, color_alpha));
-            shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", new Color(color_alpha, COLOR_WRONG.g, COLOR_WRONG.b, 1));
-
-            shine_point_light.GetComponent<Light>().intensity = color_alpha * 0.5f + 1f;
-        }
     }
 
     // Called every time the box is supposed to be pushed in some direction, by a pusher (Character)
-    public void Pushed(GameObject pusher)
+    public override void Pushed(GameObject pusher)
     {
         // Getting things to use
-        GameObject c = pusher;
-        if (c.name == "Character") {
-            CharacterControllerScript c_script = c.GetComponent<CharacterControllerScript>();
-            direction = c_script.direction;
-            speed = c_script.speed_push;
+        GameObject p = pusher;
+        if (p.name == "Character")
+        {
+            CharacterControllerScript c_script = p.GetComponent<CharacterControllerScript>();
+            direction = c_script.GetDir();
+            speed = Utility.PUSHING_SPEED;
         }
-        else{
-            Elevator c_script = c.GetComponent<Elevator>();
-            direction = c_script.direction;
-            speed = 5;
+        else if (p.tag == "Elevator")
+        {
+            Elevator e_script = p.GetComponent<Elevator>();
+            direction = e_script.GetDir();
+            speed = Utility.ELEVATOR_SPEED;
         }
-        
+
         Vector3 cur_pos = rb.position;
 
         // Checking character diff from original position
-        Vector3 c_pos = c.GetComponent<Rigidbody>().position;
-        Vector3 c_grid_pos = Utility.GetGridPos(c_pos);
-        //c_grid_pos.y = c_pos.y;
-        Vector3 diff = c_pos - c_grid_pos;
-        //if (c.tag == "Elevator")
-            //diff.y += 0.5f;
+        Vector3 p_pos = p.GetComponent<Rigidbody>().position;
+        Vector3 p_grid_pos = Utility.GetGridPos(p_pos);
+        Vector3 diff = p_pos - p_grid_pos;
 
         // Starting to move in the right direction
-        //direction = c_script.direction;
-        //speed = c_script.speed_push;
-
-        if (!moving){
+        if (!moving)
+        {
             next_pos = cur_pos + direction * Utility.GRID_SIZE;
             next_pos = Utility.GetGridPos(next_pos);
             moving = true;
-            if (next_pos.y < 0 || next_pos.y > 1)
-            {
-                next_pos = cur_pos;
-                moving = false;
-            }
         }
         if (moving)
         {
-        //Check if box is on top of box if so move it also
-        RaycastHit hit = new RaycastHit();
-        Physics.Raycast(rb.position, Vector3.up, out hit, Utility.GRID_SIZE);
-        if (hit.collider != null && hit.collider.tag == "Box"){
-            hit.collider.GetComponent<BoxPushedScript>().Pushed(c);
-        }
+            //Check if box is on top of box if so move it also
+            RaycastHit hit = new RaycastHit();
+            Vector3 ray_pos = rb.position;
+            ray_pos.y += 0.1f;
+            Physics.Raycast(ray_pos, Vector3.up, out hit, Utility.GRID_SIZE);
+            if (hit.collider != null && hit.collider.tag == "Box")
+            {
+                hit.collider.GetComponent<BoxPushedScript>().Pushed(p);
+            }
 
-        // Updating position to be off exactly as much as character, from grid
-        cur_pos += diff;
-        rb.MovePosition(cur_pos);
+            // Updating position to be off exactly as much as character, from grid
+            cur_pos += diff;
+            rb.MovePosition(cur_pos);
         }
     }
 
@@ -157,29 +119,21 @@ public class BoxPushedScript : Pusher
             switch (state)
             {
                 case State.IDLE:
-                    shine.SetActive(false);
+                    shine_white.SetActive(false);
+                    shine_red.SetActive(false);
                     shine_point_light.SetActive(false);
-                    //shine.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
                     break;
                 case State.CORRECT:
-                    shine.SetActive(true);
-                    shine.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
-                    shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", COLOR_CORRECT);
-                    shine.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", COLOR_CORRECT);
+                    shine_white.SetActive(true);
+                    shine_red.SetActive(false);
                     shine_point_light.SetActive(true);
                     shine_point_light.GetComponent<Light>().color = COLOR_CORRECT;
-                    shine_point_light.GetComponent<Light>().intensity = 0.5f;
                     break;
                 case State.WRONG:
-                    shine.SetActive(true);
-                    shine.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
-                    shine.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", COLOR_WRONG);
-                    shine.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", COLOR_WRONG);
+                    shine_white.SetActive(false);
+                    shine_red.SetActive(true);
                     shine_point_light.SetActive(true);
                     shine_point_light.GetComponent<Light>().color = COLOR_WRONG;
-                    shine_point_light.GetComponent<Light>().intensity = 0f;
-                    color_alpha = 0;
-                    color_dir = 1;
                     break;
             }
             this.state = state;
