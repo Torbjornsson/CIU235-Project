@@ -11,13 +11,20 @@ public class GameMasterScript : MonoBehaviour
     }
     private System system;
 
+    public const float INTRO_PROGRESS_PACE = 3;
+    public const float OUTRO_PROGRESS_PACE = 3;
+
     private string button_reset;
     private string button_menu;
     private string button_accept;
     private string button_cancel;
 
     public Stack undo_stack = new Stack();
-    bool level_win;
+    //bool level_win;
+    bool level_transition;
+    bool level_intro;
+    bool level_outro;
+    float transition_progress;
 
     private int elevator_level;
     GameObject[] elevators;
@@ -50,7 +57,10 @@ public class GameMasterScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        level_win = false;
+        //level_win = false;
+        level_transition = false;
+        level_intro = false;
+        level_outro = false;
 
         if (Application.platform.Equals(RuntimePlatform.OSXEditor) || Application.platform.Equals(RuntimePlatform.OSXPlayer))
         {
@@ -77,35 +87,63 @@ public class GameMasterScript : MonoBehaviour
     {
         //Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
 
-        if ((Input.GetButtonDown(button_reset)))
+        if (!IsLevelTransition())
         {
-            ResetLevel();
-        }
-
-        if ((Input.GetButtonDown(button_menu)) && SceneManager.GetActiveScene().buildIndex > 0)
-        {
-            if (!pause_menu.isActiveAndEnabled)
+            if (Input.GetButtonDown(button_reset))
             {
-                Pause();
+                ResetLevel();
             }
-            else if (pause_menu.isActiveAndEnabled)
+
+            if (Input.GetButtonDown(button_menu) && SceneManager.GetActiveScene().buildIndex > 0)
             {
-                Resume();
+                if (!pause_menu.isActiveAndEnabled)
+                {
+                    Pause();
+                }
+                else if (pause_menu.isActiveAndEnabled)
+                {
+                    Resume();
+                }
+            }
+
+            if (Input.GetButtonDown(button_accept))
+            {
+                Debug.Log("ACCEPT");
+                //ChangeElevatorLevel();
+            }
+
+            if (Input.GetButtonDown(button_cancel))
+            {
+                Debug.Log("CANCEL");
+            }
+
+            CheckElevatorTriggering();
+
+        }
+        else // if transition is in progress
+        {
+            float pace = IsLeveOutro() ? OUTRO_PROGRESS_PACE : INTRO_PROGRESS_PACE;
+            if (transition_progress < 1)
+                transition_progress += pace * Time.deltaTime;
+            if (transition_progress > 1)
+                transition_progress = 1;
+
+            if (IsLevelIntro())
+            {
+                //Debug.Log("INTRO - Tranition progress: " + transition_progress);
+                c_script.LevelIntro(transition_progress);
+                if (transition_progress >= 1)
+                    GiveBackControlToPlayer();
+            }
+
+            if (IsLeveOutro())
+            {
+                //Debug.Log("OUTRO - Tranition progress: " + transition_progress);
+                c_script.LevelOutro(transition_progress);
+                if (transition_progress >= 1)
+                    NextLevel();
             }
         }
-
-        if (Input.GetButtonDown(button_accept))
-        {
-            Debug.Log("ACCEPT");
-            //ChangeElevatorLevel();
-        }
-
-        if ((Input.GetButtonDown(button_cancel)))
-        {
-            Debug.Log("CANCEL");
-        }
-
-        CheckElevatorTriggering();
     }
 
     public void CheckElevatorTriggering()
@@ -175,10 +213,22 @@ public class GameMasterScript : MonoBehaviour
         elevator_level = level;
     }
 
-    public void LevelWin()
+    public void GoalReached()
     {
-        level_win = true;
+        //level_win = true;
+        level_transition = true;
+        level_outro = true;
+        level_intro = false;
+        transition_progress = 0;
+        Debug.Log("Let the level transition begin!");
+    }
+
+    public void NextLevel()
+    {
+        level_outro = false;
+
         int bIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        //int bIndex = SceneManager.GetActiveScene().buildIndex;
         if (bIndex >= SceneManager.sceneCountInBuildSettings){
             Debug.Log("Congraturations U win tHe Games!?");
         }
@@ -188,7 +238,13 @@ public class GameMasterScript : MonoBehaviour
             undo_stack.Clear();
             SceneManager.LoadScene(bIndex);
         }
-        
+    }
+
+    public void GiveBackControlToPlayer()
+    {
+        level_transition = false;
+        level_outro = false;
+        level_intro = false;
     }
 
     public void ResetLevel()
@@ -282,5 +338,21 @@ public class GameMasterScript : MonoBehaviour
         elevator_level = (character.GetComponent<Rigidbody>().position.y > 0.5f) ? 1 : 0;
         //Debug.Log("Elevator level: "+elevator_level);
         elevators = GameObject.FindGameObjectsWithTag("Elevator");
+
+        level_intro = true;
+        transition_progress = 0;
+    }
+
+    public bool IsLevelTransition()
+    {
+        return level_transition;
+    }
+    public bool IsLevelIntro()
+    {
+        return level_intro;
+    }
+    public bool IsLeveOutro()
+    {
+        return level_outro;
     }
 }

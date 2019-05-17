@@ -13,6 +13,11 @@ public class CharacterControllerScript : Pusher
     public const float GOAL_CLOSE_DISTANCE = 1.5f;
     public Color EMISSION_COLOR = Color.white;
 
+    public const float INTRO_HEIGHT = 5f;
+    public const float INTRO_WIDTH = 0.05f;
+    public const float OUTRO_HEIGHT = 4f;
+    public const float OUTRO_WIDTH = 0.1f;
+
     public float rotation;
     public float speed;
 
@@ -78,7 +83,7 @@ public class CharacterControllerScript : Pusher
             if (IsFalling()) game_master_script.ChangeElevatorLevel();
         }
 
-        if (!falling && !moving)
+        if (!game_master_script.IsLevelTransition() && !falling && !moving)
         {
             if (game_master_script.UndoAvailable() && (Input.GetButtonDown("Undo")
                 || (game_master_script.GetSystem() == GameMasterScript.System.OSX && Input.GetButtonDown("UndoOSX"))))
@@ -171,31 +176,25 @@ public class CharacterControllerScript : Pusher
         if (Vector3.zero != direction)
             UpdateFacing();
 
-        if (win_trigger_script.activated)
+        if (!game_master_script.IsLevelTransition())
         {
-            // How long character is from goal
-            float goal_dist = Vector3.Distance(rb.position, win_trigger_trans.position);
-            // If that distance is closer than a certain treshold, convert it into a ratio-value
-            float dist_ratio = (goal_dist > GOAL_CLOSE_DISTANCE) ? 0 : (GOAL_CLOSE_DISTANCE - goal_dist) / GOAL_CLOSE_DISTANCE;
-            // And scale it by how much it actually should be
-            intensity = dist_ratio * GOAL_CLOSE_INTENSITY;
-            //Debug.Log("Distance between win trigger and character: " + goal_dist+", and ratio: "+dist_ratio+", and finally, intensity: "+intensity);
-            SetLight(intensity);
+            if (win_trigger_script.activated)
+            {
+                // How long character is from goal
+                float goal_dist = Vector3.Distance(rb.position, win_trigger_trans.position);
+                // If that distance is closer than a certain treshold, convert it into a ratio-value
+                float dist_ratio = (goal_dist > GOAL_CLOSE_DISTANCE) ? 0 : (GOAL_CLOSE_DISTANCE - goal_dist) / GOAL_CLOSE_DISTANCE;
+                // And scale it by how much it actually should be
+                intensity = dist_ratio * GOAL_CLOSE_INTENSITY;
+                //Debug.Log("Distance between win trigger and character: " + goal_dist+", and ratio: "+dist_ratio+", and finally, intensity: "+intensity);
+                SetLight(intensity);
+            }
+            else if (intensity > 0)
+            {
+                intensity = 0;
+                SetLight(intensity);
+            }
         }
-        else if (intensity > 0)
-        {
-            intensity = 0;
-            SetLight(intensity);
-        }
-    }
-
-    public void Squeeze(float height)
-    {
-        Vector3 scale = new Vector3(1, height, 1); // Only height is affected
-        eye_trans.localScale = scale;
-        Vector3 eye_new_pos = eye_trans.position;
-        eye_new_pos.y = rb.position.y + height / 2.0f;
-        eye_trans.position = eye_new_pos;
     }
 
     // Updates facing of player
@@ -283,14 +282,68 @@ public class CharacterControllerScript : Pusher
             cur_pos += diff;
             rb.MovePosition(cur_pos);
         }
-
     }
 
-    public void SetLight(float intensity)
+    public void Squeeze(float height)
+    {
+        Squeeze(height, 1);
+    }
+    public void Squeeze(float height, float width) // height & width can be anything, but 1 is the default size
+    {
+        Vector3 scale = new Vector3(width, height, width);
+        eye_trans.localScale = scale;
+
+        Vector3 eye_new_pos = eye_trans.position;
+        eye_new_pos.y = rb.position.y + height / 2.0f;
+        eye_trans.position = eye_new_pos;
+    }
+
+    public void SetLight(float intensity) // intensity should be between [0, 1]
     {
         emission_color.r = EMISSION_COLOR.r * intensity;
         emission_color.g = EMISSION_COLOR.g * intensity;
         emission_color.b = EMISSION_COLOR.b * intensity;
         eye_mat.SetColor("_EmissionColor", emission_color);
+    }
+
+    public void LevelIntro(float progress) // progress should be between [0, 1]
+    {
+        float prog_quad = progress * progress;
+
+        float treshold = 0.7f;
+        float factor = 1 / ((1 - treshold)* (1 - treshold));
+        float half_quad = (progress < treshold) ? 0 : ((progress - treshold) * (progress - treshold)) * factor;
+        //float light_intensity = (progress < 0.5f) ? 1 : 2 * (1 - half_quad);
+        float light_intensity = (1 - half_quad);
+        //Debug.Log("Light intensity: " + light_intensity);
+        SetLight(light_intensity);
+        //Debug.Log("progress: " + progress + ", prog-quad: " + prog_quad + ", half-quad: " + half_quad);
+
+        float height = 1 + (INTRO_HEIGHT - 1) * (1 - prog_quad);
+        float width = 1 + (INTRO_WIDTH - 1) * (1 - prog_quad);
+        Squeeze(height, width);
+        //Debug.Log("prog_quad: " + prog_quad + ", height: " + height + ", width: " + width);
+
+        Color c = eye_mat.color;
+        c.a = prog_quad;
+        eye_mat.color = c;
+        //Debug.Log("Character alfa: " + prog_quad + ", (progress: "+ progress + ")");
+    }
+
+    public void LevelOutro(float progress) // progress should be between [0, 1]
+    {
+        float prog_quad = progress * progress * progress;
+
+        float light_intensity = GOAL_CLOSE_INTENSITY + (1 - GOAL_CLOSE_INTENSITY) * prog_quad;
+        SetLight(light_intensity);
+
+        float height = 1 + (OUTRO_HEIGHT - 1) * prog_quad;
+        float width = 1 + (OUTRO_WIDTH - 1) * prog_quad;
+        Squeeze(height, width);
+
+        Color c = eye_mat.color;
+        c.a = 1 - prog_quad;
+        eye_mat.color = c;
+        //Debug.Log("Character alfa: " + (1 - prog_quad));
     }
 }

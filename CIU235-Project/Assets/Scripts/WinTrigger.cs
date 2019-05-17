@@ -90,9 +90,11 @@ public class WinTrigger : MonoBehaviour
     // Checks for wins (that is, WinTrigger is active and player is present)
     void OnTriggerStay(Collider other) {
         if (other.gameObject.name == "Character" && activated &&
-            !other.gameObject.GetComponent<CharacterControllerScript>().IsMoving())
+            !other.gameObject.GetComponent<CharacterControllerScript>().IsMoving()
+            && !game_master_script.IsLevelTransition())
         {
-            game_master_script.SendMessage("LevelWin");
+            //game_master_script.SendMessage("LevelWin");
+            game_master_script.SendMessage("GoalReached");
         }
     }
 
