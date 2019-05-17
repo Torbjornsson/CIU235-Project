@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class WinTrigger : MonoBehaviour
 {
+    public const float LIGHT_ACTIVE = 1.5f;
+    public const float LIGHT_INACTIVE = 0.5f;
+    public const float LIGHT_CHANGE = 2f;
+
     public bool activated;
 
     private GameMasterScript game_master_script;
@@ -14,12 +18,27 @@ public class WinTrigger : MonoBehaviour
     public GameObject win_pad;
     public GameObject win_point_light;
 
+    public Light win_point_light_comp;
+    public Material win_pad_mat;
+    public Color win_pad_col;
+
     // Start is called before the first frame update
     void Start()
     {
         game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         triggers = new ArrayList(GameObject.FindGameObjectsWithTag("Trigger"));
+
+        win_point_light_comp = win_point_light.GetComponent<Light>();
+
+        win_pad_mat = win_pad.GetComponent<MeshRenderer>().materials[0];
+        win_pad_mat.EnableKeyword("_EMISSION");
+        win_pad_col = Color.black;
+
         TriggerActivated();
+
+        if (activated) win_pad_col = Color.white;
+        //Debug.Log("Win pad color: " + win_pad_col);
+        win_pad_mat.SetColor("_EmissionColor", win_pad_col);
     }
 
     // Update is called once per frame
@@ -30,15 +49,45 @@ public class WinTrigger : MonoBehaviour
         {
             //win_light.SetActive(true);
             //win_point_light.SetActive(true);
-            win_point_light.GetComponent<Light>().intensity = 1.5f;
-            win_pad.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
+            //win_point_light_comp.intensity = 1.5f;
+
+            if (win_point_light_comp.intensity < LIGHT_ACTIVE)
+                win_point_light_comp.intensity += LIGHT_CHANGE * Time.deltaTime;
+            if (win_point_light_comp.intensity > LIGHT_ACTIVE)
+                win_point_light_comp.intensity = LIGHT_ACTIVE;
+
+            if (win_pad_col.r < 1)
+            {
+                win_pad_col.r += LIGHT_CHANGE * Time.deltaTime;
+                win_pad_col.g += LIGHT_CHANGE * Time.deltaTime;
+                win_pad_col.b += LIGHT_CHANGE * Time.deltaTime;
+            }
+            if (win_pad_col.r > 1)
+                win_pad_col = Color.white;
+
+            win_pad_mat.SetColor("_EmissionColor", win_pad_col);
+            //win_pad.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
         }
         else
         {
             //win_light.SetActive(false);
             //win_point_light.SetActive(false);
-            win_point_light.GetComponent<Light>().intensity = 0.5f;
-            win_pad.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
+            if (win_point_light_comp.intensity > LIGHT_INACTIVE)
+                win_point_light_comp.intensity -= LIGHT_CHANGE * Time.deltaTime;
+            if (win_point_light_comp.intensity < LIGHT_INACTIVE)
+                win_point_light_comp.intensity = LIGHT_INACTIVE;
+
+            if (win_pad_col.r > 0)
+            {
+                win_pad_col.r -= LIGHT_CHANGE * Time.deltaTime;
+                win_pad_col.g -= LIGHT_CHANGE * Time.deltaTime;
+                win_pad_col.b -= LIGHT_CHANGE * Time.deltaTime;
+            }
+            if (win_pad_col.r < 0)
+                win_pad_col = Color.black;
+
+            win_pad_mat.SetColor("_EmissionColor", win_pad_col);
+            //win_pad.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
         }
     }
 
@@ -62,5 +111,6 @@ public class WinTrigger : MonoBehaviour
             if (!item.gameObject.GetComponent<Trigger>().activated)
                 activated = false;
         }
+        //Debug.Log("Trigger activated? " + activated);
     }
 }

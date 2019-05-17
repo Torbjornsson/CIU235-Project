@@ -58,8 +58,8 @@ public class Trigger : MonoBehaviour
         }
     }
 
-        // Helper method that makes sure everything is activated or deactivated only when it needs to
-        private void SetActivated(bool activated)
+    // Helper method that makes sure everything is activated or deactivated only when it needs to
+    private void SetActivated(bool activated)
     {
         if (activated != this.activated)
         {
