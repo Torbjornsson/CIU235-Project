@@ -4,6 +4,8 @@ public class BoxPushedScript : Pusher
 {
     private Color COLOR_CORRECT = Color.white;
     private Color COLOR_WRONG = Color.red;
+    private const float LIGHT_INTENSITY = 1.1f;
+    private const float INTENSITY_CHANGE = 7f;
 
     public enum State
     {
@@ -11,11 +13,21 @@ public class BoxPushedScript : Pusher
     }
 
     public float speed;
-    public GameObject shine_white;
-    public GameObject shine_red;
-    public GameObject shine_point_light;
+    //public GameObject shine_white;
+    //public GameObject shine_whiteY;
+    //public GameObject shine_whiteX;
+    //public GameObject shine_whiteZ;
+    public GameObject shine;
+    public GameObject shineY;
+    public GameObject shineX;
+    public GameObject shineZ;
+
+    //public GameObject shine_red;
+    public GameObject shine_light;
 
     private State state;
+    private float state_intensity;
+    private Color state_color;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +38,7 @@ public class BoxPushedScript : Pusher
         next_pos = rb.position;
         moving = false;
         falling = false;
+        state_intensity = 0;
         state = State.WRONG; // Both these are needed, because of the way SetState() works!
         SetState(State.IDLE);
     }
@@ -78,6 +91,38 @@ public class BoxPushedScript : Pusher
             {
                 rb.MovePosition(new_pos);
             }
+        }
+
+        // Light color and intensity change
+        if (state == State.IDLE)
+        {
+            if (state_intensity > 0)
+                state_intensity -= INTENSITY_CHANGE * Time.deltaTime;
+
+            if (state_intensity <= 0 && shine.activeSelf)
+            {
+                shine.SetActive(false);
+                shine_light.SetActive(false);
+                state_intensity = 0;
+            }
+            SetLight(state_color, state_intensity);
+        }
+        else
+        {
+            if (state_intensity < 1)
+                state_intensity += INTENSITY_CHANGE * Time.deltaTime;
+            if (state_intensity > 1)
+                state_intensity = 1;
+
+            //if (state == State.CORRECT)
+            //{
+
+            //}
+            //else if (state == State.WRONG)
+            //{
+
+            //}
+            SetLight(state_color, state_intensity);
         }
     }
 
@@ -138,25 +183,52 @@ public class BoxPushedScript : Pusher
             switch (state)
             {
                 case State.IDLE:
-                    shine_white.SetActive(false);
-                    shine_red.SetActive(false);
-                    shine_point_light.SetActive(false);
+                    //shine.SetActive(false);
+                    //shine_red.SetActive(false);
+                    //shine_light.SetActive(false);
                     break;
                 case State.CORRECT:
-                    shine_white.SetActive(true);
-                    shine_red.SetActive(false);
-                    shine_point_light.SetActive(true);
-                    shine_point_light.GetComponent<Light>().color = COLOR_CORRECT;
+                    shine.SetActive(true);
+                    //shine_red.SetActive(false);
+                    shine_light.SetActive(true);
+                    //shine_point_light.GetComponent<Light>().color = COLOR_CORRECT;
+                    //SetLight(COLOR_CORRECT, 1);
+                    //state_intensity = 0;
+                    state_color = COLOR_CORRECT;
                     break;
                 case State.WRONG:
-                    shine_white.SetActive(false);
-                    shine_red.SetActive(true);
-                    shine_point_light.SetActive(true);
-                    shine_point_light.GetComponent<Light>().color = COLOR_WRONG;
+                    shine.SetActive(true);
+                    //shine_white.SetActive(false);
+                    //shine_red.SetActive(true);
+                    shine_light.SetActive(true);
+                    //shine_point_light.GetComponent<Light>().color = COLOR_WRONG;
+                    //SetLight(COLOR_WRONG, 1);
+                    //state_intensity = 0;
+                    state_color = COLOR_WRONG;
                     break;
             }
             this.state = state;
         }
 
+    }
+
+    private void SetLight(Color color, float intensity)
+    {
+        //Debug.Log("Blue?");
+
+        color.r = color.r * intensity;
+        color.g = color.g * intensity;
+        color.b = color.b * intensity;
+        color.a = intensity;
+
+        shineX.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", color);
+        shineX.GetComponent<MeshRenderer>().materials[0].color = color;
+        shineY.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", color);
+        shineY.GetComponent<MeshRenderer>().materials[0].color = color;
+        shineZ.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", color);
+        shineZ.GetComponent<MeshRenderer>().materials[0].color = color;
+
+        shine_light.GetComponent<Light>().color = color;
+        shine_light.GetComponent<Light>().intensity = intensity * LIGHT_INTENSITY;
     }
 }
