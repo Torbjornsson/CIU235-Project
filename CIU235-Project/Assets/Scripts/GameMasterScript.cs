@@ -58,8 +58,8 @@ public class GameMasterScript : MonoBehaviour
     void Start()
     {
         //level_win = false;
-        level_transition = false;
-        level_intro = false;
+        level_transition = true;
+        level_intro = true;
         level_outro = false;
 
         if (Application.platform.Equals(RuntimePlatform.OSXEditor) || Application.platform.Equals(RuntimePlatform.OSXPlayer))

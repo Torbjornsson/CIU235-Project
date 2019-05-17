@@ -310,37 +310,48 @@ public class CharacterControllerScript : Pusher
     {
         float prog_quad = progress * progress;
 
+        // Light intensity
         float treshold = 0.7f;
         float factor = 1 / ((1 - treshold)* (1 - treshold));
         float half_quad = (progress < treshold) ? 0 : ((progress - treshold) * (progress - treshold)) * factor;
-        //float light_intensity = (progress < 0.5f) ? 1 : 2 * (1 - half_quad);
         float light_intensity = (1 - half_quad);
-        //Debug.Log("Light intensity: " + light_intensity);
         SetLight(light_intensity);
-        //Debug.Log("progress: " + progress + ", prog-quad: " + prog_quad + ", half-quad: " + half_quad);
 
+        // Squeezing player
         float height = 1 + (INTRO_HEIGHT - 1) * (1 - prog_quad);
         float width = 1 + (INTRO_WIDTH - 1) * (1 - prog_quad);
         Squeeze(height, width);
-        //Debug.Log("prog_quad: " + prog_quad + ", height: " + height + ", width: " + width);
 
+        // Un-Levitating to the ground
+        Vector3 pos = eye_trans.position;
+        pos.y += (1 - prog_quad);
+        eye_trans.position = pos;
+
+        // Fading in
         Color c = eye_mat.color;
         c.a = prog_quad;
         eye_mat.color = c;
-        //Debug.Log("Character alfa: " + prog_quad + ", (progress: "+ progress + ")");
     }
 
     public void LevelOutro(float progress) // progress should be between [0, 1]
     {
         float prog_quad = progress * progress * progress;
 
+        // Light intensity
         float light_intensity = GOAL_CLOSE_INTENSITY + (1 - GOAL_CLOSE_INTENSITY) * prog_quad;
         SetLight(light_intensity);
 
+        // Squeezing player
         float height = 1 + (OUTRO_HEIGHT - 1) * prog_quad;
         float width = 1 + (OUTRO_WIDTH - 1) * prog_quad;
         Squeeze(height, width);
 
+        // Levitating off the ground
+        Vector3 pos = eye_trans.position;
+        pos.y += prog_quad * 2;
+        eye_trans.position = pos;
+
+        // Fading away
         Color c = eye_mat.color;
         c.a = 1 - prog_quad;
         eye_mat.color = c;
