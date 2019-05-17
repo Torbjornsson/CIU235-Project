@@ -20,6 +20,11 @@ public class BoxPushedScript : Pusher
     public GameObject shineZ;
     public GameObject shine_light;
 
+    public Material shineY_mat;
+    public Material shineX_mat;
+    public Material shineZ_mat;
+    public Light shine_light_light;
+
     private State state;
     private float state_intensity;
     private Color state_color;
@@ -29,11 +34,19 @@ public class BoxPushedScript : Pusher
     {
         game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         rb = GetComponent<Rigidbody>();
+
+        shineX_mat = shineX.GetComponent<MeshRenderer>().materials[0];
+        shineY_mat = shineY.GetComponent<MeshRenderer>().materials[0];
+        shineZ_mat = shineZ.GetComponent<MeshRenderer>().materials[0];
+        shine_light_light = shine_light.GetComponent<Light>();
+
         direction = new Vector3();
         next_pos = rb.position;
         moving = false;
         falling = false;
+
         state_intensity = 0;
+
         state = State.WRONG; // Both these are needed, because of the way SetState() works!
         SetState(State.IDLE);
     }
@@ -192,14 +205,14 @@ public class BoxPushedScript : Pusher
         color.b = color.b * intensity;
         color.a = intensity;
 
-        shineX.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", color);
-        shineX.GetComponent<MeshRenderer>().materials[0].color = color;
-        shineY.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", color);
-        shineY.GetComponent<MeshRenderer>().materials[0].color = color;
-        shineZ.GetComponent<MeshRenderer>().materials[0].SetColor("_EmissionColor", color);
-        shineZ.GetComponent<MeshRenderer>().materials[0].color = color;
+        shineX_mat.SetColor("_EmissionColor", color);
+        shineX_mat.color = color;
+        shineX_mat.SetColor("_EmissionColor", color);
+        shineX_mat.color = color;
+        shineX_mat.SetColor("_EmissionColor", color);
+        shineX_mat.color = color;
 
-        shine_light.GetComponent<Light>().color = color;
-        shine_light.GetComponent<Light>().intensity = intensity * LIGHT_INTENSITY;
+        shine_light_light.color = color;
+        shine_light_light.intensity = intensity * LIGHT_INTENSITY;
     }
 }

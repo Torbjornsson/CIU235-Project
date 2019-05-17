@@ -17,7 +17,6 @@ public class GameMasterScript : MonoBehaviour
     private string button_cancel;
 
     public Stack undo_stack = new Stack();
-    //public Stack undoStackC = new Stack();
     bool level_win;
 
     private int elevator_level;
@@ -138,11 +137,8 @@ public class GameMasterScript : MonoBehaviour
 
     public void ChangeElevatorLevel()
     {
-        //CharacterControllerScript c_script = character.GetComponent<CharacterControllerScript>();
         if (!c_script.IsMoving() || c_script.IsFalling())
         {
-            //GameObject[] elevators = GameObject.FindGameObjectsWithTag("Elevator");
-            //GameObject[] boxes = GameObject.FindGameObjectsWithTag("Box");
             bool ok_to_move = true;
             foreach (GameObject elevator in elevators)
             {
@@ -182,13 +178,13 @@ public class GameMasterScript : MonoBehaviour
     public void LevelWin()
     {
         level_win = true;
-        Debug.Log("Start new level");
         int bIndex = SceneManager.GetActiveScene().buildIndex + 1;
         if (bIndex >= SceneManager.sceneCountInBuildSettings){
             Debug.Log("Congraturations U win tHe Games!?");
         }
         else
         {
+            Debug.Log("Start new level");
             undo_stack.Clear();
             SceneManager.LoadScene(bIndex);
         }
@@ -227,10 +223,8 @@ public class GameMasterScript : MonoBehaviour
 
     public void RecordUndo()
     {
-        //GameObject character = GameObject.FindWithTag("Player");
         RecordUndo(character);
     }
-
     public void RecordUndo(GameObject character)
     {
         StatePackage state = new StatePackage(character);

@@ -187,11 +187,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
-  direction: {x: 0, y: 0, z: 0}
   rotation: 0
   speed: 5
   pushing: 0
   speed_push: 0
+  elevator_trigger: 0
+  elevator_trigger_pos: {x: 0, y: 0, z: 0}
   eye: {fileID: 957807983951571879}
 --- !u!65 &8330957297601213647
 BoxCollider:

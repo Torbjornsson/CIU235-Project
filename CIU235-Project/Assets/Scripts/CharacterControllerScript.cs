@@ -7,7 +7,11 @@ public class CharacterControllerScript : Pusher
     public const float DELAY_DEFAULT = 0.1f;
     public const float EPSILON = 0.0001f;
     public const float DEAD_ZONE = 0.3f;
-    public const float SQUEEZE_SIZE = 0.25f;
+    public const float SQUEEZE_SIZE = 0.2f;
+
+    public const float GOAL_CLOSE_INTENSITY = 0.6f;
+    public const float GOAL_CLOSE_DISTANCE = 1.5f;
+    public Color EMISSION_COLOR = Color.white;
 
     public float rotation;
     public float speed;
@@ -19,8 +23,15 @@ public class CharacterControllerScript : Pusher
     public Vector3 elevator_trigger_pos;
 
     public GameObject eye;
+    private Transform eye_trans;
+    private Material eye_mat;
+    private Color emission_color;
+    private float intensity;
 
     private CameraControls camera_script;
+
+    //private GameObject win_trigger;
+    private Transform win_trigger_trans;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +39,11 @@ public class CharacterControllerScript : Pusher
         rb = GetComponent<Rigidbody>();
         game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         camera_script = GameObject.Find("Main Camera").GetComponent<CameraControls>();
+        //win_trigger = GameObject.FindWithTag("Goal");
+        win_trigger_trans = GameObject.FindWithTag("Goal").GetComponent<Transform>();
+        eye_trans = eye.GetComponent<Transform>();
+        eye_mat = eye.GetComponent<MeshRenderer>().materials[0];
+
         moving = false;
         direction = new Vector3();
         next_pos = rb.position;
@@ -37,6 +53,10 @@ public class CharacterControllerScript : Pusher
         speed = Utility.CHARACTER_SPEED;
 
         elevator_trigger = false;
+
+        //emission_color = Color.black;
+        intensity = 0;
+        SetLight(intensity);
     }
 
     // Update is called once per frame
@@ -91,7 +111,7 @@ public class CharacterControllerScript : Pusher
                     SetDir(0, 0, -1);
                     moving = true;
                 }
-                if (moving) move_input = true;
+                move_input |= moving;
             }
 
             // After getting a direction and starts to move, checks for collision in that direction
@@ -142,11 +162,23 @@ public class CharacterControllerScript : Pusher
                 float distance = Vector3.Distance(rb.position, next_pos); // Should be between [0,1]
                 float height = (1 - SQUEEZE_SIZE) + Mathf.Abs(0.5f - distance) * SQUEEZE_SIZE * 2; // Only change constant, no terms here
                 Vector3 scale = new Vector3(1, height, 1); // Only height is affected
-                eye.GetComponent<Transform>().localScale = scale;
+                eye_trans.localScale = scale;
+                Vector3 eye_new_pos = eye_trans.position;
+                eye_new_pos.y = height / 2.0f;
+                eye_trans.position = eye_new_pos;
             }
         }
         if (Vector3.zero != direction)
-            UpdateFacing(); 
+            UpdateFacing();
+
+        // How long character is from goal
+        float goal_dist = Vector3.Distance(rb.position, win_trigger_trans.position);
+        // If that distance is closer than a certain treshold, convert it into a ratio-value
+        float dist_ratio = (goal_dist > GOAL_CLOSE_DISTANCE) ? 0 : (GOAL_CLOSE_DISTANCE - goal_dist) / GOAL_CLOSE_DISTANCE;
+        // And scale it by how much it actually should be
+        intensity = dist_ratio * GOAL_CLOSE_INTENSITY;
+        //Debug.Log("Distance between win trigger and character: " + goal_dist+", and ratio: "+dist_ratio+", and finally, intensity: "+intensity);
+        SetLight(intensity);
     }
 
     // Updates facing of player
@@ -235,5 +267,13 @@ public class CharacterControllerScript : Pusher
             rb.MovePosition(cur_pos);
         }
 
+    }
+
+    public void SetLight(float intensity)
+    {
+        emission_color.r = EMISSION_COLOR.r * intensity;
+        emission_color.g = EMISSION_COLOR.g * intensity;
+        emission_color.b = EMISSION_COLOR.b * intensity;
+        eye_mat.SetColor("_EmissionColor", emission_color);
     }
 }
