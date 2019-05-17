@@ -17,6 +17,7 @@ public class CharacterControllerScript : Pusher
     public const float INTRO_WIDTH = 0.05f;
     public const float OUTRO_HEIGHT = 4f;
     public const float OUTRO_WIDTH = 0.1f;
+    public const float BEAM_WIDTH = 0.4f;
 
     public float rotation;
     public float speed;
@@ -32,6 +33,11 @@ public class CharacterControllerScript : Pusher
     private Material eye_mat;
     private Color emission_color;
     private float intensity;
+
+    private bool beaming;
+    public GameObject beam;
+    //private Material beam_mat;
+    private Transform beam_trans;
 
     private CameraControls camera_script;
 
@@ -52,6 +58,11 @@ public class CharacterControllerScript : Pusher
 
         eye_trans = eye.GetComponent<Transform>();
         eye_mat = eye.GetComponent<MeshRenderer>().materials[0];
+
+        //beam_mat = beam.GetComponent<MeshRenderer>().materials[0];
+        beam_trans = beam.GetComponent<Transform>();
+        beam.SetActive(false);
+        beaming = false;
 
         moving = false;
         direction = new Vector3();
@@ -195,6 +206,8 @@ public class CharacterControllerScript : Pusher
                 SetLight(intensity);
             }
         }
+
+        beam.SetActive(game_master_script.IsLevelTransition());
     }
 
     // Updates facing of player
@@ -331,6 +344,9 @@ public class CharacterControllerScript : Pusher
         Color c = eye_mat.color;
         c.a = prog_quad;
         eye_mat.color = c;
+
+        // Beaming
+        Beam(progress);
     }
 
     public void LevelOutro(float progress) // progress should be between [0, 1]
@@ -356,5 +372,23 @@ public class CharacterControllerScript : Pusher
         c.a = 1 - prog_quad;
         eye_mat.color = c;
         //Debug.Log("Character alfa: " + (1 - prog_quad));
+
+        // Beaming
+        Beam(progress);
+    }
+
+    private void Beam(float progress)
+    {
+        // Width calculation
+        float beam_w = 0;
+        if (progress < 0.2f) beam_w = (progress * 5) * BEAM_WIDTH;
+        else if (progress > 0.8f) beam_w = ((1 - progress) * 5) * BEAM_WIDTH;
+        else beam_w = BEAM_WIDTH;
+
+        // Scaling
+        Vector3 scale = beam_trans.localScale;
+        scale.x = beam_w;
+        scale.z = beam_w;
+        beam_trans.localScale = scale;
     }
 }

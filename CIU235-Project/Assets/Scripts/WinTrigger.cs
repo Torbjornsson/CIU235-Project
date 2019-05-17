@@ -9,7 +9,6 @@ public class WinTrigger : MonoBehaviour
     public const float LIGHT_CHANGE = 2f;
 
     public bool activated;
-    public bool beaming;
 
     private GameMasterScript game_master_script;
 
@@ -17,12 +16,10 @@ public class WinTrigger : MonoBehaviour
 
     public GameObject win_pad;
     public GameObject win_point_light;
-    public GameObject beam;
 
     private Light win_point_light_comp;
     private Material win_pad_mat;
     private Color win_pad_col;
-    private Material beam_mat;
 
     // Start is called before the first frame update
     void Start()
@@ -36,10 +33,6 @@ public class WinTrigger : MonoBehaviour
         win_pad_mat = win_pad.GetComponent<MeshRenderer>().materials[0];
         win_pad_mat.EnableKeyword("_EMISSION");
         win_pad_col = Color.black;
-
-        beam_mat = beam.GetComponent<MeshRenderer>().materials[0];
-        beam.SetActive(false);
-        beaming = false;
 
         TriggerActivated();
 
