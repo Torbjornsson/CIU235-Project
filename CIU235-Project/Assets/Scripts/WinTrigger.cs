@@ -10,7 +10,7 @@ public class WinTrigger : MonoBehaviour
 
     private ArrayList triggers;
 
-    public GameObject win_light;
+    //public GameObject win_light;
     public GameObject win_pad;
     public GameObject win_point_light;
 
@@ -28,14 +28,14 @@ public class WinTrigger : MonoBehaviour
         //Change to som animation trigger and so on
         if (activated)
         {
-            win_light.SetActive(true);
+            //win_light.SetActive(true);
             //win_point_light.SetActive(true);
             win_point_light.GetComponent<Light>().intensity = 1.5f;
             win_pad.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
         }
         else
         {
-            win_light.SetActive(false);
+            //win_light.SetActive(false);
             //win_point_light.SetActive(false);
             win_point_light.GetComponent<Light>().intensity = 0.5f;
             win_pad.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
