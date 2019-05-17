@@ -207,10 +207,10 @@ public class BoxPushedScript : Pusher
 
         shineX_mat.SetColor("_EmissionColor", color);
         shineX_mat.color = color;
-        shineX_mat.SetColor("_EmissionColor", color);
-        shineX_mat.color = color;
-        shineX_mat.SetColor("_EmissionColor", color);
-        shineX_mat.color = color;
+        shineY_mat.SetColor("_EmissionColor", color);
+        shineY_mat.color = color;
+        shineZ_mat.SetColor("_EmissionColor", color);
+        shineZ_mat.color = color;
 
         shine_light_light.color = color;
         shine_light_light.intensity = intensity * LIGHT_INTENSITY;

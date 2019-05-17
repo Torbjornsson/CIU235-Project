@@ -31,6 +31,7 @@ public class CharacterControllerScript : Pusher
     private CameraControls camera_script;
 
     //private GameObject win_trigger;
+    private WinTrigger win_trigger_script;
     private Transform win_trigger_trans;
 
     // Start is called before the first frame update
@@ -39,8 +40,11 @@ public class CharacterControllerScript : Pusher
         rb = GetComponent<Rigidbody>();
         game_master_script = GameObject.Find("GameMaster").GetComponent<GameMasterScript>();
         camera_script = GameObject.Find("Main Camera").GetComponent<CameraControls>();
-        //win_trigger = GameObject.FindWithTag("Goal");
-        win_trigger_trans = GameObject.FindWithTag("Goal").GetComponent<Transform>();
+
+        GameObject win_trigger = GameObject.FindWithTag("Goal");
+        win_trigger_trans = win_trigger.GetComponent<Transform>();
+        win_trigger_script = win_trigger.GetComponent<WinTrigger>();
+
         eye_trans = eye.GetComponent<Transform>();
         eye_mat = eye.GetComponent<MeshRenderer>().materials[0];
 
@@ -164,21 +168,29 @@ public class CharacterControllerScript : Pusher
                 Vector3 scale = new Vector3(1, height, 1); // Only height is affected
                 eye_trans.localScale = scale;
                 Vector3 eye_new_pos = eye_trans.position;
-                eye_new_pos.y = height / 2.0f;
+                eye_new_pos.y = rb.position.y + height / 2.0f;
                 eye_trans.position = eye_new_pos;
             }
         }
         if (Vector3.zero != direction)
             UpdateFacing();
 
-        // How long character is from goal
-        float goal_dist = Vector3.Distance(rb.position, win_trigger_trans.position);
-        // If that distance is closer than a certain treshold, convert it into a ratio-value
-        float dist_ratio = (goal_dist > GOAL_CLOSE_DISTANCE) ? 0 : (GOAL_CLOSE_DISTANCE - goal_dist) / GOAL_CLOSE_DISTANCE;
-        // And scale it by how much it actually should be
-        intensity = dist_ratio * GOAL_CLOSE_INTENSITY;
-        //Debug.Log("Distance between win trigger and character: " + goal_dist+", and ratio: "+dist_ratio+", and finally, intensity: "+intensity);
-        SetLight(intensity);
+        if (win_trigger_script.activated)
+        {
+            // How long character is from goal
+            float goal_dist = Vector3.Distance(rb.position, win_trigger_trans.position);
+            // If that distance is closer than a certain treshold, convert it into a ratio-value
+            float dist_ratio = (goal_dist > GOAL_CLOSE_DISTANCE) ? 0 : (GOAL_CLOSE_DISTANCE - goal_dist) / GOAL_CLOSE_DISTANCE;
+            // And scale it by how much it actually should be
+            intensity = dist_ratio * GOAL_CLOSE_INTENSITY;
+            //Debug.Log("Distance between win trigger and character: " + goal_dist+", and ratio: "+dist_ratio+", and finally, intensity: "+intensity);
+            SetLight(intensity);
+        }
+        else if (intensity > 0)
+        {
+            intensity = 0;
+            SetLight(intensity);
+        }
     }
 
     // Updates facing of player
