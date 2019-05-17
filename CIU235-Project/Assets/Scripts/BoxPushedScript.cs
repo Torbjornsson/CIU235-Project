@@ -13,16 +13,11 @@ public class BoxPushedScript : Pusher
     }
 
     public float speed;
-    //public GameObject shine_white;
-    //public GameObject shine_whiteY;
-    //public GameObject shine_whiteX;
-    //public GameObject shine_whiteZ;
+
     public GameObject shine;
     public GameObject shineY;
     public GameObject shineX;
     public GameObject shineZ;
-
-    //public GameObject shine_red;
     public GameObject shine_light;
 
     private State state;
@@ -105,7 +100,6 @@ public class BoxPushedScript : Pusher
                 shine_light.SetActive(false);
                 state_intensity = 0;
             }
-            SetLight(state_color, state_intensity);
         }
         else
         {
@@ -113,17 +107,8 @@ public class BoxPushedScript : Pusher
                 state_intensity += INTENSITY_CHANGE * Time.deltaTime;
             if (state_intensity > 1)
                 state_intensity = 1;
-
-            //if (state == State.CORRECT)
-            //{
-
-            //}
-            //else if (state == State.WRONG)
-            //{
-
-            //}
-            SetLight(state_color, state_intensity);
         }
+        SetLight(state_color, state_intensity);
     }
 
     // Called every time the box is supposed to be pushed in some direction, by a pusher (Character)
@@ -183,27 +168,15 @@ public class BoxPushedScript : Pusher
             switch (state)
             {
                 case State.IDLE:
-                    //shine.SetActive(false);
-                    //shine_red.SetActive(false);
-                    //shine_light.SetActive(false);
                     break;
                 case State.CORRECT:
                     shine.SetActive(true);
-                    //shine_red.SetActive(false);
                     shine_light.SetActive(true);
-                    //shine_point_light.GetComponent<Light>().color = COLOR_CORRECT;
-                    //SetLight(COLOR_CORRECT, 1);
-                    //state_intensity = 0;
                     state_color = COLOR_CORRECT;
                     break;
                 case State.WRONG:
                     shine.SetActive(true);
-                    //shine_white.SetActive(false);
-                    //shine_red.SetActive(true);
                     shine_light.SetActive(true);
-                    //shine_point_light.GetComponent<Light>().color = COLOR_WRONG;
-                    //SetLight(COLOR_WRONG, 1);
-                    //state_intensity = 0;
                     state_color = COLOR_WRONG;
                     break;
             }
@@ -214,8 +187,6 @@ public class BoxPushedScript : Pusher
 
     private void SetLight(Color color, float intensity)
     {
-        //Debug.Log("Blue?");
-
         color.r = color.r * intensity;
         color.g = color.g * intensity;
         color.b = color.b * intensity;

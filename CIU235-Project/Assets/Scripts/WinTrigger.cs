@@ -14,7 +14,6 @@ public class WinTrigger : MonoBehaviour
 
     private ArrayList triggers;
 
-    //public GameObject win_light;
     public GameObject win_pad;
     public GameObject win_point_light;
 
@@ -43,7 +42,6 @@ public class WinTrigger : MonoBehaviour
             win_pad_col = Color.white;
         }
 
-        //Debug.Log("Win pad color: " + win_pad_col);
         win_pad_mat.SetColor("_EmissionColor", win_pad_col);
     }
 
@@ -53,10 +51,6 @@ public class WinTrigger : MonoBehaviour
         //Change to som animation trigger and so on
         if (activated)
         {
-            //win_light.SetActive(true);
-            //win_point_light.SetActive(true);
-            //win_point_light_comp.intensity = 1.5f;
-
             if (win_point_light_comp.intensity < LIGHT_ACTIVE)
                 win_point_light_comp.intensity += LIGHT_CHANGE * Time.deltaTime;
             if (win_point_light_comp.intensity > LIGHT_ACTIVE)
@@ -72,12 +66,9 @@ public class WinTrigger : MonoBehaviour
                 win_pad_col = Color.white;
 
             win_pad_mat.SetColor("_EmissionColor", win_pad_col);
-            //win_pad.GetComponent<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
         }
         else
         {
-            //win_light.SetActive(false);
-            //win_point_light.SetActive(false);
             if (win_point_light_comp.intensity > LIGHT_INACTIVE)
                 win_point_light_comp.intensity -= LIGHT_CHANGE * Time.deltaTime;
             if (win_point_light_comp.intensity < LIGHT_INACTIVE)
@@ -93,7 +84,6 @@ public class WinTrigger : MonoBehaviour
                 win_pad_col = Color.black;
 
             win_pad_mat.SetColor("_EmissionColor", win_pad_col);
-            //win_pad.GetComponent<MeshRenderer>().materials[0].DisableKeyword("_EMISSION");
         }
     }
 
@@ -103,7 +93,6 @@ public class WinTrigger : MonoBehaviour
             !other.gameObject.GetComponent<CharacterControllerScript>().IsMoving())
         {
             game_master_script.SendMessage("LevelWin");
-            //activated = false;
         }
     }
 
