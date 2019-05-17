@@ -29,6 +29,7 @@ public class WinTrigger : MonoBehaviour
         triggers = new ArrayList(GameObject.FindGameObjectsWithTag("Trigger"));
 
         win_point_light_comp = win_point_light.GetComponent<Light>();
+        win_point_light_comp.intensity = LIGHT_INACTIVE;
 
         win_pad_mat = win_pad.GetComponent<MeshRenderer>().materials[0];
         win_pad_mat.EnableKeyword("_EMISSION");
@@ -36,7 +37,12 @@ public class WinTrigger : MonoBehaviour
 
         TriggerActivated();
 
-        if (activated) win_pad_col = Color.white;
+        if (activated)
+        {
+            win_point_light_comp.intensity = LIGHT_ACTIVE;
+            win_pad_col = Color.white;
+        }
+
         //Debug.Log("Win pad color: " + win_pad_col);
         win_pad_mat.SetColor("_EmissionColor", win_pad_col);
     }
