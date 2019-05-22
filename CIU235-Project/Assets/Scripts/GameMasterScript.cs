@@ -381,8 +381,6 @@ public class GameMasterScript : MonoBehaviour
         fade_script = fade_obj.GetComponent<Fade>();
         fade_obj.SetActive(true);
         fade_script.StartFade(INTRO_FADE_SPEED, -1);
-
-        //character.SetActive(false);
     }
 
     public bool IsLevelTransition()
