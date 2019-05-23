@@ -51,7 +51,6 @@ public class Levels : MonoBehaviour
     public void SelectLevel(int n)
     {
         Debug.Log("Load level " + n);
-        //SceneManager.LoadScene(n);
         if (selected_level == -1)
         {
             fade_obj.SetActive(true);

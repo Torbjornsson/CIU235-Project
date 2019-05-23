@@ -122,7 +122,7 @@ PrefabInstance:
     - target: {fileID: 6667599038632848100, guid: 6f12d2d925ce84acba5bbfe7c5073a18,
         type: 3}
       propertyPath: m_Name
-      value: Fade
+      value: MenuFade
       objectReference: {fileID: 0}
     - target: {fileID: 6667599038632848100, guid: 6f12d2d925ce84acba5bbfe7c5073a18,
         type: 3}
@@ -479,7 +479,7 @@ GameObject:
   - component: {fileID: 454877143}
   - component: {fileID: 454877147}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: MainMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

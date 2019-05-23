@@ -29,6 +29,7 @@ public class GameMasterScript : MonoBehaviour
     bool level_outro;
     float transition_progress;
     int reset_fade;
+    bool exit_outro;
 
     private int elevator_level;
     GameObject[] elevators;
@@ -69,6 +70,7 @@ public class GameMasterScript : MonoBehaviour
         level_intro = true;
         level_outro = false;
         reset_fade = 0;
+        exit_outro = false;
 
         if (Application.platform.Equals(RuntimePlatform.OSXEditor) || Application.platform.Equals(RuntimePlatform.OSXPlayer))
         {
@@ -97,7 +99,7 @@ public class GameMasterScript : MonoBehaviour
     {
         //Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
 
-        if (!IsLevelTransition() && !IsResetFade())
+        if (!IsLevelTransition() && !IsResetFade() && !IsExitOutro())
         {
             DuringGamePlay();
         }
@@ -181,24 +183,26 @@ public class GameMasterScript : MonoBehaviour
 
         if (IsResetFade())
         {
-            //Debug.Log("RESET - Fading "+(reset_fade == 1 ? "out" : "in"));
-
             if (reset_fade == 1 && fade_script.fade_done)
             {
                 undo_stack.Clear();
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                LoadLevel(SceneManager.GetActiveScene().buildIndex);
 
                 reset_fade = -1;
                 fade_script.Reset();
                 fade_script.StartFade(INTRO_FADE_SPEED, -1);
-                //Debug.Log("RESET - Loading level again");
             }
             else if (reset_fade == -1 && fade_script.fade_done)
             {
                 reset_fade = 0;
                 fade_obj.SetActive(false);
-                //Debug.Log("RESET - Done");
             }
+        }
+
+        if (IsExitOutro() && fade_script.fade_done)
+        {
+            fade_script.Reset();
+            LoadLevel(0);
         }
     }
 
@@ -271,7 +275,6 @@ public class GameMasterScript : MonoBehaviour
 
     public void GoalReached()
     {
-        //level_win = true;
         level_transition = true;
         level_outro = true;
         level_intro = false;
@@ -286,7 +289,6 @@ public class GameMasterScript : MonoBehaviour
         fade_script.Reset();
 
         int bIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        //int bIndex = SceneManager.GetActiveScene().buildIndex;
         if (bIndex >= SceneManager.sceneCountInBuildSettings){
             Debug.Log("Congraturations U win tHe Games!?");
         }
@@ -294,7 +296,7 @@ public class GameMasterScript : MonoBehaviour
         {
             Debug.Log("Start new level");
             undo_stack.Clear();
-            SceneManager.LoadScene(bIndex);
+            LoadLevel(bIndex);
         }
     }
 
@@ -308,17 +310,18 @@ public class GameMasterScript : MonoBehaviour
 
     public void ResetLevel()
     {
-        //Debug.Log("RESET - Start");
         reset_fade = 1;
         fade_obj.SetActive(true);
         fade_script.Reset();
         fade_script.StartFade(OUTRO_FADE_SPEED, 1);
     }
 
-    public void Quit()
+    public void ExitToMenu()
     {
-        Debug.Log("Quit application");
-        Application.Quit();
+        exit_outro = true;
+        fade_obj.SetActive(true);
+        fade_script.Reset();
+        fade_script.StartFade(OUTRO_FADE_SPEED, 1);
     }
 
     public bool UndoAvailable()
@@ -331,7 +334,6 @@ public class GameMasterScript : MonoBehaviour
         if (UndoAvailable())
         {
             StatePackage state = (StatePackage) undo_stack.Pop();
-            //Debug.Log("Undo !");
             state.ResetState();
             ResetElevatorLevel(state.elevator_level);
             state.Destroy();
@@ -376,7 +378,8 @@ public class GameMasterScript : MonoBehaviour
     }
 
     public void LoadLevel(int n){
-        Debug.Log(SceneManager.GetSceneByBuildIndex(n).name);
+        //Debug.Log("Load level: " + SceneManager.GetSceneByBuildIndex(n).name);
+        Debug.Log("Load level with index: " + n);
         SceneManager.LoadScene(n);
     }
 
@@ -393,6 +396,15 @@ public class GameMasterScript : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
+
+        if (IsExitOutro()) // If the level is about to exit, nothing of the normal stuff should happen
+        {
+            fade_obj.SetActive(false);
+            exit_outro = false;
+            GameObject.Find("MainMenu").GetComponent<GUI>().MenuIntro();
+            Destroy(gameObject);
+            return;
+        }
 
         character = GameObject.Find("Character");
         c_script = character.GetComponent<CharacterControllerScript>();
@@ -424,6 +436,10 @@ public class GameMasterScript : MonoBehaviour
     public bool IsResetFade()
     {
         return reset_fade != 0;
+    }
+    public bool IsExitOutro()
+    {
+        return exit_outro;
     }
 
     public bool ShowBeam()

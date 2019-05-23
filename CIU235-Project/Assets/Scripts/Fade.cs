@@ -38,4 +38,9 @@ public class Fade : MonoBehaviour
         fading = false;
         fade_done = false;
     }
+
+    public float GetFadeProgress()
+    {
+        return (canvas_group == null) ? 0 : canvas_group.alpha;
+    }
 }
