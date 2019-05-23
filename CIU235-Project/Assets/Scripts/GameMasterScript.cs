@@ -28,7 +28,7 @@ public class GameMasterScript : MonoBehaviour
     bool level_intro;
     bool level_outro;
     float transition_progress;
-    float fade_progress;
+    int reset_fade;
 
     private int elevator_level;
     GameObject[] elevators;
@@ -68,6 +68,7 @@ public class GameMasterScript : MonoBehaviour
         level_transition = true;
         level_intro = true;
         level_outro = false;
+        reset_fade = 0;
 
         if (Application.platform.Equals(RuntimePlatform.OSXEditor) || Application.platform.Equals(RuntimePlatform.OSXPlayer))
         {
@@ -96,7 +97,7 @@ public class GameMasterScript : MonoBehaviour
     {
         //Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
 
-        if (!IsLevelTransition())
+        if (!IsLevelTransition() && !IsResetFade())
         {
             DuringGamePlay();
         }
@@ -141,7 +142,8 @@ public class GameMasterScript : MonoBehaviour
 
     public void DuringTransition()
     {
-        if (IsLevelIntro() && fade_script.fade_done || IsLeveOutro())
+        //if (IsLevelIntro() && fade_script.fade_done || IsLeveOutro())
+        if (ShowBeam())
         {
             float pace = IsLeveOutro() ? OUTRO_PROGRESS_PACE : INTRO_PROGRESS_PACE;
             if (transition_progress < 1)
@@ -174,6 +176,28 @@ public class GameMasterScript : MonoBehaviour
                 fade_obj.SetActive(true);
                 if (!fade_script.fading) fade_script.StartFade(OUTRO_FADE_SPEED, 1);
                 if (fade_script.fade_done) NextLevel();
+            }
+        }
+
+        if (IsResetFade())
+        {
+            //Debug.Log("RESET - Fading "+(reset_fade == 1 ? "out" : "in"));
+
+            if (reset_fade == 1 && fade_script.fade_done)
+            {
+                undo_stack.Clear();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+                reset_fade = -1;
+                fade_script.Reset();
+                fade_script.StartFade(INTRO_FADE_SPEED, -1);
+                //Debug.Log("RESET - Loading level again");
+            }
+            else if (reset_fade == -1 && fade_script.fade_done)
+            {
+                reset_fade = 0;
+                fade_obj.SetActive(false);
+                //Debug.Log("RESET - Done");
             }
         }
     }
@@ -252,7 +276,6 @@ public class GameMasterScript : MonoBehaviour
         level_outro = true;
         level_intro = false;
         transition_progress = 0;
-        fade_progress = 0;
         fade_script.Reset();
         Debug.Log("Let the level transition begin!");
     }
@@ -285,9 +308,11 @@ public class GameMasterScript : MonoBehaviour
 
     public void ResetLevel()
     {
-        Debug.Log("Reset level");
-        undo_stack.Clear();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        //Debug.Log("RESET - Start");
+        reset_fade = 1;
+        fade_obj.SetActive(true);
+        fade_script.Reset();
+        fade_script.StartFade(OUTRO_FADE_SPEED, 1);
     }
 
     public void Quit()
@@ -372,8 +397,9 @@ public class GameMasterScript : MonoBehaviour
         character = GameObject.Find("Character");
         c_script = character.GetComponent<CharacterControllerScript>();
         elevator_level = (character.GetComponent<Rigidbody>().position.y > 0.5f) ? 1 : 0;
-        //Debug.Log("Elevator level: "+elevator_level);
         elevators = GameObject.FindGameObjectsWithTag("Elevator");
+
+        if (IsResetFade()) return; // If a reset is in progress, all fading and intro stuff is aborted
 
         level_intro = true;
         transition_progress = 0;
@@ -395,9 +421,13 @@ public class GameMasterScript : MonoBehaviour
     {
         return level_outro;
     }
+    public bool IsResetFade()
+    {
+        return reset_fade != 0;
+    }
 
     public bool ShowBeam()
     {
-        return IsLevelIntro() && fade_script.fade_done || IsLeveOutro();
+        return ( ( IsLevelIntro() && fade_script.fade_done ) || IsLeveOutro() );
     }
 }
