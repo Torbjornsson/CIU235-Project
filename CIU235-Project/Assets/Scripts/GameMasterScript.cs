@@ -14,6 +14,9 @@ public class GameMasterScript : MonoBehaviour
     public const float INTRO_PROGRESS_PACE = 3;
     public const float OUTRO_PROGRESS_PACE = 3;
 
+    public const float INTRO_FADE_SPEED = 4;
+    public const float OUTRO_FADE_SPEED = 4;
+
     private string button_reset;
     private string button_menu;
     private string button_accept;
@@ -25,6 +28,8 @@ public class GameMasterScript : MonoBehaviour
     bool level_intro;
     bool level_outro;
     float transition_progress;
+    int reset_fade;
+    bool exit_outro;
 
     private int elevator_level;
     GameObject[] elevators;
@@ -35,6 +40,9 @@ public class GameMasterScript : MonoBehaviour
 
     private GameObject character;
     private CharacterControllerScript c_script;
+
+    public GameObject fade_obj;
+    private Fade fade_script;
 
     private static GameMasterScript instance = null;
     public static GameMasterScript Instance {
@@ -61,6 +69,8 @@ public class GameMasterScript : MonoBehaviour
         level_transition = true;
         level_intro = true;
         level_outro = false;
+        reset_fade = 0;
+        exit_outro = false;
 
         if (Application.platform.Equals(RuntimePlatform.OSXEditor) || Application.platform.Equals(RuntimePlatform.OSXPlayer))
         {
@@ -80,6 +90,8 @@ public class GameMasterScript : MonoBehaviour
         button_menu = (system == System.OSX) ? "MenuOSX" : "Menu";
         button_accept = (system == System.OSX) ? "AcceptOSX" : "Accept";
         button_cancel = (system == System.OSX) ? "CancelOSX" : "Cancel";
+
+        //fade_script = fade_obj.GetComponent<Fade>();
     }
 
     // Update is called once per frame
@@ -87,62 +99,110 @@ public class GameMasterScript : MonoBehaviour
     {
         //Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
 
-        if (!IsLevelTransition())
+        if (!IsLevelTransition() && !IsResetFade() && !IsExitOutro())
         {
-            if (Input.GetButtonDown(button_reset))
-            {
-                ResetLevel();
-            }
-
-            if (Input.GetButtonDown(button_menu) && SceneManager.GetActiveScene().buildIndex > 0)
-            {
-                if (!pause_menu.isActiveAndEnabled)
-                {
-                    Pause();
-                }
-                else if (pause_menu.isActiveAndEnabled)
-                {
-                    Resume();
-                }
-            }
-
-            if (Input.GetButtonDown(button_accept))
-            {
-                Debug.Log("ACCEPT");
-                //ChangeElevatorLevel();
-            }
-
-            if (Input.GetButtonDown(button_cancel))
-            {
-                Debug.Log("CANCEL");
-            }
-
-            CheckElevatorTriggering();
-
+            DuringGamePlay();
         }
         else // if transition is in progress
+        {
+            DuringTransition();
+        }
+    }
+
+    private void DuringGamePlay()
+    {
+        if (Input.GetButtonDown(button_reset))
+        {
+            ResetLevel();
+        }
+
+        if (Input.GetButtonDown(button_menu) && SceneManager.GetActiveScene().buildIndex > 0)
+        {
+            if (!pause_menu.isActiveAndEnabled)
+            {
+                Pause();
+            }
+            else if (pause_menu.isActiveAndEnabled)
+            {
+                Resume();
+            }
+        }
+
+        if (Input.GetButtonDown(button_accept))
+        {
+            Debug.Log("ACCEPT");
+            //ChangeElevatorLevel();
+        }
+
+        if (Input.GetButtonDown(button_cancel))
+        {
+            Debug.Log("CANCEL");
+        }
+
+        CheckElevatorTriggering();
+    }
+
+    public void DuringTransition()
+    {
+        //if (IsLevelIntro() && fade_script.fade_done || IsLeveOutro())
+        if (ShowBeam())
         {
             float pace = IsLeveOutro() ? OUTRO_PROGRESS_PACE : INTRO_PROGRESS_PACE;
             if (transition_progress < 1)
                 transition_progress += pace * Time.deltaTime;
             if (transition_progress > 1)
                 transition_progress = 1;
+        }
 
-            if (IsLevelIntro())
+        if (IsLevelIntro())
+        {
+            if (fade_script.fade_done)
             {
+                if (!character.activeSelf) character.SetActive(true);
                 //Debug.Log("INTRO - Tranition progress: " + transition_progress);
                 c_script.LevelIntro(transition_progress);
-                if (transition_progress >= 1)
-                    GiveBackControlToPlayer();
+                if (transition_progress >= 1) GiveBackControlToPlayer();
             }
-
-            if (IsLeveOutro())
+            else if (character.activeSelf)
             {
-                //Debug.Log("OUTRO - Tranition progress: " + transition_progress);
-                c_script.LevelOutro(transition_progress);
-                if (transition_progress >= 1)
-                    NextLevel();
+                character.SetActive(false);
             }
+        }
+
+        if (IsLeveOutro())
+        {
+            //Debug.Log("OUTRO - Tranition progress: " + transition_progress);
+            c_script.LevelOutro(transition_progress);
+            if (transition_progress >= 1)
+            {
+                fade_obj.SetActive(true);
+                if (!fade_script.fading) fade_script.StartFade(OUTRO_FADE_SPEED, 1);
+                if (fade_script.fade_done) NextLevel();
+            }
+        }
+
+        if (IsResetFade())
+        {
+            if (reset_fade == 1 && fade_script.fade_done)
+            {
+                undo_stack.Clear();
+                LoadLevel(SceneManager.GetActiveScene().buildIndex);
+
+                reset_fade = -1;
+                fade_script.Reset();
+                fade_script.StartFade(INTRO_FADE_SPEED, -1);
+            }
+            else if (reset_fade == -1 && fade_script.fade_done)
+            {
+                reset_fade = 0;
+                fade_obj.SetActive(false);
+            }
+        }
+
+        if (IsExitOutro() && fade_script.fade_done)
+        {
+            fade_script.Reset();
+            LoadLevel(0);
         }
     }
 
@@ -215,20 +275,20 @@ public class GameMasterScript : MonoBehaviour
 
     public void GoalReached()
     {
-        //level_win = true;
         level_transition = true;
         level_outro = true;
         level_intro = false;
         transition_progress = 0;
+        fade_script.Reset();
         Debug.Log("Let the level transition begin!");
     }
 
     public void NextLevel()
     {
         level_outro = false;
+        fade_script.Reset();
 
         int bIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        //int bIndex = SceneManager.GetActiveScene().buildIndex;
         if (bIndex >= SceneManager.sceneCountInBuildSettings){
             Debug.Log("Congraturations U win tHe Games!?");
         }
@@ -236,7 +296,7 @@ public class GameMasterScript : MonoBehaviour
         {
             Debug.Log("Start new level");
             undo_stack.Clear();
-            SceneManager.LoadScene(bIndex);
+            LoadLevel(bIndex);
         }
     }
 
@@ -245,19 +305,23 @@ public class GameMasterScript : MonoBehaviour
         level_transition = false;
         level_outro = false;
         level_intro = false;
+        fade_obj.SetActive(false);
     }
 
     public void ResetLevel()
     {
-        Debug.Log("Reset level");
-        undo_stack.Clear();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        reset_fade = 1;
+        fade_obj.SetActive(true);
+        fade_script.Reset();
+        fade_script.StartFade(OUTRO_FADE_SPEED, 1);
     }
 
-    public void Quit()
+    public void ExitToMenu()
     {
-        Debug.Log("Quit application");
-        Application.Quit();
+        exit_outro = true;
+        fade_obj.SetActive(true);
+        fade_script.Reset();
+        fade_script.StartFade(OUTRO_FADE_SPEED, 1);
     }
 
     public bool UndoAvailable()
@@ -270,7 +334,6 @@ public class GameMasterScript : MonoBehaviour
         if (UndoAvailable())
         {
             StatePackage state = (StatePackage) undo_stack.Pop();
-            //Debug.Log("Undo !");
             state.ResetState();
             ResetElevatorLevel(state.elevator_level);
             state.Destroy();
@@ -315,7 +378,8 @@ public class GameMasterScript : MonoBehaviour
     }
 
     public void LoadLevel(int n){
-        Debug.Log(SceneManager.GetSceneByBuildIndex(n).name);
+        //Debug.Log("Load level: " + SceneManager.GetSceneByBuildIndex(n).name);
+        Debug.Log("Load level with index: " + n);
         SceneManager.LoadScene(n);
     }
 
@@ -333,14 +397,28 @@ public class GameMasterScript : MonoBehaviour
     {
         Debug.Log("Scene was loaded: " + SceneManager.GetActiveScene().name);
 
+        if (IsExitOutro()) // If the level is about to exit, nothing of the normal stuff should happen
+        {
+            fade_obj.SetActive(false);
+            exit_outro = false;
+            GameObject.Find("MainMenu").GetComponent<GUI>().MenuIntro();
+            Destroy(gameObject);
+            return;
+        }
+
         character = GameObject.Find("Character");
         c_script = character.GetComponent<CharacterControllerScript>();
         elevator_level = (character.GetComponent<Rigidbody>().position.y > 0.5f) ? 1 : 0;
-        //Debug.Log("Elevator level: "+elevator_level);
         elevators = GameObject.FindGameObjectsWithTag("Elevator");
+
+        if (IsResetFade()) return; // If a reset is in progress, all fading and intro stuff is aborted
 
         level_intro = true;
         transition_progress = 0;
+
+        fade_script = fade_obj.GetComponent<Fade>();
+        fade_obj.SetActive(true);
+        fade_script.StartFade(INTRO_FADE_SPEED, -1);
     }
 
     public bool IsLevelTransition()
@@ -354,5 +432,18 @@ public class GameMasterScript : MonoBehaviour
     public bool IsLeveOutro()
     {
         return level_outro;
+    }
+    public bool IsResetFade()
+    {
+        return reset_fade != 0;
+    }
+    public bool IsExitOutro()
+    {
+        return exit_outro;
+    }
+
+    public bool ShowBeam()
+    {
+        return ( ( IsLevelIntro() && fade_script.fade_done ) || IsLeveOutro() );
     }
 }

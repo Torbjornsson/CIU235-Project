@@ -11,6 +11,11 @@ public class Levels : MonoBehaviour
     public Canvas menu, levelSelection;
 
     public GameObject button_prefab;
+
+    public GameObject fade_obj;
+    private Fade fade_script;
+    private int selected_level;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,19 +31,33 @@ public class Levels : MonoBehaviour
             btn.onClick.AddListener(() => SelectLevel(tmp));
             btn.GetComponentInChildren<Text>().text = tmp.ToString();
         }
+
+        fade_script = fade_obj.GetComponent<Fade>();
+        fade_obj.SetActive(false);
+        selected_level = -1;
     }
     
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (selected_level != -1 && fade_script.fade_done)
+        {
+            SceneManager.LoadScene(selected_level);
+            selected_level = -1;
+        }
     }
 
     public void SelectLevel(int n)
     {
         Debug.Log("Load level " + n);
-        SceneManager.LoadScene(n);
+        if (selected_level == -1)
+        {
+            fade_obj.SetActive(true);
+            fade_script.Reset();
+            fade_script.StartFade(3.0f, 1);
+            selected_level = n;
+        }
     }
 
     public void Back()

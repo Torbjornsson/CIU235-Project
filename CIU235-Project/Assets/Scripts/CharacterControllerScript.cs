@@ -207,7 +207,7 @@ public class CharacterControllerScript : Pusher
             }
         }
 
-        beam.SetActive(game_master_script.IsLevelTransition());
+        beam.SetActive(game_master_script.ShowBeam());
     }
 
     // Updates facing of player

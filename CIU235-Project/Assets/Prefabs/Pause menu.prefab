@@ -348,6 +348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   game_master_script: {fileID: 0}
+  fade_obj: {fileID: 0}
 --- !u!114 &9134247003858981897
 MonoBehaviour:
   m_ObjectHideFlags: 0
