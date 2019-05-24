@@ -41,6 +41,9 @@ public class GameMasterScript : MonoBehaviour
     private GameObject character;
     private CharacterControllerScript c_script;
 
+    public GameObject achievement;
+    private AchievementSystem achievement_script;
+
     public GameObject fade_obj;
     private Fade fade_script;
 
@@ -288,6 +291,7 @@ public class GameMasterScript : MonoBehaviour
         level_outro = false;
         fade_script.Reset();
 
+        AchievementM();
         int bIndex = SceneManager.GetActiveScene().buildIndex + 1;
         if (bIndex >= SceneManager.sceneCountInBuildSettings){
             Debug.Log("Congraturations U win tHe Games!?");
@@ -383,6 +387,16 @@ public class GameMasterScript : MonoBehaviour
         SceneManager.LoadScene(n);
     }
 
+    public void AchievementM()
+    {
+        int b_index = SceneManager.GetActiveScene().buildIndex;
+        if(UndoAvailable())
+        {
+            Debug.Log(b_index);
+            achievement_script.AddSteps(b_index, undo_stack.Count);
+        }
+    }
+
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -419,6 +433,8 @@ public class GameMasterScript : MonoBehaviour
         fade_script = fade_obj.GetComponent<Fade>();
         fade_obj.SetActive(true);
         fade_script.StartFade(INTRO_FADE_SPEED, -1);
+
+        achievement_script = achievement.GetComponent<AchievementSystem>();
     }
 
     public bool IsLevelTransition()

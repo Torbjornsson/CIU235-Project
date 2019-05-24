@@ -47,6 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EPSILON: 0.00001
   pause_menu: {fileID: 4149364321483315342}
+  achievement: {fileID: 6384700748454669063, guid: 8641628e89b23014baa3a3b362bd0f2a,
+    type: 3}
   fade_obj: {fileID: 473279759307207974}
 --- !u!1001 &1657355634760979740
 PrefabInstance:
