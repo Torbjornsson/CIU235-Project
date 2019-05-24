@@ -30,6 +30,7 @@ public class GameMasterScript : MonoBehaviour
     float transition_progress;
     int reset_fade;
     bool exit_outro;
+    public int b_index;
 
     private int elevator_level;
     GameObject[] elevators;
@@ -371,6 +372,7 @@ public class GameMasterScript : MonoBehaviour
 
     public void Pause(){
         Debug.Log("Menu");
+        b_index = SceneManager.GetActiveScene().buildIndex;
         pause_menu.gameObject.SetActive(true);
         Time.timeScale = 0;
     }
@@ -389,10 +391,9 @@ public class GameMasterScript : MonoBehaviour
 
     public void AchievementM()
     {
-        int b_index = SceneManager.GetActiveScene().buildIndex;
+        b_index = SceneManager.GetActiveScene().buildIndex;
         if(UndoAvailable())
         {
-            Debug.Log(b_index);
             achievement_script.AddSteps(b_index, undo_stack.Count);
         }
     }
