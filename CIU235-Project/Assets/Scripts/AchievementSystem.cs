@@ -53,6 +53,11 @@ public class AchievementSystem : MonoBehaviour
 
     public int GetSteps(int lvl)
     {
-        return (int)steps[lvl];
+        if(steps.Count > lvl)
+            return (int)steps[lvl];
+        else
+        {
+            return 0;
+        }
     }
 }

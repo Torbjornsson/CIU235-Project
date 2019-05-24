@@ -11,6 +11,8 @@ public class Levels : MonoBehaviour
     public Canvas menu, levelSelection;
 
     public GameObject button_prefab;
+    public GameObject achievement;
+    private AchievementSystem achievement_script;
 
     public GameObject fade_obj;
     private Fade fade_script;
@@ -20,6 +22,7 @@ public class Levels : MonoBehaviour
     void Start()
     {
         nmr_scns = SceneManager.sceneCountInBuildSettings;
+        achievement_script = achievement.GetComponent<AchievementSystem>();
 
         for (int i = 1; i < nmr_scns; i++){
             GameObject go = (GameObject)Instantiate(button_prefab);
@@ -29,12 +32,16 @@ public class Levels : MonoBehaviour
             int tmp = i;
             
             btn.onClick.AddListener(() => SelectLevel(tmp));
-            btn.GetComponentInChildren<Text>().text = tmp.ToString();
+            string txt = tmp.ToString();
+            txt += ("\n " + "Steps: " + achievement_script.GetSteps(i));
+            btn.GetComponentInChildren<Text>().text = txt;
         }
 
         fade_script = fade_obj.GetComponent<Fade>();
         fade_obj.SetActive(false);
         selected_level = -1;
+
+        
     }
     
 

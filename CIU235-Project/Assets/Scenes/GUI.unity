@@ -1094,6 +1094,8 @@ MonoBehaviour:
   levelSelection: {fileID: 1091848187}
   button_prefab: {fileID: 2374548627848633979, guid: e14f8eab322144bd3a6920f50f87ce73,
     type: 3}
+  achievement: {fileID: 6384700748454669063, guid: 8641628e89b23014baa3a3b362bd0f2a,
+    type: 3}
   fade_obj: {fileID: 1910052722}
 --- !u!1 &1456041595
 GameObject:
