@@ -38,6 +38,7 @@ public class GameMasterScript : MonoBehaviour
     public float EPSILON = 0.00001f;
 
     public Canvas pause_menu;
+    public Canvas end_screen;
 
     private GameObject character;
     private CharacterControllerScript c_script;
